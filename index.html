@@ -970,28 +970,29 @@ html,body{overflow-x:hidden;background:#0d0f12;}
     </div>
     <div class="libov-mode-hint" id="libovHint"></div>
     <div class="libov-list" id="libovList"></div>
-    <div class="libov-add-form" id="libovAddForm">
-      <div class="libov-add-title">Neue Übung zur Bibliothek hinzufügen</div>
-      <div class="libov-add-grid">
-        <input class="add-input libov-add-full" id="libovNewName" placeholder="Übungsname" />
-        <input class="add-input libov-add-full" id="libovNewMuscle" placeholder="Muskelgruppe" />
-        <select class="add-select" id="libovNewCat">
-          <option value="pull">Pull — Rücken/Bizeps</option>
-          <option value="push">Push — Brust/Schulter/Trizeps</option>
-          <option value="legs">Legs — Beine/Gesäß</option>
-          <option value="core">Core — Bauch/Rumpf</option>
-          <option value="cardio">Cardio — Ausdauer</option>
-          <option value="stretch">Stretch — Dehnen/Mobilität</option>
-        </select>
-        <select class="add-select" id="libovNewBi">
-          <option value="1">Bilateral (L+R)</option>
-          <option value="0">Einseitig</option>
-          <option value="none">Kein Gewicht</option>
-        </select>
-        <input class="add-input" id="libovNewIcon" value="💪" />
-        <div></div>
+    <!-- Add new exercise button + collapsible form -->
+    <div id="libovAddForm" style="border-top:1px solid #1e2229;">
+      <button onclick="toggleLibovAddForm()" id="libovAddToggle" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:.75rem 1rem;background:none;border:none;color:#4a5260;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;min-height:46px;">
+        <span id="libovAddToggleIcon">＋</span> Neue Übung hinzufügen
+      </button>
+      <div id="libovAddFormInner" style="display:none;padding:.75rem 1rem .85rem;">
+        <div class="libov-add-grid">
+          <input class="add-input libov-add-full" id="libovNewName" placeholder="Übungsname" />
+          <input class="add-input libov-add-full" id="libovNewMuscle" placeholder="Muskelgruppe" />
+          <select class="add-select" id="libovNewCat">
+            <option value="pull">🏋 Pull — Rücken/Bizeps</option>
+            <option value="push">💪 Push — Brust/Schulter/Trizeps</option>
+            <option value="legs">🦵 Legs — Beine/Gesäß</option>
+            <option value="core">🎯 Core — Bauch/Rumpf</option>
+          </select>
+          <select class="add-select" id="libovNewBi">
+            <option value="1">Bilateral (L+R)</option>
+            <option value="0">Einseitig</option>
+            <option value="none">Kein Gewicht</option>
+          </select>
+        </div>
+        <button class="libov-submit" onclick="libovAddEntry()">+ Zur Bibliothek hinzufügen</button>
       </div>
-      <button class="libov-submit" onclick="libovAddEntry()">+ Zur Bibliothek hinzufügen</button>
     </div>
   </div>
 </div>
@@ -1028,7 +1029,7 @@ var SPLITS_DEFAULT={gk:{name:"Ganzkörper",desc:"3× pro Woche · ca. 90 min pro
     {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:4,reps:"10–12 Wdh.",bi:true},
     {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Rhomboiden, mittlerer Rücken",sets:4,reps:"10–12 Wdh.",bi:true},
     {icon:"💪",name:"Fliegende (BF)",muscle:"Innere Brust, Pectoralis",sets:3,reps:"12–15 Wdh.",bi:true},
-    {icon:"🦵",name:"Beinbeugen",muscle:"Hamstrings, Bizeps femoris",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings, Bizeps femoris",sets:3,reps:"12 Wdh.",bi:true},
     {icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps brachii",sets:3,reps:"10–12 Wdh.",bi:true},
     {icon:"💪",name:"Trizepsdrücken (BF)",muscle:"Trizeps brachii",sets:3,reps:"10–12 Wdh.",bi:false},
     {icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter, Rotatorenmanschette",sets:3,reps:"15 Wdh.",bi:false}
@@ -1045,7 +1046,7 @@ var SPLITS_DEFAULT={gk:{name:"Ganzkörper",desc:"3× pro Woche · ca. 90 min pro
     {icon:"🦵",name:"Adduktorenübung stehend",muscle:"Innerer Oberschenkel",sets:3,reps:"15 Wdh.",bi:true}
   ]},
   {name:"Tag C",tags:["full"],meta:"ca. 90 min",main:[
-    {icon:"🏋",name:"Bankdrücken flach (schwer)",muscle:"Pectoralis, Trizeps",sets:4,reps:"6–8 Wdh.",bi:true},
+    {icon:"🏋",name:"Bankdrücken (BF)",muscle:"Pectoralis, Trizeps",sets:4,reps:"6–8 Wdh.",bi:true},
     {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Mittlerer Rücken, Rhomboiden, Bizeps",sets:4,reps:"8–10 Wdh.",bi:true},
     {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:4,reps:"8–10 Wdh.",bi:true},
     {icon:"💪",name:"Fliegende (BF)",muscle:"Untere Brust",sets:3,reps:"12–15 Wdh.",bi:true},
@@ -1077,7 +1078,7 @@ var SPLITS_DEFAULT={gk:{name:"Ganzkörper",desc:"3× pro Woche · ca. 90 min pro
     {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:4,reps:"10–12 Wdh.",bi:true},
     {icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps, Stabilisation",sets:4,reps:"10 je Seite",bi:true},
     {icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12–15 Wdh.",bi:true},
-    {icon:"🦵",name:"Beinbeugen",muscle:"Hamstrings",sets:4,reps:"10–12 Wdh.",bi:true},
+    {icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:4,reps:"10–12 Wdh.",bi:true},
     {icon:"🦵",name:"Adduktorenübung stehend",muscle:"Innerer Oberschenkel",sets:3,reps:"15 Wdh.",bi:true},
     {icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:4,reps:"20 Wdh.",bi:false}
   ]}
@@ -1092,7 +1093,7 @@ var SPLITS_DEFAULT={gk:{name:"Ganzkörper",desc:"3× pro Woche · ca. 90 min pro
   {name:"Arme",tags:["arms"],meta:"ca. 60 min",
    main:[{icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps brachii",sets:4,reps:"10–12 Wdh.",bi:true},{icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Brachialis, Unterarm",sets:4,reps:"10–12 Wdh.",bi:true},{icon:"🏋",name:"Konzentrations-Curls sitzend",muscle:"Bizeps, Supination",sets:3,reps:"12 je Seite",bi:true},{icon:"💪",name:"Trizepsdrücken (BF)",muscle:"Trizeps brachii",sets:4,reps:"10–12 Wdh.",bi:false},{icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Langer Trizepskopf",sets:3,reps:"10–12 Wdh.",bi:false},{icon:"💪",name:"Trizeps Kickback (BF)",muscle:"Äußerer Trizepskopf",sets:3,reps:"12–15 Wdh.",bi:false}]},
   {name:"Beine",tags:["legs","glutes"],meta:"ca. 60 min",
-   main:[{icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:4,reps:"10–12 Wdh.",bi:true},{icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps",sets:4,reps:"10 je Seite",bi:true},{icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12–15 Wdh.",bi:true},{icon:"🦵",name:"Beinbeugen",muscle:"Hamstrings",sets:4,reps:"10–12 Wdh.",bi:true},{icon:"🦵",name:"Adduktorenübung stehend",muscle:"Innerer Oberschenkel",sets:3,reps:"15 Wdh.",bi:true},{icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:4,reps:"20 Wdh.",bi:false}]}
+   main:[{icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:4,reps:"10–12 Wdh.",bi:true},{icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps",sets:4,reps:"10 je Seite",bi:true},{icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12–15 Wdh.",bi:true},{icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:4,reps:"10–12 Wdh.",bi:true},{icon:"🦵",name:"Adduktorenübung stehend",muscle:"Innerer Oberschenkel",sets:3,reps:"15 Wdh.",bi:true},{icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:4,reps:"20 Wdh.",bi:false}]}
 ]}};
 
 var LIBRARY_DEFAULT=[{cat:"legs",icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäßmuskel, Waden",bi:true,custom:false},
@@ -3249,12 +3250,15 @@ function openLibOv(mode){
     var day = SPLITS[activeSplit] && SPLITS[activeSplit].days[activeDay];
     sub.textContent = day ? 'Zieltag: '+SPLITS[activeSplit].name+' — '+day.name : '';
     hint.textContent = 'Tippe auf + um eine Übung direkt zum Trainingstag hinzuzufügen.';
-    addForm.style.display = 'none';
+    document.getElementById('libovAddForm').style.display = 'none';
   } else {
     title.textContent = '📚 Bibliothek verwalten';
     sub.textContent = 'Eigene Übungen hinzufügen oder löschen';
     hint.textContent = '';
-    addForm.style.display = 'block';
+    document.getElementById('libovAddForm').style.display = 'block';
+    // Always start with form collapsed
+    document.getElementById('libovAddFormInner').style.display = 'none';
+    document.getElementById('libovAddToggleIcon').textContent = '＋';
   }
   renderLibovFilters();
   renderLibovList();
@@ -3426,14 +3430,24 @@ function libovDelEntry(gi){
   renderLibovList();
 }
 
+function toggleLibovAddForm(){
+  var inner = document.getElementById('libovAddFormInner');
+  var icon = document.getElementById('libovAddToggleIcon');
+  var open = inner.style.display === 'none';
+  inner.style.display = open ? 'block' : 'none';
+  icon.textContent = open ? '✕' : '＋';
+  if(open) setTimeout(function(){ document.getElementById('libovNewName').focus(); }, 50);
+}
+
 function libovAddEntry(){
   var name = document.getElementById('libovNewName').value.trim();
   if(!name){ document.getElementById('libovNewName').focus(); return; }
   var cat = document.getElementById('libovNewCat').value;
   var biVal = document.getElementById('libovNewBi').value;
+  var catEmoji = {'pull':'🏋','push':'💪','legs':'🦵','core':'🎯'};
   library.push({
-    cat:cat,
-    icon: document.getElementById('libovNewIcon').value.trim()||'💪',
+    cat: cat,
+    icon: catEmoji[cat] || '💪',
     name: name,
     muscle: document.getElementById('libovNewMuscle').value.trim()||'—',
     bi: biVal==='none' ? 'none' : (biVal==='1'),
@@ -3441,7 +3455,9 @@ function libovAddEntry(){
   });
   document.getElementById('libovNewName').value='';
   document.getElementById('libovNewMuscle').value='';
-  document.getElementById('libovNewIcon').value='💪';
+  // Collapse form after adding
+  document.getElementById('libovAddFormInner').style.display='none';
+  document.getElementById('libovAddToggleIcon').textContent='＋';
   libovActiveCat=cat; libovActiveMg='all';
   saveState();
   renderLibovFilters(); renderLibovList();
