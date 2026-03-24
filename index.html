@@ -3751,9 +3751,9 @@ function renderStretchExList() {
   });
   var html = filtered.map(function(e){
     var isOpen = stretchOpenId === e.id;
-    var photoNum = EX_PHOTO_MAP && EX_PHOTO_MAP[e.name];
-    var photo = photoNum && EX_PHOTOS && EX_PHOTOS[photoNum]
-      ? '<img src="'+EX_PHOTOS[photoNum]+'" style="width:100%;max-height:60vh;object-fit:contain;border-radius:5px;margin-bottom:.6rem;display:block;background:#13161b;touch-action:pinch-zoom;" />'
+    var photoNum = STRETCH_PHOTO_MAP && STRETCH_PHOTO_MAP[e.name];
+    var photo = photoNum
+      ? '<div class="img-zoom-wrap"><img src="'+getStretchPhotoSrc(photoNum)+'" onerror="this.parentElement.style.display=\'none\'" onclick="this.parentElement.classList.toggle(\'zoomed\')" /></div>'
       : '';
     return '<div class="stretch-ex-card">'
       +'<div class="stretch-ex-row" onclick="toggleStretchEx(\''+e.id+'\')">'
