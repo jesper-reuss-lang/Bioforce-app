@@ -388,8 +388,11 @@ html,body{overflow-x:hidden;background:#0d0f12;}
 .img-zoom-wrap{background:#13161b;border-radius:8px;margin-bottom:.75rem;overflow:hidden;cursor:zoom-in;}
 .img-zoom-wrap img{width:100%;height:auto;display:block;}
 /* Fullscreen image viewer */
-.imgview-overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;}
-.imgview-overlay img{max-width:100%;max-height:100%;object-fit:contain;touch-action:pinch-zoom;}
+.imgview-overlay{position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:9999;overflow:hidden;touch-action:none;}
+.imgview-close{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.6);border:1px solid #3a4050;color:#c8c4bc;font-size:18px;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10000;}
+.imgview-hint{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);color:#4a5060;font-size:11px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase;pointer-events:none;white-space:nowrap;}
+#imgViewImg{position:absolute;transform-origin:0 0;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;}
+#imgViewImg.dragging{cursor:grabbing;}
 .sesh-prep-desc{background:#13161b;border:1px solid #1e2229;border-radius:8px;padding:.75rem .9rem;font-size:13px;color:#9aa0b0;line-height:1.6;margin-bottom:.9rem;}
 .sesh-prep-dur-row{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:.9rem;}
 .sesh-prep-dur-lbl{font-size:11px;color:#5a6070;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
@@ -566,7 +569,7 @@ html,body{overflow-x:hidden;background:#0d0f12;}
 .shuf-cancel:active{color:#c8f03a;border-color:#c8f03a;}
 /* BIBLIOTHEK OVERLAY */
 .libov-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1800;display:flex;align-items:flex-start;justify-content:center;padding:.5rem;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-.libov-panel{background:#0d0f12;border:1px solid #2a3040;border-radius:12px;width:100%;max-width:600px;margin:0 auto;}
+.libov-panel{background:#0d0f12;border:1px solid #2a3040;border-radius:12px;width:100%;max-width:600px;margin:0 auto;display:flex;flex-direction:column;max-height:92vh;}
 .libov-head{display:flex;align-items:center;justify-content:space-between;padding:1rem 1rem .75rem;border-bottom:1px solid #1e2229;}
 .libov-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#e8e4dc;}
 .libov-subtitle{font-size:11px;color:#5a6070;margin-top:2px;}
@@ -579,6 +582,7 @@ html,body{overflow-x:hidden;background:#0d0f12;}
 .libov-filter-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#3a4050;font-family:'Barlow Condensed',sans-serif;margin-bottom:.3rem;}
 .libov-chip{padding:.3rem .75rem;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1px solid #1e2229;border-radius:20px;background:transparent;cursor:pointer;min-height:32px;transition:all .15s;}
 .libov-chip.cat-all{color:#6a7080;}.libov-chip.cat-all.active{background:#2a3040;border-color:#5a6070;color:#e8e4dc;}
+.libov-chip.cat-bioforce{color:#c8f03a;}.libov-chip.cat-bioforce.active{background:#111a08;border-color:#c8f03a;}
 .libov-chip.cat-pull{color:#5a90d0;}.libov-chip.cat-pull.active{background:#1a2235;border-color:#5a90d0;}
 .libov-chip.cat-push{color:#d06060;}.libov-chip.cat-push.active{background:#2a1a1a;border-color:#d06060;}
 .libov-chip.cat-legs{color:#60c060;}.libov-chip.cat-legs.active{background:#1a2a1a;border-color:#60c060;}
@@ -587,7 +591,7 @@ html,body{overflow-x:hidden;background:#0d0f12;}
 .libov-chip.cat-stretch{color:#40b0a0;}.libov-chip.cat-stretch.active{background:#0f1a1a;border-color:#40b0a0;}
 .libov-chip.mg{color:#9080c0;}.libov-chip.mg.active{background:#1e1a2a;border-color:#9080c0;color:#c0b0f0;}
 /* Library list */
-.libov-list{max-height:340px;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:.5rem .75rem;}
+.libov-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:.5rem .75rem;min-height:0;}
 .libov-ex-row{display:flex;align-items:center;gap:8px;background:#13161b;border:1px solid #1e2229;border-radius:6px;padding:.55rem .8rem;margin-bottom:5px;transition:border-color .15s;}
 .libov-ex-row.custom{border-color:#1e2a1e;}
 .libov-ex-icon{font-size:14px;flex-shrink:0;}
@@ -897,8 +901,10 @@ html,body{overflow-x:hidden;background:#0d0f12;}
 </div>
 
 <!-- FULLSCREEN IMAGE VIEWER -->
-<div class="imgview-overlay hidden" id="imgViewOverlay" onclick="closeImgView()">
-  <img id="imgViewImg" src="" alt="" />
+<div class="imgview-overlay hidden" id="imgViewOverlay">
+  <img id="imgViewImg" src="" alt="" draggable="false" />
+  <button class="imgview-close" onclick="closeImgView()">✕</button>
+  <div class="imgview-hint" id="imgViewHint">Doppeltippen zum Zoomen · Ziehen zum Verschieben</div>
 </div>
 
 <!-- QUICK ADD SPLIT OVERLAY -->
@@ -1096,117 +1102,117 @@ var SPLITS_DEFAULT={gk:{name:"Ganzkörper",desc:"3× pro Woche · ca. 90 min pro
    main:[{icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:4,reps:"10–12 Wdh.",bi:true},{icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps",sets:4,reps:"10 je Seite",bi:true},{icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12–15 Wdh.",bi:true},{icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:4,reps:"10–12 Wdh.",bi:true},{icon:"🦵",name:"Adduktorenübung stehend",muscle:"Innerer Oberschenkel",sets:3,reps:"15 Wdh.",bi:true},{icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:4,reps:"20 Wdh.",bi:false}]}
 ]}};
 
-var LIBRARY_DEFAULT=[{cat:"legs",icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäßmuskel, Waden",bi:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Kniebeugen einbeinig",muscle:"Quadrizeps, Gesäßmuskel, Waden",bi:false,custom:false},
-  {cat:"legs",icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Quadrizeps, Gesäßmuskel, Waden",bi:false,custom:false},
-  {cat:"legs",icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps",bi:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Beinstrecken einseitig",muscle:"Quadrizeps",bi:false,custom:false},
-  {cat:"legs",icon:"🦵",name:"Kreuzheben gestreckte Beine",muscle:"Beinbizeps, Gesäßmuskel, unterer Rücken",bi:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Kreuzheben (BF)",muscle:"Oberer/unterer Rücken, Gesäßmuskel, Oberschenkel",bi:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Beinbizeps",bi:false,custom:false},
-  {cat:"legs",icon:"🦵",name:"Wadendrücken (BF)",muscle:"Waden",bi:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Wadendrücken außen",muscle:"Waden",bi:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Wadendrücken innen",muscle:"Waden",bi:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Kickbacks einbeinig",muscle:"Gesäßmuskel",bi:false,custom:false},
-  {cat:"legs",icon:"🦵",name:"Abduktorenübung stehend",muscle:"Äußerer Oberschenkelmuskel",bi:false,custom:false},
-  {cat:"legs",icon:"🦵",name:"Adduktorenübung stehend",muscle:"Innerer Oberschenkelmuskel",bi:false,custom:false},
-  {cat:"legs",icon:"🦵",name:"Hüftstrecker liegend",muscle:"Gesäßmuskel",bi:false,custom:false},
-  {cat:"legs",icon:"🦵",name:"Abduktorenübung liegend",muscle:"Innerer Oberschenkelmuskel, Gesäßmuskel, Bauch",bi:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Abduktorenübung liegend einbeinig",muscle:"Innerer Oberschenkelmuskel, Gesäßmuskel, Bauch",bi:false,custom:false},
-  {cat:"legs",icon:"🦵",name:"Beinpresse liegend",muscle:"Waden, Quadrizeps, Gesäß",bi:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Beinpresse einbeinig liegend",muscle:"Waden, Quadrizeps, Gesäß",bi:false,custom:false},
-  {cat:"legs",icon:"🦵",name:"Scherentritte",muscle:"Gesäßmuskel",bi:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Wedeltritte",muscle:"Gesäßmuskel, Bauch",bi:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Hüftkreisen liegend",muscle:"Innerer Oberschenkelmuskel, Gesäßmuskel, Bauch",bi:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Hüftkreisen einbeinig liegend",muscle:"Innerer Oberschenkelmuskel, Gesäßmuskel, Bauch",bi:false,custom:false},
-  {cat:"legs",icon:"🦵",name:"Beinpresse einbeinig sitzend",muscle:"Beinbizeps, Waden, Gesäß",bi:false,custom:false},
-  {cat:"legs",icon:"🦵",name:"Abduktornübung einbeinig sitzend",muscle:"Äußerer Oberschenkelmuskel",bi:false,custom:false},
-  {cat:"legs",icon:"🦵",name:"Adduktorenübung einbeinig sitzend",muscle:"Innerer Oberschenkelmuskel",bi:false,custom:false},
-  {cat:"legs",icon:"🦵",name:"Sprunggelenk laterale Rotation",muscle:"Wadenbeinmuskel, laterale Wadenmuskulatur",bi:false,custom:false},
-  {cat:"legs",icon:"🦵",name:"Sprunggelenk mediale Rotation",muscle:"Wadenbeinmuskel, mediale Wadenmuskulatur",bi:false,custom:false},
+var LIBRARY_DEFAULT=[{cat:"legs",icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäßmuskel, Waden",bi:true,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Kniebeugen einbeinig",muscle:"Quadrizeps, Gesäßmuskel, Waden",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Quadrizeps, Gesäßmuskel, Waden",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps",bi:true,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Beinstrecken einseitig",muscle:"Quadrizeps",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Kreuzheben gestreckte Beine",muscle:"Beinbizeps, Gesäßmuskel, unterer Rücken",bi:true,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Kreuzheben (BF)",muscle:"Oberer/unterer Rücken, Gesäßmuskel, Oberschenkel",bi:true,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Beinbizeps",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Wadendrücken (BF)",muscle:"Waden",bi:true,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Wadendrücken außen",muscle:"Waden",bi:true,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Wadendrücken innen",muscle:"Waden",bi:true,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Kickbacks einbeinig",muscle:"Gesäßmuskel",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Abduktorenübung stehend",muscle:"Äußerer Oberschenkelmuskel",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Adduktorenübung stehend",muscle:"Innerer Oberschenkelmuskel",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Hüftstrecker liegend",muscle:"Gesäßmuskel",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Abduktorenübung liegend",muscle:"Innerer Oberschenkelmuskel, Gesäßmuskel, Bauch",bi:true,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Abduktorenübung liegend einbeinig",muscle:"Innerer Oberschenkelmuskel, Gesäßmuskel, Bauch",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Beinpresse liegend",muscle:"Waden, Quadrizeps, Gesäß",bi:true,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Beinpresse einbeinig liegend",muscle:"Waden, Quadrizeps, Gesäß",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Scherentritte",muscle:"Gesäßmuskel",bi:true,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Wedeltritte",muscle:"Gesäßmuskel, Bauch",bi:true,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Hüftkreisen liegend",muscle:"Innerer Oberschenkelmuskel, Gesäßmuskel, Bauch",bi:true,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Hüftkreisen einbeinig liegend",muscle:"Innerer Oberschenkelmuskel, Gesäßmuskel, Bauch",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Beinpresse einbeinig sitzend",muscle:"Beinbizeps, Waden, Gesäß",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Abduktornübung einbeinig sitzend",muscle:"Äußerer Oberschenkelmuskel",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Adduktorenübung einbeinig sitzend",muscle:"Innerer Oberschenkelmuskel",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Sprunggelenk laterale Rotation",muscle:"Wadenbeinmuskel, laterale Wadenmuskulatur",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Sprunggelenk mediale Rotation",muscle:"Wadenbeinmuskel, mediale Wadenmuskulatur",bi:false,bioforce:true,custom:false},
   // ── BioForce Handbuch — Brust & Rücken ──
-  {cat:"push",icon:"💪",name:"Bankdrücken (BF)",muscle:"Schultern, Brust, Trizeps",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Bankdrücken einarmig",muscle:"Schultern, Brust, Trizeps",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Schrägbankdrücken (BF)",muscle:"Schultern, Brust, Trizeps",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Schrägbankdrücken einarmig",muscle:"Brust, Schultern, Trizeps",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Fliegende (BF)",muscle:"Brust, Schultern",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Fliegende einarmig",muscle:"Brust, Schultern",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Fliegende auf der Schrägbank",muscle:"Schultern, Brust",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Fliegende Schrägbank einarmig",muscle:"Schultern, Brust",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Negatives Schrägbankdrücken",muscle:"Brust, Schultern, Trizeps",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Bankdrücken enger Griff",muscle:"Brust, Schultern, Trizeps",bi:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Bizeps",bi:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Latzug nach vorne",muscle:"Latissimus, Bizeps",bi:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Latzug einarmig",muscle:"Latissimus, Bizeps",bi:false,custom:false},
-  {cat:"pull",icon:"🏋",name:"Latzug mit Untergriff",muscle:"Latissimus, Bizeps",bi:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Latzug mit Untergriff einarmig",muscle:"Latissimus, Bizeps",bi:false,custom:false},
-  {cat:"pull",icon:"🏋",name:"Latzug mit neutralem Griff",muscle:"Latissimus, Bizeps",bi:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Latzug neutraler Griff einarmig",muscle:"Latissimus, Bizeps",bi:false,custom:false},
-  {cat:"pull",icon:"🏋",name:"Überzüge sitzend",muscle:"Latissimus, Schultern",bi:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Überzüge einarmig sitzend",muscle:"Schultern, Latissimus, Bizeps",bi:false,custom:false},
-  {cat:"pull",icon:"🏋",name:"Seitdrücken",muscle:"Latissimus",bi:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Seitdrücken einarmig",muscle:"Latissimus",bi:false,custom:false},
-  {cat:"pull",icon:"🏋",name:"Rudern stehend (BF)",muscle:"Schultern, Latissimus, Bizeps",bi:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Rudern stehend einarmig",muscle:"Schultern, Latissimus, Bizeps",bi:false,custom:false},
-  {cat:"pull",icon:"🏋",name:"Rudern stehend Obergriff",muscle:"Schultern, Latissimus, Bizeps",bi:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Rudern Obergriff stehend einarmig",muscle:"Schultern, Latissimus, Bizeps",bi:false,custom:false},
-  {cat:"pull",icon:"🏋",name:"Rudern mit Untergriff stehend",muscle:"Schultern, Latissimus, Bizeps",bi:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Rudern Untergriff stehend einarmig",muscle:"Schultern, Latissimus, Bizeps",bi:false,custom:false},
-  {cat:"pull",icon:"🏋",name:"Überzüge stehend",muscle:"Latissimus, Schultern",bi:true,custom:false},
+  {cat:"push",icon:"💪",name:"Bankdrücken (BF)",muscle:"Schultern, Brust, Trizeps",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Bankdrücken einarmig",muscle:"Schultern, Brust, Trizeps",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Schrägbankdrücken (BF)",muscle:"Schultern, Brust, Trizeps",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Schrägbankdrücken einarmig",muscle:"Brust, Schultern, Trizeps",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Fliegende (BF)",muscle:"Brust, Schultern",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Fliegende einarmig",muscle:"Brust, Schultern",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Fliegende auf der Schrägbank",muscle:"Schultern, Brust",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Fliegende Schrägbank einarmig",muscle:"Schultern, Brust",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Negatives Schrägbankdrücken",muscle:"Brust, Schultern, Trizeps",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Bankdrücken enger Griff",muscle:"Brust, Schultern, Trizeps",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Bizeps",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Latzug nach vorne",muscle:"Latissimus, Bizeps",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Latzug einarmig",muscle:"Latissimus, Bizeps",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Latzug mit Untergriff",muscle:"Latissimus, Bizeps",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Latzug mit Untergriff einarmig",muscle:"Latissimus, Bizeps",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Latzug mit neutralem Griff",muscle:"Latissimus, Bizeps",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Latzug neutraler Griff einarmig",muscle:"Latissimus, Bizeps",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Überzüge sitzend",muscle:"Latissimus, Schultern",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Überzüge einarmig sitzend",muscle:"Schultern, Latissimus, Bizeps",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Seitdrücken",muscle:"Latissimus",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Seitdrücken einarmig",muscle:"Latissimus",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Rudern stehend (BF)",muscle:"Schultern, Latissimus, Bizeps",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Rudern stehend einarmig",muscle:"Schultern, Latissimus, Bizeps",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Rudern stehend Obergriff",muscle:"Schultern, Latissimus, Bizeps",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Rudern Obergriff stehend einarmig",muscle:"Schultern, Latissimus, Bizeps",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Rudern mit Untergriff stehend",muscle:"Schultern, Latissimus, Bizeps",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Rudern Untergriff stehend einarmig",muscle:"Schultern, Latissimus, Bizeps",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Überzüge stehend",muscle:"Latissimus, Schultern",bi:true,bioforce:true,custom:false},
   // ── BioForce Handbuch — Schultern ──
-  {cat:"push",icon:"💪",name:"Schulterdrücken sitzend",muscle:"Schultern",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Schulterdrücken sitzend einarmig",muscle:"Schultern",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Schulterziehen (Shrugs)",muscle:"Trapezmuskel",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Nackenziehen",muscle:"Schultern, Trapezmuskel",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Frontheben stehend (BF)",muscle:"Schultern",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Frontheben stehend einarmig",muscle:"Schultern",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Seitheben stehend (BF)",muscle:"Schultern",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Seitheben stehend einarmig",muscle:"Schultern",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Delta-Rudern stehend",muscle:"Schultern",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Rudern stehend einarmig (Schulter)",muscle:"Schultern",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Cablecross",muscle:"Schultern",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Frontheben sitzend",muscle:"Schultern",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Frontheben sitzend einarmig",muscle:"Schultern",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Seitheben sitzend",muscle:"Schultern",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Seitheben sitzend einarmig",muscle:"Schultern",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Handgelenk Außenrotation",muscle:"Schultern",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Handgelenk Innenrotation",muscle:"Schultern",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Schulter Rotation nach oben",muscle:"Schultern",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Rückziehen",muscle:"Schultern, Latissimus",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Schulter Außenrotation gestreckt",muscle:"Äußere Schultern",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Schulter Innenrotation gestreckt",muscle:"Schultern",bi:false,custom:false},
+  {cat:"push",icon:"💪",name:"Schulterdrücken sitzend",muscle:"Schultern",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Schulterdrücken sitzend einarmig",muscle:"Schultern",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Schulterziehen (Shrugs)",muscle:"Trapezmuskel",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Nackenziehen",muscle:"Schultern, Trapezmuskel",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Frontheben stehend (BF)",muscle:"Schultern",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Frontheben stehend einarmig",muscle:"Schultern",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Seitheben stehend (BF)",muscle:"Schultern",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Seitheben stehend einarmig",muscle:"Schultern",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Delta-Rudern stehend",muscle:"Schultern",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Rudern stehend einarmig (Schulter)",muscle:"Schultern",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Cablecross",muscle:"Schultern",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Frontheben sitzend",muscle:"Schultern",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Frontheben sitzend einarmig",muscle:"Schultern",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Seitheben sitzend",muscle:"Schultern",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Seitheben sitzend einarmig",muscle:"Schultern",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Handgelenk Außenrotation",muscle:"Schultern",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Handgelenk Innenrotation",muscle:"Schultern",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Schulter Rotation nach oben",muscle:"Schultern",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Rückziehen",muscle:"Schultern, Latissimus",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Schulter Außenrotation gestreckt",muscle:"Äußere Schultern",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Schulter Innenrotation gestreckt",muscle:"Schultern",bi:false,bioforce:true,custom:false},
   // ── BioForce Handbuch — Arme ──
-  {cat:"pull",icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps, Unterarme",bi:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Bizepscurls stehend einarmig",muscle:"Bizeps, Unterarme",bi:false,custom:false},
-  {cat:"pull",icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Bizeps, Unterarme",bi:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Hammer-Curls einarmig",muscle:"Bizeps, Unterarme",bi:false,custom:false},
-  {cat:"pull",icon:"🏋",name:"Bizeps-Curls Obergriff",muscle:"Bizeps, Unterarme",bi:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Bizeps-Curls Obergriff einarmig",muscle:"Bizeps, Unterarme",bi:false,custom:false},
-  {cat:"pull",icon:"🏋",name:"Bizeps-Curls gebogene Stange",muscle:"Bizeps, Unterarme",bi:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Bizeps-Curls Obergriff gebogene Stange",muscle:"Bizeps, Unterarme",bi:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Konzentrations-Curls sitzend",muscle:"Bizeps, Unterarme",bi:false,custom:false},
-  {cat:"pull",icon:"🏋",name:"Unterarm-Curls sitzend",muscle:"Unterarme",bi:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Unterarm-Curls Obergriff sitzend",muscle:"Unterarme",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Trizeps",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Trizepsstrecken überkopf einarmig",muscle:"Trizeps",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Trizepsdrücken (BF)",muscle:"Trizeps",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Trizepsdrücken Untergriff",muscle:"Trizeps",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Getrenntes Trizepsdrücken",muscle:"Trizeps",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Trizepsdrücken einarmig",muscle:"Trizeps",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Trizepsdrücken einarmig Obergriff",muscle:"Trizeps",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Trizeps Kickback einarmig",muscle:"Trizeps",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Trizeps Kickback einarmig Untergriff",muscle:"Trizeps",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Trizeps Kickback (BF)",muscle:"Trizeps",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Trizeps Kickbacks Untergriff",muscle:"Trizeps",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Dips (BF)",muscle:"Trizeps, Deltamuskel, Brustmuskel",bi:true,custom:false},
-  {cat:"push",icon:"💪",name:"Dips einarmig",muscle:"Trizeps, Deltamuskel, Brustmuskel",bi:false,custom:false},
-  {cat:"push",icon:"💪",name:"Trizeps-Strecker gekreuzt",muscle:"Trizeps",bi:false,custom:false},
+  {cat:"pull",icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps, Unterarme",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Bizepscurls stehend einarmig",muscle:"Bizeps, Unterarme",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Bizeps, Unterarme",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Hammer-Curls einarmig",muscle:"Bizeps, Unterarme",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Bizeps-Curls Obergriff",muscle:"Bizeps, Unterarme",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Bizeps-Curls Obergriff einarmig",muscle:"Bizeps, Unterarme",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Bizeps-Curls gebogene Stange",muscle:"Bizeps, Unterarme",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Bizeps-Curls Obergriff gebogene Stange",muscle:"Bizeps, Unterarme",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Konzentrations-Curls sitzend",muscle:"Bizeps, Unterarme",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Unterarm-Curls sitzend",muscle:"Unterarme",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Unterarm-Curls Obergriff sitzend",muscle:"Unterarme",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Trizeps",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Trizepsstrecken überkopf einarmig",muscle:"Trizeps",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Trizepsdrücken (BF)",muscle:"Trizeps",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Trizepsdrücken Untergriff",muscle:"Trizeps",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Getrenntes Trizepsdrücken",muscle:"Trizeps",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Trizepsdrücken einarmig",muscle:"Trizeps",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Trizepsdrücken einarmig Obergriff",muscle:"Trizeps",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Trizeps Kickback einarmig",muscle:"Trizeps",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Trizeps Kickback einarmig Untergriff",muscle:"Trizeps",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Trizeps Kickback (BF)",muscle:"Trizeps",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Trizeps Kickbacks Untergriff",muscle:"Trizeps",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Dips (BF)",muscle:"Trizeps, Deltamuskel, Brustmuskel",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Dips einarmig",muscle:"Trizeps, Deltamuskel, Brustmuskel",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Trizeps-Strecker gekreuzt",muscle:"Trizeps",bi:false,bioforce:true,custom:false},
   // ── BioForce Handbuch — Bauch & Rücken ──
-  {cat:"core",icon:"🎯",name:"Bauch Crunches",muscle:"Gerade Bauchmuskeln",bi:true,custom:false},
-  {cat:"core",icon:"🎯",name:"Schräge Crunches",muscle:"Gerade Bauchmuskeln, schräge Bauchmuskeln",bi:false,custom:false},
-  {cat:"core",icon:"🎯",name:"Oberkörperdrehen stehend",muscle:"Gerade Bauchmuskeln, schräge Bauchmuskeln",bi:false,custom:false},
-  {cat:"core",icon:"🎯",name:"Seitbeugen",muscle:"Gerade Bauchmuskeln, seitliche Beugemuskeln, Sägemuskeln",bi:false,custom:false},
-  {cat:"pull",icon:"🏋",name:"Rückenstrecker sitzend",muscle:"Untere Rückenmuskulatur",bi:true,custom:false},
+  {cat:"core",icon:"🎯",name:"Bauch Crunches",muscle:"Gerade Bauchmuskeln",bi:true,bioforce:true,custom:false},
+  {cat:"core",icon:"🎯",name:"Schräge Crunches",muscle:"Gerade Bauchmuskeln, schräge Bauchmuskeln",bi:false,bioforce:true,custom:false},
+  {cat:"core",icon:"🎯",name:"Oberkörperdrehen stehend",muscle:"Gerade Bauchmuskeln, schräge Bauchmuskeln",bi:false,bioforce:true,custom:false},
+  {cat:"core",icon:"🎯",name:"Seitbeugen",muscle:"Gerade Bauchmuskeln, seitliche Beugemuskeln, Sägemuskeln",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Rückenstrecker sitzend",muscle:"Untere Rückenmuskulatur",bi:true,bioforce:true,custom:false},
   // ── BioForce Handbuch — Dehnübungen ──
   ];
 
@@ -1269,7 +1275,7 @@ function switchLibCat(cat){
 }
 function renderLibList(){
   var filtered=library.filter(function(e){return e.cat===currentLibCat;});
-  var catCls={pull:'cat-pull',push:'cat-push',legs:'cat-legs',core:'cat-core',cardio:'cat-cardio',stretch:'cat-stretch'},catLbl={pull:'Pull',push:'Push',legs:'Legs',core:'Core',cardio:'Cardio',stretch:'Stretch'};
+  var catCls={pull:'cat-pull',push:'cat-push',legs:'cat-legs',core:'cat-core',cardio:'cat-cardio',stretch:'cat-stretch',bioforce:'cat-bioforce'},catLbl={pull:'Pull',push:'Push',legs:'Legs',core:'Core',cardio:'Cardio',stretch:'Stretch',bioforce:'BioForce'};
   document.getElementById('libList').innerHTML=filtered.map(function(e){
     var gi=library.indexOf(e);
     return '<div class="lib-ex-row'+(e.custom?' custom':'')+'">'
@@ -3214,7 +3220,8 @@ var libovActiveCat = 'all';
 var libovActiveMg = 'all';
 
 var LIBOV_CATS = [
-  {id:'all',  label:'Alle'},
+  {id:'all',      label:'Alle'},
+  {id:'bioforce', label:'🏋 BioForce'},
   {id:'pull', label:'Pull'},
   {id:'push', label:'Push'},
   {id:'legs', label:'Legs'},
@@ -3324,10 +3331,12 @@ function mgMatch(muscle, mg){
 }
 
 function renderLibovList(){
-  var catCls={pull:'cat-pull',push:'cat-push',legs:'cat-legs',core:'cat-core',cardio:'cat-cardio',stretch:'cat-stretch'};
+  var catCls={pull:'cat-pull',push:'cat-push',legs:'cat-legs',core:'cat-core',cardio:'cat-cardio',stretch:'cat-stretch',bioforce:'cat-bioforce'};
   var catLbl={pull:'Pull',push:'Push',legs:'Legs',core:'Core',cardio:'Cardio',stretch:'Stretch'};
   var filtered = library.filter(function(e){
-    var catOk = libovActiveCat==='all' || e.cat===libovActiveCat;
+    var catOk = libovActiveCat==='all'
+      || (libovActiveCat==='bioforce' && e.bioforce)
+      || (libovActiveCat!=='bioforce' && e.cat===libovActiveCat);
     var mgOk = libovActiveMg==='all' || mgMatch(e.muscle||'', libovActiveMg);
     return catOk && mgOk;
   });
@@ -3725,67 +3734,23 @@ function doShuffle() {
 
 // Built-in stretch exercises (from handbook)
 var STRETCH_DB = [
-  // ── BEINE ──
-  {id:'s1', icon:'🧘', name:'Quadrizeps-Dehnung stehend', muscle:'Quadrizeps', group:'Beine', sides:true,
-   desc:'Aufrecht stehen, ein Bein anwinkeln und Fußknöchel mit gleichseitiger Hand greifen. Ferse zum Gesäß ziehen, Becken leicht nach vorne schieben. Knie des Standbeins leicht beugen. Freie Hand zur Stabilisierung an Wand. 20–30 Sek. halten.'},
-  {id:'s2', icon:'🧘', name:'Waden-Dehnung an der Wand', muscle:'Gastrocnemius, Soleus', group:'Beine', sides:true,
-   desc:'Ca. eine Armlänge vor einer Wand stehen. Ein Bein nach hinten stellen, Ferse bleibt am Boden. Hände gegen Wand, Hüfte nach vorne lehnen bis Dehnung in Wade spürbar. Hinteres Knie gestreckt lassen. 20–30 Sek.'},
-  {id:'s3', icon:'🧘', name:'Soleus-Dehnung (tiefe Wade)', muscle:'Soleus, Achillessehne', group:'Beine', sides:true,
-   desc:'Wie Waden-Dehnung, aber hinteres Knie leicht beugen. Dadurch wird der tiefere Wadenmuskel (Soleus) stärker gedehnt. Ferse bleibt fest am Boden. 20–30 Sek.'},
-  {id:'s4', icon:'🧘', name:'Hamstring-Dehnung im Stehen', muscle:'Hamstrings, Beinbizeps', group:'Beine', sides:true,
-   desc:'Ein Bein auf Stuhl oder erhöhter Fläche ablegen. Rücken gerade, von der Hüfte nach vorne kippen — nicht aus dem Rücken beugen. Zehe leicht anziehen für intensivere Dehnung. 20–30 Sek.'},
-  {id:'s5', icon:'🧘', name:'Vorbeuge stehend', muscle:'Hamstrings, Gesäß, unterer Rücken', group:'Beine', sides:false,
-   desc:'Schulterbreit stehen. Von der Hüfte nach vorne kippen, Beine gestreckt. Hände so weit wie möglich nach unten — Boden berühren wenn möglich. Keine ruckartigen Bewegungen. 20–30 Sek. halten.'},
-  {id:'s6', icon:'🧘', name:'Innere Oberschenkel (Schmetterling)', muscle:'Adduktoren, innerer Oberschenkel', group:'Beine', sides:false,
-   desc:'Auf dem Boden sitzen, Fußsohlen aneinander legen, Knie nach außen fallen lassen. Mit Ellbogen leicht auf die Oberschenkel drücken. Oberkörper leicht nach vorne neigen. 30 Sek.'},
-  {id:'s7', icon:'🧘', name:'Seitlicher Ausfallschritt-Stretch', muscle:'Innere Oberschenkel, Hüfte', group:'Beine', sides:true,
-   desc:'Breite Grätsche, dann mit einem Bein in die Knie gehen. Das andere Bein gestreckt seitlich halten. Körper aufrecht. Hände auf dem Oberschenkel abstützen. 20–30 Sek.'},
-  {id:'s8', icon:'🧘', name:'Liegender Hamstring-Stretch', muscle:'Hamstrings, Gesäß', group:'Beine', sides:true,
-   desc:'Rücken auf Boden, ein Bein angewinkelt. Anderes Bein anheben, mit beiden Händen hinterm Oberschenkel halten und vorsichtig zum Oberkörper ziehen. Knie bleibt leicht gebeugt. 30 Sek.'},
-  // ── HÜFTE ──
-  {id:'s9', icon:'🧘', name:'Hüftbeuger-Dehnung (Ausfallschritt)', muscle:'Hüftbeuger, Iliopsoas, Quadrizeps', group:'Hüfte', sides:true,
-   desc:'Ausfallschritt, hinteres Knie auf Boden (Matte nutzen). Oberkörper aufrecht, Becken nach vorne-unten schieben. Hände auf Vorderschenkel. Intensiver: Hände überkopf strecken. 30 Sek.'},
-  {id:'s10', icon:'🧘', name:'Piriformis / Gesäß-Dehnung', muscle:'Piriformis, Gesäß, Außenrotoren', group:'Hüfte', sides:true,
-   desc:'Rücken auf Boden. Ein Knie anwinkeln und über das andere Knie legen (Figur-4-Position). Mit Händen den Unterschenkel des anderen Beins zum Körper ziehen. 30 Sek.'},
-  {id:'s11', icon:'🧘', name:'Liegender Hüft-Twist', muscle:'Hüfte, unterer Rücken, IT-Band', group:'Hüfte', sides:true,
-   desc:'Rücken auf Boden, Knie zur Brust ziehen. Beide Knie zusammen zur einen Seite ablegen, Schultern am Boden lassen. Kopf schaut in Gegenrichtung. 20–30 Sek."},'},
-  {id:'s12', icon:'🧘', name:'Hüftkreisen stehend', muscle:'Hüftgelenk, Hüftbeuger', group:'Hüfte', sides:false,
-   desc:'Aufrecht stehen, Hände in die Hüfte. Große, runde Kreisbewegung mit den Hüften — erst eine Richtung, dann andere. Langsam und kontrolliert. Je 10 Kreise pro Seite.'},
-  // ── RÜCKEN ──
-  {id:'s13', icon:'🧘', name:'Katze-Kuh Mobilisation', muscle:'Wirbelsäule, Rückenstrecker', group:'Rücken', sides:false,
-   desc:'Vierfüßler-Stand. Beim Einatmen: Bauch sinkt, Kopf und Steißbein heben sich (Kuh). Beim Ausatmen: Rücken rund machen, Kinn zur Brust (Katze). Fließend wiederholen — 10 Wiederholungen langsam.'},
-  {id:'s14', icon:'🧘', name:'Vorbeuge mit Rücken-Dehnung', muscle:'Rücken, Wirbelsäule, Hamstrings', group:'Rücken', sides:false,
-   desc:'Schulterbreit stehen. Von der Hüfte nach vorne beugen, Hände locker hängen lassen oder Boden berühren. Oberkörper komplett entspannen. 20–30 Sek. halten, tief atmen.'},
-  {id:'s15', icon:'🧘', name:'Kindpose (Child\'s Pose)', muscle:'Unterer Rücken, Schultern, Hüfte', group:'Rücken', sides:false,
-   desc:'Kniend auf Fersen setzen, Arme nach vorne strecken, Stirn auf Boden ablegen. Tief ein- und ausatmen. Schultern entspannen. 30–45 Sek. halten — ideal nach dem Training.'},
-  {id:'s16', icon:'🧘', name:'Cobra-Dehnung', muscle:'Bauch, unterer Rücken', group:'Rücken', sides:false,
-   desc:'Bauchlage, Hände neben Schultern auf Boden. Oberkörper langsam heben, Arme strecken, Blick nach vorne-oben. Becken am Boden lassen. 20–30 Sek. halten.'},
-  {id:'s17', icon:'🧘', name:'Seitliche Rumpf-Dehnung', muscle:'Seitliche Rumpfmuskulatur, Latissimus', group:'Rücken', sides:true,
-   desc:'Aufrecht stehen. Einen Arm überkopf strecken, zur Gegenseite neigen. Hüfte fest, Körper nur seitlich dehnen. Keinen Hohlkreuz machen. 20–30 Sek.'},
-  // ── SCHULTER ──
-  {id:'s18', icon:'🧘', name:'Schulter quer vor dem Körper', muscle:'Hintere Schulter, Deltoideus', group:'Schulter', sides:true,
-   desc:'Einen Arm horizontal vor dem Körper ausstrecken. Mit dem anderen Arm am Ellbogen festhalten und zur Gegenschulter ziehen. Schulter nicht hochziehen. 20–30 Sek.'},
-  {id:'s19', icon:'🧘', name:'Brust-Dehnung (Hände hinter Rücken)', muscle:'Pectoralis, vordere Schulter', group:'Schulter', sides:false,
-   desc:'Aufrecht stehen. Beide Hände hinter dem Rücken verschränken, Arme gestreckt. Brust nach vorne-oben schieben, Schulterblätter zusammenziehen. 20–30 Sek.'},
-  {id:'s20', icon:'🧘', name:'Türrahmen-Brustdehnung', muscle:'Pectoralis major, vordere Schulter', group:'Schulter', sides:true,
-   desc:'Im Türrahmen stehen. Einen Arm im 90° Winkel gegen den Rahmen stützen. Körper langsam nach vorne drehen bis Dehnung in Brust spürbar. 20–30 Sek.'},
-  {id:'s21', icon:'🧘', name:'Schulter-Dehnung (hinter Rücken)', muscle:'Schulter, Trizeps', group:'Schulter', sides:true,
-   desc:'Hand in den Nacken legen, Ellbogen zeigt nach oben. Mit anderer Hand den Ellbogen sanft nach unten-hinten drücken. 20–30 Sek.'},
-  {id:'s22', icon:'🧘', name:'Nacken seitlich neigen', muscle:'Nackenmuskulatur, seitliche Halsmuskulatur', group:'Schulter', sides:true,
-   desc:'Kopf langsam zur Seite neigen, Ohr zur Schulter. Mit Hand leicht nachhelfen. Schulter aktiv nach unten ziehen. 20 Sek. halten.'},
-  {id:'s23', icon:'🧘', name:'Nacken nach vorne dehnen', muscle:'Nacken, hintere Halsmuskulatur', group:'Schulter', sides:false,
-   desc:'Kinn langsam zur Brust senken. Hände locker hinter dem Kopf falten für leichten Druck. Schultern entspannt lassen. 20–30 Sek.'},
-  // ── ARME ──
-  {id:'s24', icon:'🧘', name:'Trizeps-Dehnung überkopf', muscle:'Trizeps', group:'Arme', sides:true,
+  // ── Aus dem BioForce Handbuch ──
+  {id:'s1', icon:'🧘', name:'Oberschenkel-Dehnung', muscle:'Quadrizeps', group:'Beine', sides:true,
+   desc:'Aufrecht stehen, ein Bein anwinkeln und Fußknöchel mit gleichseitiger Hand greifen. Ferse zum Gesäß ziehen, Becken leicht nach vorne schieben. Knie des Standbeins leicht beugen. 20–30 Sek. halten.'},
+  {id:'s2', icon:'🧘', name:'Waden-Dehnung', muscle:'Wadenmuskulatur', group:'Beine', sides:true,
+   desc:'Ca. eine Armlänge vor einer Wand stehen. Ein Bein nach hinten stellen, Ferse bleibt am Boden. Hände gegen Wand, Hüfte nach vorne lehnen bis Dehnung in Wade spürbar. Hinteres Knie gestreckt. 20–30 Sek.'},
+  {id:'s3', icon:'🧘', name:'Trizeps-Dehnen überkopf', muscle:'Trizeps', group:'Arme', sides:true,
    desc:'Arm überkopf strecken, Ellbogen anwinkeln. Mit anderer Hand den Ellbogen sanft nach hinten-unten drücken. Rücken gerade halten. 20–30 Sek.'},
-  {id:'s25', icon:'🧘', name:'Bizeps-Dehnung', muscle:'Bizeps, vordere Schulter', group:'Arme', sides:true,
-   desc:'Arm seitlich ausstrecken, Handfläche nach oben. Mit anderer Hand Finger sanft nach unten biegen und Arm leicht nach außen drehen. 20–30 Sek.'},
-  {id:'s26', icon:'🧘', name:'Unterarm-Dehnung (Flexoren)', muscle:'Unterarmflexoren', group:'Arme', sides:true,
-   desc:'Arm ausstrecken, Handfläche zeigt nach oben. Finger nach unten fallen lassen, mit anderer Hand sanft nach unten ziehen. Ellbogen vollständig gestreckt. 20–30 Sek.'},
-  {id:'s27', icon:'🧘', name:'Unterarm-Dehnung (Extensoren)', muscle:'Unterarmextensoren', group:'Arme', sides:true,
-   desc:'Arm ausstrecken, Handfläche zeigt zur Decke. Mit anderer Hand Finger greifen und zu sich ziehen. Ellbogen vollständig gestreckt. 20–30 Sek.'},
-  {id:'s28', icon:'🧘', name:'Handgelenk-Kreisen', muscle:'Handgelenk, Unterarm', group:'Arme', sides:false,
-   desc:'Beide Hände vor dem Körper verschränken. Langsame, große Kreisbewegungen — erst eine Richtung, dann andere. Je 10 Kreise. Ideal für Regeneration nach Arm-Training.'}
+  {id:'s4', icon:'🧘', name:'Rücken-Dehnen', muscle:'Rücken, Wirbelsäule', group:'Rücken', sides:false,
+   desc:'Schulterbreit stehen. Von der Hüfte nach vorne beugen, Hände locker hängen lassen. Oberkörper komplett entspannen. 20–30 Sek. halten, tief atmen.'},
+  {id:'s5', icon:'🧘', name:'Dehnen der Achillessehne', muscle:'Achillessehne, Wade', group:'Beine', sides:true,
+   desc:'Ein Bein nach vorne, hinteres Knie leicht anwinkeln. Hüfte nach vorne-unten schieben bis Dehnung an der Achillessehne spürbar. Ferse bleibt am Boden. 20–30 Sek.'},
+  {id:'s6', icon:'🧘', name:'Po-, Hüfte und Unterkörper-Dehnung', muscle:'Gesäß, Hüfte, unterer Rücken', group:'Hüfte', sides:true,
+   desc:'Rücken auf Boden, Knie anwinkeln. Ein Bein mit beiden Händen zum Oberkörper ziehen. Schultern bleiben am Boden. 30 Sek. halten.'},
+  {id:'s7', icon:'🧘', name:'Dehnen der inneren Oberschenkel', muscle:'Adduktoren, innerer Oberschenkel', group:'Beine', sides:false,
+   desc:'Auf dem Boden sitzen, Fußsohlen aneinander legen, Knie nach außen fallen lassen. Mit Ellbogen leicht auf Oberschenkel drücken und nach vorne neigen. 30 Sek.'},
+  {id:'s8', icon:'🧘', name:'Schulter-Dehnen', muscle:'Schulter, Brustbereich', group:'Schulter', sides:false,
+   desc:'Aufrecht stehen. Beide Hände hinter dem Rücken verschränken, Arme gestreckt. Brust nach vorne-oben schieben, Schulterblätter zusammenziehen. 20–30 Sek.'}
 ];
 
 var STRETCH_GROUPS = ['Alle','Beine','Hüfte','Rücken','Schulter','Arme'];
@@ -3811,7 +3776,7 @@ var QUICK_ROUTINES = {
   },
   morning: {
     name: 'Morgens / Mobilität',
-    exIds: ['s13','s15','s9','s6','s14','s19','s18','s22','s12','s17'],
+    exIds: ['s4','s6','s7','s8','s1','s5','s2','s3'],
     holdSec: 60
   }
 };
@@ -4170,14 +4135,155 @@ function deleteRoutine(ri) {
 }
 
 // ── FULLSCREEN IMAGE VIEWER ──
+// ── FULLSCREEN IMAGE VIEWER with Pinch-Zoom ──
+var _iv = {
+  scale:1, minScale:1, maxScale:5,
+  x:0, y:0,
+  startX:0, startY:0,
+  dragging:false,
+  lastTap:0,
+  // pinch state
+  pinching:false, startDist:0, startScale:1, pinchMidX:0, pinchMidY:0
+};
+
 function openImgView(src, alt){
-  document.getElementById('imgViewImg').src = src;
-  document.getElementById('imgViewImg').alt = alt || '';
-  document.getElementById('imgViewOverlay').classList.remove('hidden');
+  var img = document.getElementById('imgViewImg');
+  var ov  = document.getElementById('imgViewOverlay');
+  img.src = src;
+  img.alt = alt || '';
+  ov.classList.remove('hidden');
+  // Wait for image to load, then reset and fit
+  img.onload = function(){ _ivReset(); };
+  if(img.complete) _ivReset();
+  _ivBindEvents();
 }
+
 function closeImgView(){
   document.getElementById('imgViewOverlay').classList.add('hidden');
   document.getElementById('imgViewImg').src = '';
+  _ivUnbindEvents();
+}
+
+function _ivReset(){
+  var img = document.getElementById('imgViewImg');
+  var ov  = document.getElementById('imgViewOverlay');
+  var vw = ov.clientWidth, vh = ov.clientHeight;
+  var iw = img.naturalWidth  || img.clientWidth  || vw;
+  var ih = img.naturalHeight || img.clientHeight || vh;
+  var fit = Math.min(vw/iw, vh/ih, 1);
+  _iv.scale = fit;
+  _iv.minScale = fit;
+  _iv.x = (vw - iw*fit) / 2;
+  _iv.y = (vh - ih*fit) / 2;
+  _ivApply();
+}
+
+function _ivApply(){
+  var img = document.getElementById('imgViewImg');
+  img.style.transform = 'translate('+_iv.x+'px,'+_iv.y+'px) scale('+_iv.scale+')';
+}
+
+function _ivClamp(){
+  var img = document.getElementById('imgViewImg');
+  var ov  = document.getElementById('imgViewOverlay');
+  var vw = ov.clientWidth, vh = ov.clientHeight;
+  var iw = (img.naturalWidth||img.clientWidth) * _iv.scale;
+  var ih = (img.naturalHeight||img.clientHeight) * _iv.scale;
+  // Allow panning only when zoomed in
+  var minX = _iv.scale <= _iv.minScale ? (vw-iw)/2 : Math.min(0, vw-iw);
+  var maxX = _iv.scale <= _iv.minScale ? (vw-iw)/2 : Math.max(0, vw-iw);
+  var minY = _iv.scale <= _iv.minScale ? (vh-ih)/2 : Math.min(0, vh-ih);
+  var maxY = _iv.scale <= _iv.minScale ? (vh-ih)/2 : Math.max(0, vh-ih);
+  _iv.x = Math.max(minX, Math.min(maxX, _iv.x));
+  _iv.y = Math.max(minY, Math.min(maxY, _iv.y));
+}
+
+function _ivDist(t){ return Math.hypot(t[0].clientX-t[1].clientX, t[0].clientY-t[1].clientY); }
+function _ivMid(t){ return {x:(t[0].clientX+t[1].clientX)/2, y:(t[0].clientY+t[1].clientY)/2}; }
+
+var _ivHandlers = {};
+function _ivBindEvents(){
+  var img = document.getElementById('imgViewImg');
+  var ov  = document.getElementById('imgViewOverlay');
+
+  _ivHandlers.touchstart = function(e){
+    e.preventDefault();
+    var t = e.touches;
+    if(t.length===1){
+      // Double tap check
+      var now = Date.now();
+      if(now - _iv.lastTap < 300){
+        // Double tap — toggle zoom
+        if(_iv.scale > _iv.minScale + 0.01){
+          _ivReset();
+        } else {
+          var cx = t[0].clientX, cy = t[0].clientY;
+          var img2 = document.getElementById('imgViewImg');
+          var newScale = _iv.minScale * 2.5;
+          var iw = img2.naturalWidth||img2.clientWidth;
+          var ih = img2.naturalHeight||img2.clientHeight;
+          _iv.x = cx - (cx - _iv.x) * (newScale/_iv.scale) ;
+          _iv.y = cy - (cy - _iv.y) * (newScale/_iv.scale);
+          _iv.scale = newScale;
+          _ivClamp();
+          _ivApply();
+        }
+        _iv.lastTap = 0;
+        return;
+      }
+      _iv.lastTap = now;
+      _iv.startX = t[0].clientX - _iv.x;
+      _iv.startY = t[0].clientY - _iv.y;
+      _iv.dragging = true;
+      img.classList.add('dragging');
+    } else if(t.length===2){
+      _iv.dragging = false;
+      img.classList.remove('dragging');
+      _iv.pinching = true;
+      _iv.startDist = _ivDist(t);
+      _iv.startScale = _iv.scale;
+      var mid = _ivMid(t);
+      _iv.pinchMidX = mid.x;
+      _iv.pinchMidY = mid.y;
+    }
+  };
+
+  _ivHandlers.touchmove = function(e){
+    e.preventDefault();
+    var t = e.touches;
+    if(_iv.pinching && t.length===2){
+      var dist = _ivDist(t);
+      var newScale = Math.max(_iv.minScale, Math.min(_iv.maxScale, _iv.startScale * dist/_iv.startDist));
+      var factor = newScale / _iv.scale;
+      _iv.x = _iv.pinchMidX - (_iv.pinchMidX - _iv.x) * factor;
+      _iv.y = _iv.pinchMidY - (_iv.pinchMidY - _iv.y) * factor;
+      _iv.scale = newScale;
+      _ivClamp();
+      _ivApply();
+    } else if(_iv.dragging && t.length===1){
+      _iv.x = t[0].clientX - _iv.startX;
+      _iv.y = t[0].clientY - _iv.startY;
+      _ivClamp();
+      _ivApply();
+    }
+  };
+
+  _ivHandlers.touchend = function(e){
+    if(e.touches.length < 2) _iv.pinching = false;
+    if(e.touches.length === 0){ _iv.dragging = false; img.classList.remove('dragging'); }
+  };
+
+  ov.addEventListener('touchstart', _ivHandlers.touchstart, {passive:false});
+  ov.addEventListener('touchmove',  _ivHandlers.touchmove,  {passive:false});
+  ov.addEventListener('touchend',   _ivHandlers.touchend,   {passive:false});
+}
+
+function _ivUnbindEvents(){
+  var ov = document.getElementById('imgViewOverlay');
+  if(_ivHandlers.touchstart) ov.removeEventListener('touchstart', _ivHandlers.touchstart);
+  if(_ivHandlers.touchmove)  ov.removeEventListener('touchmove',  _ivHandlers.touchmove);
+  if(_ivHandlers.touchend)   ov.removeEventListener('touchend',   _ivHandlers.touchend);
+  _ivHandlers = {};
 }
 
 // ── QUICK SPLIT MANAGEMENT ──
@@ -4504,34 +4610,14 @@ var EX_PHOTO_MAP = {"Kniebeugen (BF)": 1, "Kniebeugen einbeinig": 2, "Ausfallsch
 var EX_PHOTOS = null;
 
 var STRETCH_PHOTO_MAP = {
-  'Quadrizeps-Dehnung stehend': 1,
-  'Waden-Dehnung an der Wand': 2,
-  'Soleus-Dehnung (tiefe Wade)': 3,
-  'Hamstring-Dehnung im Stehen': 4,
-  'Vorbeuge stehend': 5,
-  'Innere Oberschenkel (Schmetterling)': 6,
-  'Seitlicher Ausfallschritt-Stretch': 7,
-  'Liegender Hamstring-Stretch': 8,
-  'Hüftbeuger-Dehnung (Ausfallschritt)': 9,
-  'Piriformis / Gesäß-Dehnung': 10,
-  'Liegender Hüft-Twist': 11,
-  'Hüftkreisen stehend': 12,
-  'Katze-Kuh Mobilisation': 13,
-  "Kindpose (Child's Pose)": 15,
-  'Vorbeuge mit Rücken-Dehnung': 14,
-  'Cobra-Dehnung': 16,
-  'Seitliche Rumpf-Dehnung': 17,
-  'Schulter quer vor dem Körper': 18,
-  'Brust-Dehnung (Hände hinter Rücken)': 19,
-  'Türrahmen-Brustdehnung': 20,
-  'Schulter-Dehnung (hinter Rücken)': 21,
-  'Nacken seitlich neigen': 22,
-  'Nacken nach vorne dehnen': 23,
-  'Trizeps-Dehnung überkopf': 24,
-  'Bizeps-Dehnung': 25,
-  'Unterarm-Dehnung (Flexoren)': 26,
-  'Unterarm-Dehnung (Extensoren)': 27,
-  'Handgelenk-Kreisen': 28
+  'Oberschenkel-Dehnung': 1,
+  'Waden-Dehnung': 2,
+  'Trizeps-Dehnen überkopf': 3,
+  'Rücken-Dehnen': 4,
+  'Dehnen der Achillessehne': 5,
+  'Po-, Hüfte und Unterkörper-Dehnung': 6,
+  'Dehnen der inneren Oberschenkel': 7,
+  'Schulter-Dehnen': 8
 };
  // not used anymore — images loaded from bilder/ folder
 
