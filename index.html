@@ -380,7 +380,10 @@ html,body{overflow-x:hidden;background:#0d0f12;}
 .sesh-prep-name{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#e8e4dc;text-align:center;margin-bottom:.15rem;line-height:1.1;}
 .sesh-prep-muscle{font-size:12px;color:#5a6070;text-align:center;margin-bottom:.75rem;}
 .sesh-prep-side{display:inline-block;background:#1a2a08;border:1px solid #3a5020;border-radius:4px;color:#8ab029;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 10px;margin:0 auto .75rem;display:block;width:fit-content;margin:0 auto .75rem;}
-.sesh-prep-photo{width:100%;border-radius:8px;margin-bottom:.75rem;display:block;}
+.sesh-prep-photo{width:100%;height:auto;display:block;border-radius:6px;}
+.img-zoom-wrap{overflow:auto;-webkit-overflow-scrolling:touch;background:#13161b;border-radius:8px;margin-bottom:.75rem;max-height:60vh;display:flex;align-items:flex-start;justify-content:center;}
+.img-zoom-wrap img{width:100%;height:auto;display:block;cursor:zoom-in;}
+.img-zoom-wrap.zoomed img{width:200%;cursor:zoom-out;}
 .sesh-prep-desc{background:#13161b;border:1px solid #1e2229;border-radius:8px;padding:.75rem .9rem;font-size:13px;color:#9aa0b0;line-height:1.6;margin-bottom:.9rem;}
 .sesh-prep-dur-row{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:.9rem;}
 .sesh-prep-dur-lbl{font-size:11px;color:#5a6070;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
@@ -473,6 +476,7 @@ html,body{overflow-x:hidden;background:#0d0f12;}
 .exdesc-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:#e8e4dc;line-height:1.1;}
 .exdesc-close{background:none;border:none;color:#5a6070;font-size:22px;cursor:pointer;min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .exdesc-body{padding:.85rem 1.1rem;}
+.exdesc-body .img-zoom-wrap{margin-bottom:.75rem;}
 /* Muscle tags */
 .exdesc-muscles{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;}
 .muscle-tag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:.05em;text-transform:uppercase;}
@@ -3130,7 +3134,7 @@ function openExDesc(name, icon){
   var photoHtml = '';
   var photoSrc = getExPhotoSrc(photoNum);
   if(photoNum && photoSrc){
-    photoHtml = '<img src="'+photoSrc+'" onerror="this.style.display=\'none\'" style="width:100%;border-radius:6px;margin-bottom:.75rem;display:block;" alt="'+name+'" />';
+    photoHtml = '<div class="img-zoom-wrap"><img src="'+photoSrc+'" onerror="this.parentElement.style.display=\'none\'" onclick="this.parentElement.classList.toggle(\'zoomed\')" alt="'+name+'"/></div>';
   }
   if(desc){
     body += photoHtml;
@@ -3305,7 +3309,7 @@ function libovRowClick(event, gi){
   var photoHtml2 = '';
   var photoSrc2 = getExPhotoSrc(photoNum2);
   if(photoNum2 && photoSrc2){
-    photoHtml2 = '<img src="'+photoSrc2+'" onerror="this.style.display=\'none\'" style="width:100%;border-radius:5px;margin-bottom:.6rem;display:block;" alt="'+e.name+'" />';
+    photoHtml2 = '<div class="img-zoom-wrap"><img src="'+photoSrc2+'" onerror="this.parentElement.style.display=\'none\'" onclick="this.parentElement.classList.toggle(\'zoomed\')" alt="'+e.name+'"/></div>';
   }
   var body = '';
   if(desc){
@@ -3749,7 +3753,7 @@ function renderStretchExList() {
     var isOpen = stretchOpenId === e.id;
     var photoNum = EX_PHOTO_MAP && EX_PHOTO_MAP[e.name];
     var photo = photoNum && EX_PHOTOS && EX_PHOTOS[photoNum]
-      ? '<img src="'+EX_PHOTOS[photoNum]+'" style="width:100%;border-radius:5px;margin-bottom:.6rem;display:block;" />'
+      ? '<img src="'+EX_PHOTOS[photoNum]+'" style="width:100%;max-height:60vh;object-fit:contain;border-radius:5px;margin-bottom:.6rem;display:block;background:#13161b;touch-action:pinch-zoom;" />'
       : '';
     return '<div class="stretch-ex-card">'
       +'<div class="stretch-ex-row" onclick="toggleStretchEx(\''+e.id+'\')">'
@@ -3926,7 +3930,7 @@ function renderSeshStep() {
   var ex = step.ex;
   var stretchNum = STRETCH_PHOTO_MAP && STRETCH_PHOTO_MAP[ex.name];
   var photoHtml = stretchNum
-    ? '<img class="sesh-prep-photo" src="'+getStretchPhotoSrc(stretchNum)+'" onerror="this.style.display=\'none\'" alt="'+ex.name+'" />'
+    ? '<div class="img-zoom-wrap"><img class="sesh-prep-photo" src="'+getStretchPhotoSrc(stretchNum)+'" onerror="this.parentElement.style.display=\'none\'" '+'onclick="this.parentElement.classList.toggle(\'zoomed\')" alt="'+ex.name+'" /></div>'
     : '';
   var sideHtml = step.side ? '<div class="sesh-prep-side">'+step.side+'e Seite</div>' : '';
 
