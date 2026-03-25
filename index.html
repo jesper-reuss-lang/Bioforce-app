@@ -389,7 +389,7 @@ html,body{overflow-x:hidden;background:#0d0f12;}
 .img-zoom-wrap img{width:100%;height:auto;display:block;}
 /* Fullscreen image viewer */
 .imgview-overlay{position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:9999;overflow:hidden;touch-action:none;}
-.imgview-close{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.6);border:1px solid #3a4050;color:#c8c4bc;font-size:18px;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10000;}
+.imgview-close{position:fixed;top:16px;right:16px;background:#c8f03a;border:none;color:#0d0f12;font-size:20px;font-weight:900;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10001;box-shadow:0 2px 12px rgba(0,0,0,.5);}
 .imgview-hint{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);color:#4a5060;font-size:11px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase;pointer-events:none;white-space:nowrap;}
 #imgViewImg{position:absolute;transform-origin:0 0;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;}
 #imgViewImg.dragging{cursor:grabbing;}
@@ -507,6 +507,8 @@ html,body{overflow-x:hidden;background:#0d0f12;}
 .ex-del-btn:active{color:#d06060;}
 .ex-mv-btn{background:none;border:none;color:#2a3540;font-size:14px;cursor:pointer;min-width:26px;min-height:30px;display:flex;align-items:center;justify-content:center;}
 .ex-mv-btn:active{color:#c8f03a;}
+.ex-sets-ctrl{display:flex;align-items:center;gap:2px;background:#1a2a08;border:1px solid #2a3a18;border-radius:5px;padding:0 2px;margin-right:4px;}
+.ex-sets-val{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;color:#c8f03a;min-width:24px;text-align:center;}
 .ex-info-btn{font-size:14px;color:#3a4050;flex-shrink:0;padding:0 4px;background:none;border:none;cursor:pointer;min-height:36px;display:flex;align-items:center;}
 .ex-info-btn:active{color:#c8f03a;}
 /* Add exercise inline */
@@ -648,6 +650,7 @@ html,body{overflow-x:hidden;background:#0d0f12;}
     <button class="top-nav-btn" id="navHist" onclick="showPage('hist')">📅 Verlauf</button>
     <button class="top-nav-btn" id="navStat" onclick="showPage('stat')">📊 Statistik</button>
     <button class="top-nav-btn" id="navStretch" onclick="showPage('stretch')">🧘 Dehnen</button>
+    <button class="top-nav-btn" id="navSettings" onclick="showPage('settings')">⚙️</button>
   </div>
 
   <!-- PLAN PAGE -->
@@ -732,6 +735,37 @@ html,body{overflow-x:hidden;background:#0d0f12;}
     <div class="stretch-section-title">Übungssammlung</div>
     <div class="stretch-filter-row" id="stretchFilterRow"></div>
     <div id="stretchExList"></div>
+  </div>
+
+  <!-- SETTINGS PAGE -->
+  <div class="stretch-page" id="settingsPage">
+    <div class="stretch-section-title">💾 Daten sichern & wiederherstellen</div>
+    <div style="background:#13161b;border:1px solid #1e2229;border-radius:10px;padding:1rem;margin-bottom:1rem;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;text-transform:uppercase;color:#c8c4bc;margin-bottom:.4rem;">Daten exportieren</div>
+      <div style="font-size:12px;color:#5a6070;margin-bottom:.85rem;line-height:1.5;">Speichert alle deine Trainingsdaten (Gewichte, PRs, Protokoll, Pläne) als Datei. Vor jedem Cache-Leeren exportieren!</div>
+      <button onclick="exportData()" style="width:100%;padding:.85rem;background:#1a2a08;border:1px solid #3a5020;border-radius:7px;color:#c8f03a;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;min-height:48px;">⬇ Export herunterladen</button>
+    </div>
+    <div style="background:#13161b;border:1px solid #1e2229;border-radius:10px;padding:1rem;margin-bottom:1rem;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;text-transform:uppercase;color:#c8c4bc;margin-bottom:.4rem;">Daten importieren</div>
+      <div style="font-size:12px;color:#5a6070;margin-bottom:.85rem;line-height:1.5;">Stellt deine gesicherten Daten wieder her. Achtung: überschreibt alle aktuellen Daten!</div>
+      <label style="display:block;width:100%;padding:.85rem;background:#2a1a08;border:1px solid #503020;border-radius:7px;color:#e08040;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;min-height:48px;text-align:center;box-sizing:border-box;">
+        ⬆ Import laden
+        <input type="file" accept=".json" onchange="importData(event)" style="display:none;" />
+      </label>
+    </div>
+    <div style="background:#13161b;border:1px solid #1e2229;border-radius:10px;padding:1rem;margin-bottom:1rem;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;text-transform:uppercase;color:#c8c4bc;margin-bottom:.4rem;">ℹ️ Anleitung</div>
+      <div style="font-size:12px;color:#6a7080;line-height:1.7;">
+        <div style="margin-bottom:.4rem;">1. <strong style="color:#c8c4bc;">Export</strong> → Datei wird heruntergeladen</div>
+        <div style="margin-bottom:.4rem;">2. <strong style="color:#c8c4bc;">Browser-Cache leeren</strong> (Einstellungen → Browserdaten)</div>
+        <div style="margin-bottom:.4rem;">3. App neu öffnen</div>
+        <div>4. <strong style="color:#c8c4bc;">Import</strong> → exportierte Datei auswählen → alle Daten sind wieder da</div>
+      </div>
+    </div>
+    <div style="background:#13161b;border:1px solid #1e2229;border-radius:10px;padding:1rem;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;text-transform:uppercase;color:#c8c4bc;margin-bottom:.4rem;">📊 Gespeicherte Daten</div>
+      <div id="settingsDataInfo" style="font-size:12px;color:#6a7080;line-height:1.7;"></div>
+    </div>
   </div>
 
   <!-- STRETCH SESSION OVERLAY -->
@@ -1030,10 +1064,10 @@ html,body{overflow-x:hidden;background:#0d0f12;}
 <script>
 var SPLITS_DEFAULT={gk:{name:"Ganzkörper",desc:"3× pro Woche · ca. 90 min pro Einheit",days:[
   {name:"Tag A",tags:["full"],meta:"ca. 90 min",main:[
-    {icon:"💪",name:"Bankdrücken (BF)",muscle:"Pectoralis, Trizeps, vordere Schulter",sets:4,reps:"8–10 Wdh.",bi:true},
-    {icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Teres major, Bizeps",sets:4,reps:"8–10 Wdh.",bi:true},
-    {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:4,reps:"10–12 Wdh.",bi:true},
-    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Rhomboiden, mittlerer Rücken",sets:4,reps:"10–12 Wdh.",bi:true},
+    {icon:"💪",name:"Bankdrücken (BF)",muscle:"Pectoralis, Trizeps, vordere Schulter",sets:3,reps:"8–10 Wdh.",bi:true},
+    {icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Teres major, Bizeps",sets:3,reps:"8–10 Wdh.",bi:true},
+    {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"10–12 Wdh.",bi:true},
+    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Rhomboiden, mittlerer Rücken",sets:3,reps:"10–12 Wdh.",bi:true},
     {icon:"💪",name:"Fliegende (BF)",muscle:"Innere Brust, Pectoralis",sets:3,reps:"12–15 Wdh.",bi:true},
     {icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings, Bizeps femoris",sets:3,reps:"12 Wdh.",bi:true},
     {icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps brachii",sets:3,reps:"10–12 Wdh.",bi:true},
@@ -1041,10 +1075,10 @@ var SPLITS_DEFAULT={gk:{name:"Ganzkörper",desc:"3× pro Woche · ca. 90 min pro
     {icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter, Rotatorenmanschette",sets:3,reps:"15 Wdh.",bi:false}
   ]},
   {name:"Tag B",tags:["full"],meta:"ca. 90 min",main:[
-    {icon:"💪",name:"Schrägbankdrücken (BF)",muscle:"Obere Brust, vordere Schulter, Trizeps",sets:4,reps:"8–10 Wdh.",bi:true},
-    {icon:"🏋",name:"Latzug nach vorne",muscle:"Latissimus, mittlerer Rücken",sets:4,reps:"8–10 Wdh.",bi:true},
-    {icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps, Stabilisation",sets:4,reps:"10 je Seite",bi:true},
-    {icon:"💪",name:"Schulterdrücken sitzend",muscle:"Deltoideus, Trizeps",sets:4,reps:"10–12 Wdh.",bi:true},
+    {icon:"💪",name:"Schrägbankdrücken (BF)",muscle:"Obere Brust, vordere Schulter, Trizeps",sets:3,reps:"8–10 Wdh.",bi:true},
+    {icon:"🏋",name:"Latzug nach vorne",muscle:"Latissimus, mittlerer Rücken",sets:3,reps:"8–10 Wdh.",bi:true},
+    {icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps, Stabilisation",sets:3,reps:"10 je Seite",bi:true},
+    {icon:"💪",name:"Schulterdrücken sitzend",muscle:"Deltoideus, Trizeps",sets:3,reps:"10–12 Wdh.",bi:true},
     {icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12–15 Wdh.",bi:true},
     {icon:"💪",name:"Seitheben stehend (BF)",muscle:"Lateraler Deltoideus",sets:3,reps:"12–15 Wdh.",bi:true},
     {icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Brachialis, Unterarm",sets:3,reps:"10–12 Wdh.",bi:true},
@@ -1052,28 +1086,28 @@ var SPLITS_DEFAULT={gk:{name:"Ganzkörper",desc:"3× pro Woche · ca. 90 min pro
     {icon:"🦵",name:"Adduktorenübung stehend",muscle:"Innerer Oberschenkel",sets:3,reps:"15 Wdh.",bi:true}
   ]},
   {name:"Tag C",tags:["full"],meta:"ca. 90 min",main:[
-    {icon:"🏋",name:"Bankdrücken (BF)",muscle:"Pectoralis, Trizeps",sets:4,reps:"6–8 Wdh.",bi:true},
-    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Mittlerer Rücken, Rhomboiden, Bizeps",sets:4,reps:"8–10 Wdh.",bi:true},
-    {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:4,reps:"8–10 Wdh.",bi:true},
+    {icon:"🏋",name:"Bankdrücken (BF)",muscle:"Pectoralis, Trizeps",sets:3,reps:"6–8 Wdh.",bi:true},
+    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Mittlerer Rücken, Rhomboiden, Bizeps",sets:3,reps:"8–10 Wdh.",bi:true},
+    {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"8–10 Wdh.",bi:true},
     {icon:"💪",name:"Fliegende (BF)",muscle:"Untere Brust",sets:3,reps:"12–15 Wdh.",bi:true},
     {icon:"🏋",name:"Überzüge stehend",muscle:"Latissimus, Serratus anterior",sets:3,reps:"12–15 Wdh.",bi:true},
     {icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings isoliert",sets:3,reps:"12 Wdh.",bi:true},
     {icon:"🏋",name:"Konzentrations-Curls sitzend",muscle:"Bizeps, Supination",sets:3,reps:"12 je Seite",bi:true},
     {icon:"💪",name:"Trizeps Kickback (BF)",muscle:"Äußerer Trizepskopf",sets:3,reps:"12–15 Wdh.",bi:false},
-    {icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:4,reps:"20 Wdh.",bi:false}
+    {icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:3,reps:"20 Wdh.",bi:false}
   ]}
 ]},
 "3er":{name:"3er Split",desc:"Pull · Press · Beine · ca. 60 min ohne Aufwärmen",days:[
   {name:"Pull",tags:["pull","back","arms"],meta:"ca. 60 min",main:[
-    {icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Teres major",sets:4,reps:"8–12 Wdh.",bi:true},
-    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Mittlerer Rücken, Rhomboiden",sets:4,reps:"8–12 Wdh.",bi:true},
+    {icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Teres major",sets:3,reps:"8–12 Wdh.",bi:true},
+    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Mittlerer Rücken, Rhomboiden",sets:3,reps:"8–12 Wdh.",bi:true},
     {icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter, Rotatorenmanschette",sets:3,reps:"12–15 Wdh.",bi:false},
     {icon:"🏋",name:"Überzüge stehend",muscle:"Latissimus, Serratus",sets:3,reps:"12–15 Wdh.",bi:true},
     {icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps brachii",sets:3,reps:"10–12 Wdh.",bi:true},
     {icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Brachialis, Unterarm",sets:3,reps:"10–12 Wdh.",bi:true}
   ]},
   {name:"Press",tags:["push","chest","shoulder"],meta:"ca. 60 min",main:[
-    {icon:"💪",name:"Bankdrücken (BF)",muscle:"Pectoralis, vordere Schulter, Trizeps",sets:4,reps:"8–12 Wdh.",bi:true},
+    {icon:"💪",name:"Bankdrücken (BF)",muscle:"Pectoralis, vordere Schulter, Trizeps",sets:3,reps:"8–12 Wdh.",bi:true},
     {icon:"💪",name:"Fliegende (BF)",muscle:"Innere Brust",sets:3,reps:"10–12 Wdh.",bi:true},
     {icon:"💪",name:"Schulterdrücken sitzend",muscle:"Deltoideus, vorderer Anteil",sets:3,reps:"10–12 Wdh.",bi:true},
     {icon:"💪",name:"Seitheben stehend (BF)",muscle:"Lateraler Deltoideus",sets:3,reps:"12–15 Wdh.",bi:true},
@@ -1081,25 +1115,25 @@ var SPLITS_DEFAULT={gk:{name:"Ganzkörper",desc:"3× pro Woche · ca. 90 min pro
     {icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Langer Trizepskopf",sets:3,reps:"10–12 Wdh.",bi:false}
   ]},
   {name:"Beine",tags:["legs","glutes"],meta:"ca. 60 min",main:[
-    {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:4,reps:"10–12 Wdh.",bi:true},
-    {icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps, Stabilisation",sets:4,reps:"10 je Seite",bi:true},
+    {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"10–12 Wdh.",bi:true},
+    {icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps, Stabilisation",sets:3,reps:"10 je Seite",bi:true},
     {icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12–15 Wdh.",bi:true},
-    {icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:4,reps:"10–12 Wdh.",bi:true},
+    {icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:3,reps:"10–12 Wdh.",bi:true},
     {icon:"🦵",name:"Adduktorenübung stehend",muscle:"Innerer Oberschenkel",sets:3,reps:"15 Wdh.",bi:true},
-    {icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:4,reps:"20 Wdh.",bi:false}
+    {icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:3,reps:"20 Wdh.",bi:false}
   ]}
 ]},
 "5er":{name:"5er Split",desc:"Brust · Rücken · Schulter · Arme · Beine · ca. 60 min",days:[
   {name:"Brust",tags:["chest","push"],meta:"ca. 60 min",
-   main:[{icon:"💪",name:"Bankdrücken (BF)",muscle:"Pectoralis, Trizeps",sets:4,reps:"8–10 Wdh.",bi:true},{icon:"💪",name:"Schrägbankdrücken (BF)",muscle:"Obere Brust, vordere Schulter",sets:4,reps:"10–12 Wdh.",bi:true},{icon:"💪",name:"Fliegende (BF)",muscle:"Innere Brust",sets:3,reps:"12–15 Wdh.",bi:true},{icon:"💪",name:"Fliegende (BF)",muscle:"Untere Brust",sets:3,reps:"12–15 Wdh.",bi:true}]},
+   main:[{icon:"💪",name:"Bankdrücken (BF)",muscle:"Pectoralis, Trizeps",sets:3,reps:"8–10 Wdh.",bi:true},{icon:"💪",name:"Schrägbankdrücken (BF)",muscle:"Obere Brust, vordere Schulter",sets:3,reps:"10–12 Wdh.",bi:true},{icon:"💪",name:"Fliegende (BF)",muscle:"Innere Brust",sets:3,reps:"12–15 Wdh.",bi:true},{icon:"💪",name:"Fliegende (BF)",muscle:"Untere Brust",sets:3,reps:"12–15 Wdh.",bi:true}]},
   {name:"Rücken",tags:["back","pull"],meta:"ca. 60 min",
-   main:[{icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Teres major",sets:4,reps:"8–10 Wdh.",bi:true},{icon:"🏋",name:"Latzug nach vorne",muscle:"Latissimus, mittlerer Rücken",sets:4,reps:"10–12 Wdh.",bi:true},{icon:"🏋",name:"Rudern stehend (BF)",muscle:"Rhomboiden, Trapezius",sets:4,reps:"10–12 Wdh.",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter",sets:3,reps:"15 Wdh.",bi:false},{icon:"🏋",name:"Überzüge stehend",muscle:"Latissimus, Serratus",sets:3,reps:"12–15 Wdh.",bi:true}]},
+   main:[{icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Teres major",sets:3,reps:"8–10 Wdh.",bi:true},{icon:"🏋",name:"Latzug nach vorne",muscle:"Latissimus, mittlerer Rücken",sets:3,reps:"10–12 Wdh.",bi:true},{icon:"🏋",name:"Rudern stehend (BF)",muscle:"Rhomboiden, Trapezius",sets:3,reps:"10–12 Wdh.",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter",sets:3,reps:"15 Wdh.",bi:false},{icon:"🏋",name:"Überzüge stehend",muscle:"Latissimus, Serratus",sets:3,reps:"12–15 Wdh.",bi:true}]},
   {name:"Schulter",tags:["shoulder","push"],meta:"ca. 60 min",
-   main:[{icon:"💪",name:"Schulterdrücken sitzend",muscle:"Gesamter Deltoideus, Trizeps",sets:4,reps:"8–10 Wdh.",bi:true},{icon:"💪",name:"Seitheben stehend (BF)",muscle:"Lateraler Deltoideus",sets:4,reps:"12–15 Wdh.",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter",sets:4,reps:"15 Wdh.",bi:false},{icon:"💪",name:"Frontheben stehend (BF)",muscle:"Vorderer Deltoideus",sets:3,reps:"12–15 Wdh.",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Schulter, oberer Trapezius",sets:3,reps:"10–12 Wdh.",bi:false}]},
+   main:[{icon:"💪",name:"Schulterdrücken sitzend",muscle:"Gesamter Deltoideus, Trizeps",sets:3,reps:"8–10 Wdh.",bi:true},{icon:"💪",name:"Seitheben stehend (BF)",muscle:"Lateraler Deltoideus",sets:3,reps:"12–15 Wdh.",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter",sets:3,reps:"15 Wdh.",bi:false},{icon:"💪",name:"Frontheben stehend (BF)",muscle:"Vorderer Deltoideus",sets:3,reps:"12–15 Wdh.",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Schulter, oberer Trapezius",sets:3,reps:"10–12 Wdh.",bi:false}]},
   {name:"Arme",tags:["arms"],meta:"ca. 60 min",
-   main:[{icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps brachii",sets:4,reps:"10–12 Wdh.",bi:true},{icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Brachialis, Unterarm",sets:4,reps:"10–12 Wdh.",bi:true},{icon:"🏋",name:"Konzentrations-Curls sitzend",muscle:"Bizeps, Supination",sets:3,reps:"12 je Seite",bi:true},{icon:"💪",name:"Trizepsdrücken (BF)",muscle:"Trizeps brachii",sets:4,reps:"10–12 Wdh.",bi:false},{icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Langer Trizepskopf",sets:3,reps:"10–12 Wdh.",bi:false},{icon:"💪",name:"Trizeps Kickback (BF)",muscle:"Äußerer Trizepskopf",sets:3,reps:"12–15 Wdh.",bi:false}]},
+   main:[{icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps brachii",sets:3,reps:"10–12 Wdh.",bi:true},{icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Brachialis, Unterarm",sets:3,reps:"10–12 Wdh.",bi:true},{icon:"🏋",name:"Konzentrations-Curls sitzend",muscle:"Bizeps, Supination",sets:3,reps:"12 je Seite",bi:true},{icon:"💪",name:"Trizepsdrücken (BF)",muscle:"Trizeps brachii",sets:3,reps:"10–12 Wdh.",bi:false},{icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Langer Trizepskopf",sets:3,reps:"10–12 Wdh.",bi:false},{icon:"💪",name:"Trizeps Kickback (BF)",muscle:"Äußerer Trizepskopf",sets:3,reps:"12–15 Wdh.",bi:false}]},
   {name:"Beine",tags:["legs","glutes"],meta:"ca. 60 min",
-   main:[{icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:4,reps:"10–12 Wdh.",bi:true},{icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps",sets:4,reps:"10 je Seite",bi:true},{icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12–15 Wdh.",bi:true},{icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:4,reps:"10–12 Wdh.",bi:true},{icon:"🦵",name:"Adduktorenübung stehend",muscle:"Innerer Oberschenkel",sets:3,reps:"15 Wdh.",bi:true},{icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:4,reps:"20 Wdh.",bi:false}]}
+   main:[{icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"10–12 Wdh.",bi:true},{icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps",sets:3,reps:"10 je Seite",bi:true},{icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12–15 Wdh.",bi:true},{icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:3,reps:"10–12 Wdh.",bi:true},{icon:"🦵",name:"Adduktorenübung stehend",muscle:"Innerer Oberschenkel",sets:3,reps:"15 Wdh.",bi:true},{icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:3,reps:"20 Wdh.",bi:false}]}
 ]}};
 
 var LIBRARY_DEFAULT=[{cat:"legs",icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäßmuskel, Waden",bi:true,bioforce:true,custom:false},
@@ -1986,13 +2020,18 @@ function showPage(page){
   var xp = document.getElementById('stretchPage');
   xp.style.display = page==='stretch' ? 'block' : 'none';
   xp.classList.toggle('active', page==='stretch');
+  var gp = document.getElementById('settingsPage');
+  gp.style.display = page==='settings' ? 'block' : 'none';
+  gp.classList.toggle('active', page==='settings');
   document.getElementById('navPlan').classList.toggle('active', page==='plan');
   document.getElementById('navHist').classList.toggle('active', page==='hist');
   document.getElementById('navStat').classList.toggle('active', page==='stat');
   document.getElementById('navStretch').classList.toggle('active', page==='stretch');
+  document.getElementById('navSettings').classList.toggle('active', page==='settings');
   if(page==='hist'){ renderWeek(); renderCal(); renderLog(); }
   if(page==='stat'){ renderStatPage(); }
   if(page==='stretch'){ renderStretchPage(); }
+  if(page==='settings'){ renderSettingsInfo(); }
 }
 
 // ── PERSONAL RECORDS ──
@@ -3539,7 +3578,7 @@ function makeExObj(e) {
   var repCat = CAT_REPS[e.cat] || CAT_REPS['pull'];
   return {
     icon: e.icon, name: e.name, muscle: e.muscle,
-    sets: (e.cat === 'legs') ? pickRandom([3,4]) : pickRandom([3,3,4]),
+    sets: 3,
     reps: pickRandom(repCat), bi: e.bi
   };
 }
@@ -4207,6 +4246,11 @@ function _ivBindEvents(){
   var ov  = document.getElementById('imgViewOverlay');
 
   _ivHandlers.touchstart = function(e){
+    // Allow close button to work
+    if(e.target.classList.contains('imgview-close') || e.target.closest('.imgview-close')){
+      closeImgView();
+      return;
+    }
     e.preventDefault();
     var t = e.touches;
     if(t.length===1){
@@ -4500,6 +4544,11 @@ function renderDetail(){
         +'<div class="ex-icon">'+e.icon+'</div>'
         +'<div class="ex-info"><div class="ex-name">'+e.name+'</div><div class="ex-muscle">'+e.muscle+'</div></div>'
         +'<div class="ex-edit-btns">'
+        +'<div class="ex-sets-ctrl">'
+        +'<button class="ex-mv-btn" onclick="event.stopPropagation();adjSets(\''+activeSplit+'\','+activeDay+','+ei+',-1)">−</button>'
+        +'<span class="ex-sets-val">'+e.sets+'S</span>'
+        +'<button class="ex-mv-btn" onclick="event.stopPropagation();adjSets(\''+activeSplit+'\','+activeDay+','+ei+',1)">+</button>'
+        +'</div>'
         +'<button class="ex-mv-btn" onclick="detailMoveEx('+ei+',-1)">▲</button>'
         +'<button class="ex-mv-btn" onclick="detailMoveEx('+ei+',1)">▼</button>'
         +'<button class="ex-del-btn" onclick="detailDeleteEx('+ei+')">✕</button>'
@@ -4559,6 +4608,83 @@ function selectSplit(k){activeSplit=k;activeDay=0;detailEditMode=false;inlineAdd
 function selectDay(i){activeDay=i;detailEditMode=false;inlineAddOpen=false;renderDays();}
 
 // ── LOCALSTORAGE PERSISTENCE ──
+// ── EXPORT / IMPORT ──
+function exportData(){
+  try {
+    var raw = localStorage.getItem(SAVE_KEY);
+    if(!raw){ showToast('Keine Daten zum Exportieren'); return; }
+    var date = new Date();
+    var stamp = date.getFullYear()+'-'
+      +String(date.getMonth()+1).padStart(2,'0')+'-'
+      +String(date.getDate()).padStart(2,'0');
+    var filename = 'bioforce-backup-'+stamp+'.json';
+    var blob = new Blob([raw], {type:'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('✓ Export heruntergeladen: '+filename);
+  } catch(e){
+    showToast('Export fehlgeschlagen: '+e.message);
+  }
+}
+
+function importData(event){
+  var file = event.target.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      var data = JSON.parse(e.target.result);
+      if(!data.SPLITS && !data.trainingLog){
+        showToast('Ungültige Backup-Datei');
+        return;
+      }
+      document.getElementById('confirmTitle').textContent = 'Daten importieren?';
+      document.getElementById('confirmMsg').textContent =
+        'Alle aktuellen Daten werden überschrieben und durch die Backup-Datei ersetzt. Fortfahren?';
+      document.getElementById('confirmYesBtn').onclick = function(){
+        localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+        closeConfirm();
+        loadState();
+        renderNav();
+        renderDays();
+        showToast('✓ Daten erfolgreich importiert!');
+        renderSettingsInfo();
+      };
+      document.getElementById('confirmOverlay').classList.remove('hidden');
+    } catch(err){
+      showToast('Fehler beim Importieren: '+err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function renderSettingsInfo(){
+  var el = document.getElementById('settingsDataInfo');
+  if(!el) return;
+  try {
+    var raw = localStorage.getItem(SAVE_KEY);
+    if(!raw){ el.innerHTML = 'Keine gespeicherten Daten gefunden.'; return; }
+    var data = JSON.parse(raw);
+    var splits = Object.keys(data.SPLITS||{}).length;
+    var logs = (data.trainingLog||[]).length;
+    var prsCount = Object.keys(data.prs||{}).length;
+    var rawSize = Math.round(raw.length/1024);
+    el.innerHTML =
+      '<div>Splits: <strong style="color:#c8c4bc;">'+splits+'</strong></div>'
+      +'<div>Trainingseinheiten: <strong style="color:#c8c4bc;">'+logs+'</strong></div>'
+      +'<div>Persönliche Rekorde: <strong style="color:#c8c4bc;">'+prsCount+'</strong></div>'
+      +'<div>Datengröße: <strong style="color:#c8c4bc;">'+rawSize+' KB</strong></div>';
+  } catch(e){
+    el.innerHTML = 'Fehler beim Lesen der Daten.';
+  }
+}
+
 var SAVE_KEY = 'bioforce_v1';
 function saveState(){
   try{
