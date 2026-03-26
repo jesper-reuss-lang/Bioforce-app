@@ -273,6 +273,38 @@ html,body{overflow-x:hidden;background:#0d0f12;}
 /* HISTORY PAGE */
 .hist-page{padding:1rem;display:none;}
 .hist-page.active{display:block;}
+/* Streak card */
+.streak-card{background:#13161b;border:1px solid #1e2229;border-radius:10px;padding:.85rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:14px;}
+.streak-icon{font-size:32px;flex-shrink:0;}
+.streak-val{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;color:#c8f03a;line-height:1;}
+.streak-lbl{font-size:12px;color:#5a6070;margin-top:2px;}
+.streak-best{font-size:11px;color:#4a5060;margin-top:1px;}
+/* Volume chart */
+.vol-chart-wrap{background:#13161b;border:1px solid #1e2229;border-radius:10px;padding:.85rem 1rem;margin-bottom:1rem;}
+.vol-chart-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5a6070;margin-bottom:.75rem;}
+.vol-legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.65rem;}
+.vol-legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:#6a7080;}
+.vol-legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.vol-bars{display:flex;align-items:flex-end;gap:4px;height:80px;}
+.vol-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.vol-bar{width:100%;background:#c8f03a;border-radius:3px 3px 0 0;min-height:2px;transition:height .3s;}
+.vol-bar.current{background:#e8f04a;}
+.vol-bar-lbl{font-size:9px;color:#3a4050;font-family:'Barlow Condensed',sans-serif;white-space:nowrap;}
+/* Log entry improvements */
+.log-entry{background:#13161b;border:1px solid #1e2229;border-radius:8px;margin-bottom:8px;overflow:hidden;}
+.log-entry-head{display:flex;align-items:center;justify-content:space-between;padding:.65rem .85rem;cursor:pointer;}
+.log-entry-date{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;color:#c8c4bc;}
+.log-entry-plan{font-size:11px;color:#5a6070;}
+.log-entry-body{display:none;padding:0 .85rem .75rem;border-top:1px solid #1e2229;}
+.log-entry-body.open{display:block;}
+.log-entry-exs{font-size:12px;color:#6a7080;line-height:1.8;padding:.5rem 0;}
+.log-note-wrap{margin-top:.5rem;}
+.log-note-input{width:100%;box-sizing:border-box;background:#0d0f12;border:1px solid #2a3040;border-radius:5px;color:#c8c4bc;font-size:12px;padding:.5rem .65rem;font-family:inherit;resize:none;}
+.log-note-input:focus{border-color:#c8f03a;outline:none;}
+.log-note-save{margin-top:.4rem;padding:.4rem .85rem;background:#1a2a08;border:1px solid #3a5020;border-radius:4px;color:#8ab029;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;min-height:32px;}
+.log-note-save:active{background:#253d0a;color:#c8f03a;}
+.log-entry-arrow{color:#3a4050;font-size:12px;transition:transform .2s;}
+.log-entry-arrow.open{transform:rotate(180deg);}
 .hist-section-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#5a6070;margin-bottom:.75rem;padding-bottom:.35rem;border-bottom:1px solid #1e2229;}
 /* Calendar */
 .cal-wrap{background:#13161b;border:1px solid #1e2229;border-radius:8px;padding:.9rem;margin-bottom:1.25rem;}
@@ -412,8 +444,8 @@ html,body{overflow-x:hidden;background:#0d0f12;}
 .sesh-finish-sub{font-size:14px;color:#6a7080;margin-bottom:1.5rem;}
 .sesh-finish-btn{padding:1rem 2rem;background:#c8f03a;color:#0d0f12;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border:none;border-radius:8px;cursor:pointer;min-height:50px;}
 /* Routine editor modal */
-.rout-edit-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:2200;display:flex;align-items:flex-start;justify-content:center;padding:.5rem;overflow-y:auto;}
-.rout-edit-box{background:#0d0f12;border:1px solid #2a3040;border-radius:12px;width:100%;max-width:500px;margin:0 auto;padding:1.25rem;}
+.rout-edit-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:2200;display:flex;align-items:flex-start;justify-content:center;padding:.5rem;}
+.rout-edit-box{background:#0d0f12;border:1px solid #2a3040;border-radius:12px;width:100%;max-width:500px;margin:0 auto;padding:1.25rem;display:flex;flex-direction:column;max-height:92vh;overflow:hidden;}
 .stat-section-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#5a6070;margin-bottom:.75rem;padding-bottom:.35rem;border-bottom:1px solid #1e2229;}
 /* Muscle group cards */
 .muscle-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem;}
@@ -666,10 +698,16 @@ html,body{overflow-x:hidden;background:#0d0f12;}
 
   <!-- HISTORY PAGE -->
   <div class="hist-page" id="histPage">
-    <div style="padding:1rem 0 .5rem;">
+    <!-- Streak -->
+    <div id="streakCard"></div>
+    <!-- Volume chart -->
+    <div id="volChartWrap"></div>
+    <!-- This week -->
+    <div style="padding:.25rem 0 .5rem;">
       <div class="hist-section-title">Diese Woche</div>
       <div class="week-wrap" id="weekWrap"></div>
     </div>
+    <!-- Calendar -->
     <div>
       <div class="hist-section-title">Kalender</div>
       <div class="cal-wrap">
@@ -681,6 +719,7 @@ html,body{overflow-x:hidden;background:#0d0f12;}
         <div class="cal-grid" id="calGrid"></div>
       </div>
     </div>
+    <!-- Log -->
     <div>
       <div class="hist-section-title">Trainingsprotokoll</div>
       <div id="logList"></div>
@@ -782,16 +821,56 @@ html,body{overflow-x:hidden;background:#0d0f12;}
   <!-- ROUTINE EDITOR OVERLAY -->
   <div class="rout-edit-overlay hidden" id="routEditOverlay" onclick="routEditBgClose(event)">
     <div class="rout-edit-box" id="routEditBox">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+      <!-- Header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#e8e4dc;" id="routEditTitle">Routine bearbeiten</div>
         <button class="libov-close" onclick="closeRoutineEditor()">✕</button>
       </div>
+      <!-- Name -->
       <div style="margin-bottom:.75rem;">
         <label style="font-size:11px;color:#5a6070;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:.3rem;">Name</label>
-        <input class="add-input" id="routEditName" placeholder="z.B. Oberkörper Dehnen" style="width:100%;" />
+        <input class="add-input" id="routEditName" placeholder="z.B. Oberkörper Dehnen" style="width:100%;box-sizing:border-box;" />
       </div>
-      <div style="font-size:11px;color:#5a6070;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;">Übungen auswählen</div>
-      <div id="routEditExList" style="max-height:320px;overflow-y:auto;margin-bottom:.85rem;"></div>
+      <!-- Filter (collapsible) -->
+      <div style="border:1px solid #1e2229;border-radius:7px;margin-bottom:.6rem;overflow:hidden;">
+        <button onclick="toggleRoutFilter()" style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:.55rem .85rem;background:none;border:none;cursor:pointer;min-height:38px;">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5a6070;" id="routFilterSummary">Filter: Alle</span>
+          <span style="color:#4a5060;font-size:12px;" id="routFilterArrow">▼</span>
+        </button>
+        <div id="routFilterBody" style="display:none;padding:.5rem .85rem .75rem;border-top:1px solid #1e2229;">
+          <div style="font-size:11px;color:#3a4050;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem;">Muskelgruppe</div>
+          <div id="routFilterChips" style="display:flex;gap:5px;flex-wrap:wrap;"></div>
+        </div>
+      </div>
+      <!-- Exercise list -->
+      <div style="font-size:11px;color:#5a6070;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;">Übungen auswählen</div>
+      <div id="routEditExList" style="flex:1;min-height:0;overflow-y:auto;margin-bottom:.6rem;border:1px solid #1e2229;border-radius:7px;"></div>
+      <!-- Add new exercise (collapsible) -->
+      <div style="border:1px solid #1e2229;border-radius:7px;margin-bottom:.85rem;overflow:hidden;">
+        <button onclick="toggleRoutAddForm()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:.6rem .85rem;background:none;border:none;cursor:pointer;min-height:40px;">
+          <span id="routAddIcon" style="color:#3a4050;font-size:14px;">＋</span>
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#4a5060;">Neue Übung hinzufügen</span>
+        </button>
+        <div id="routAddFormInner" style="display:none;padding:.6rem .85rem .85rem;border-top:1px solid #1e2229;">
+          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:.7rem;">
+            <input class="add-input" id="routNewName" placeholder="Übungsname" style="width:100%;box-sizing:border-box;" />
+            <input class="add-input" id="routNewMuscle" placeholder="Muskelgruppe (z.B. Quadrizeps)" style="width:100%;box-sizing:border-box;" />
+            <select class="add-select" id="routNewGroup" style="width:100%;box-sizing:border-box;">
+              <option value="Beine">Beine</option>
+              <option value="Hüfte">Hüfte</option>
+              <option value="Rücken">Rücken</option>
+              <option value="Schulter">Schulter</option>
+              <option value="Arme">Arme</option>
+            </select>
+            <select class="add-select" id="routNewSides" style="width:100%;box-sizing:border-box;">
+              <option value="1">Beidseitig (Links + Rechts)</option>
+              <option value="0">Einseitig</option>
+            </select>
+          </div>
+          <button class="shuf-go" onclick="addRoutineStretchEx()" style="width:100%;">+ Zur Sammlung hinzufügen</button>
+        </div>
+      </div>
+      <!-- Save/Cancel -->
       <div style="display:flex;gap:8px;">
         <button class="shuf-cancel" onclick="closeRoutineEditor()">Abbrechen</button>
         <button class="shuf-go" onclick="saveRoutine()">✓ Speichern</button>
@@ -1247,9 +1326,10 @@ var LIBRARY_DEFAULT=[{cat:"legs",icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quad
   {cat:"core",icon:"🎯",name:"Oberkörperdrehen stehend",muscle:"Gerade Bauchmuskeln, schräge Bauchmuskeln",bi:false,bioforce:true,custom:false},
   {cat:"core",icon:"🎯",name:"Seitbeugen",muscle:"Gerade Bauchmuskeln, seitliche Beugemuskeln, Sägemuskeln",bi:false,bioforce:true,custom:false},
   {cat:"pull",icon:"🏋",name:"Rückenstrecker sitzend",muscle:"Untere Rückenmuskulatur",bi:true,bioforce:true,custom:false},
-  // ── BioForce Handbuch — Dehnübungen ──
-  ];
-
+  {cat:"push",icon:"💪",name:"Bankdrücken mit Langhantel",muscle:"Brust, vorderer Deltoideus, Trizeps",bi:false,bioforce:false,custom:false},
+  {cat:"push",icon:"💪",name:"Schrägbankdrücken mit Langhantel",muscle:"Obere Brust, vorderer Deltoideus, Trizeps",bi:false,bioforce:false,custom:false},
+  {cat:"push",icon:"💪",name:"Enger Griff Bankdrücken",muscle:"Trizeps, innere Brust",bi:false,bioforce:false,custom:false}
+];
 function deepClone(o){return JSON.parse(JSON.stringify(o));}
 var SPLITS=deepClone(SPLITS_DEFAULT);
 var library=deepClone(LIBRARY_DEFAULT);
@@ -1939,6 +2019,7 @@ function saveTrainingToLog(sk, di){
     sk: sk, di: di,
     dayName: day.name,
     splitName: SPLITS[sk].name,
+    note: '',
     exs: day.main.map(function(ex, ei){
       return {
         name: ex.name, icon: ex.icon, bi: ex.bi!==false,
@@ -2028,7 +2109,7 @@ function showPage(page){
   document.getElementById('navStat').classList.toggle('active', page==='stat');
   document.getElementById('navStretch').classList.toggle('active', page==='stretch');
   document.getElementById('navSettings').classList.toggle('active', page==='settings');
-  if(page==='hist'){ renderWeek(); renderCal(); renderLog(); }
+  if(page==='hist'){ renderWeek(); renderCal(); renderLog(); renderVolChart(); }
   if(page==='stat'){ renderStatPage(); }
   if(page==='stretch'){ renderStretchPage(); }
   if(page==='settings'){ renderSettingsInfo(); }
@@ -2396,6 +2477,157 @@ function showDayLog(y, m, d){
   // scroll to log and highlight
   renderLog(dateStr);
   document.getElementById('logList').scrollIntoView({behavior:'smooth'});
+}
+
+// ── VOLUME LINE CHART ──
+var VOL_COLORS = {
+  chest:   '#e05050',
+  back:    '#5090e0',
+  shoulder:'#e0a030',
+  arms:    '#c060d0',
+  legs:    '#50c060',
+  core:    '#50b0b0'
+};
+
+function getMuscleGroup(muscleStr){
+  var m = (muscleStr||'').toLowerCase();
+  if(/brust|pector|chest/.test(m)) return 'chest';
+  if(/rücken|latissimus|rhomboid|trapez|serratus|rudern|latziehen|überzug/.test(m)) return 'back';
+  if(/schulter|deltoid|delt/.test(m)) return 'shoulder';
+  if(/bizeps|trizeps|brachial|unterarm|curl|dips/.test(m)) return 'arms';
+  if(/bein|quad|hamstring|gesäß|knie|wade|ausfallsch|addukt|abdukt/.test(m)) return 'legs';
+  if(/bauch|core|rumpf/.test(m)) return 'core';
+  return null;
+}
+
+function calcVolumeByGroup(){
+  // Returns: { weekLabel: { chest: kg, back: kg, ... }, ... } for last 8 weeks
+  var today = new Date();
+  var weeks = [];
+  for(var i=7; i>=0; i--){
+    var d = new Date(today);
+    d.setDate(d.getDate() - i*7);
+    var mon = new Date(d);
+    mon.setDate(d.getDate() - d.getDay() + 1);
+    weeks.push(mon.toISOString().slice(0,10));
+  }
+
+  var data = {};
+  weeks.forEach(function(w){ data[w] = {chest:0,back:0,shoulder:0,arms:0,legs:0,core:0}; });
+
+  trainingLog.forEach(function(entry){
+    var dt = new Date(entry.date);
+    var mon = new Date(dt);
+    mon.setDate(dt.getDate() - dt.getDay() + 1);
+    var wk = mon.toISOString().slice(0,10);
+    if(!data[wk]) return;
+    entry.exs.forEach(function(ex){
+      var grp = getMuscleGroup(ex.muscle||'');
+      if(!grp) return;
+      var w = ex.bi ? (parseFloat(ex.wL)||0)+(parseFloat(ex.wR)||0) : (parseFloat(ex.wS)||0);
+      data[wk][grp] = (data[wk][grp]||0) + w;
+    });
+  });
+
+  return {weeks: weeks, data: data};
+}
+
+function renderVolChart(){
+  var wrap = document.getElementById('volChartWrap');
+  if(!wrap) return;
+
+  var result = calcVolumeByGroup();
+  var weeks = result.weeks;
+  var data = result.data;
+
+  // Check if any data exists
+  var hasData = false;
+  weeks.forEach(function(w){
+    Object.keys(data[w]).forEach(function(g){ if(data[w][g]>0) hasData=true; });
+  });
+
+  if(!hasData){ wrap.innerHTML=''; return; }
+
+  // Active groups only
+  var activeGroups = ['chest','back','shoulder','arms','legs','core'].filter(function(g){
+    return weeks.some(function(w){ return data[w][g]>0; });
+  });
+
+  var groupNames = {chest:'Brust',back:'Rücken',shoulder:'Schulter',arms:'Arme',legs:'Beine',core:'Rumpf'};
+
+  // Build legend
+  var legend = activeGroups.map(function(g){
+    return '<div class="vol-legend-item"><div class="vol-legend-dot" style="background:'+VOL_COLORS[g]+'"></div>'+groupNames[g]+'</div>';
+  }).join('');
+
+  // Week labels (Mo DD.MM)
+  var wkLabels = weeks.map(function(w){
+    var d = new Date(w);
+    return (d.getDate()+'.'+(d.getMonth()+1)+'.');
+  });
+
+  // Canvas dimensions
+  var W = 600, H = 220;
+  var padL = 42, padR = 12, padT = 12, padB = 28;
+  var chartW = W - padL - padR;
+  var chartH = H - padT - padB;
+
+  // Max value
+  var maxVal = 0;
+  weeks.forEach(function(w){
+    activeGroups.forEach(function(g){
+      if(data[w][g] > maxVal) maxVal = data[w][g];
+    });
+  });
+  if(maxVal === 0) maxVal = 1;
+  maxVal = Math.ceil(maxVal/100)*100;
+
+  var n = weeks.length;
+  var xStep = chartW / (n-1);
+
+  function xPos(i){ return padL + i * xStep; }
+  function yPos(v){ return padT + chartH - (v/maxVal)*chartH; }
+
+  // Build SVG
+  var svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">';
+
+  // Grid lines
+  for(var gi=0; gi<=4; gi++){
+    var gy = padT + (chartH/4)*gi;
+    var gv = Math.round(maxVal*(1-gi/4));
+    svg += '<line x1="'+padL+'" y1="'+gy+'" x2="'+(W-padR)+'" y2="'+gy+'" stroke="#1e2229" stroke-width="1"/>';
+    svg += '<text x="'+(padL-4)+'" y="'+(gy+4)+'" text-anchor="end" font-size="9" fill="#3a4050" font-family="Barlow Condensed">'+gv+'</text>';
+  }
+
+  // X axis labels
+  wkLabels.forEach(function(lbl, i){
+    svg += '<text x="'+xPos(i)+'" y="'+(H-6)+'" text-anchor="middle" font-size="9" fill="#3a4050" font-family="Barlow Condensed">'+lbl+'</text>';
+  });
+
+  // Lines per group
+  activeGroups.forEach(function(g){
+    var color = VOL_COLORS[g];
+    var points = weeks.map(function(w,i){
+      return xPos(i)+','+yPos(data[w][g]);
+    }).join(' ');
+    svg += '<polyline points="'+points+'" fill="none" stroke="'+color+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+
+    // Dots
+    weeks.forEach(function(w,i){
+      var v = data[w][g];
+      if(v > 0){
+        svg += '<circle cx="'+xPos(i)+'" cy="'+yPos(v)+'" r="3" fill="'+color+'"/>';
+      }
+    });
+  });
+
+  svg += '</svg>';
+
+  wrap.innerHTML = '<div class="vol-chart-wrap">'
+    +'<div class="vol-chart-title">📈 Volumen pro Woche nach Muskelgruppe</div>'
+    +'<div class="vol-legend">'+legend+'</div>'
+    +'<div>'+svg+'</div>'
+    +'</div>';
 }
 
 // ── TRAINING LOG LIST ──
@@ -3200,6 +3432,39 @@ var EX_DB = {
       +'<line x1="96" y1="100" x2="112" y2="125" stroke="#c8f03a" stroke-width="2.5" stroke-linecap="round"/>'
       +'<text x="80" y="152" text-anchor="middle" font-size="11" fill="#3a4050" font-family="Barlow Condensed">Hüfte nach hinten strecken</text>',
       '', 200, 158)
+  },
+  'Bankdrücken mit Langhantel': {
+    primary: ['Brust (gesamt)', 'vorderer Deltoideus', 'Trizeps'],
+    secondary: [],
+    steps: [
+      'Rücken auf der Bank, Füße flach auf dem Boden. Schulterblätter zusammenziehen und in die Bank drücken — erzeugt einen leichten Bogen im Rücken.',
+      'Langhantel mit schulterbreitem Griff fassen. Handgelenke gerade — Stange mittig in der Hand, nicht in den Fingern.',
+      'Stange über die Mittelbrust absenken. Ellbogen 45–75° zum Körper — nicht senkrecht ausgestreckt, sonst Schulterimpingement.',
+      'Explosiv nach oben drücken bis Arme fast gestreckt. Schulterblätter bleiben zusammengezogen.',
+      'Tipp: Füße fest auf dem Boden — stabiler Stand verhindert unkontrollierte Rückenbewegung. Nie die Stange auf der Brust abprallen lassen.'
+    ]
+  },
+  'Schrägbankdrücken mit Langhantel': {
+    primary: ['Obere Brust', 'vorderer Deltoideus', 'Trizeps'],
+    secondary: [],
+    steps: [
+      'Bank auf 30–45° einstellen — nicht steiler, sonst verlagert sich die Arbeit zu stark auf die Schulter.',
+      'Schulterblätter zusammenziehen und fixieren — schützt die Schultergelenke während der gesamten Übung.',
+      'Stange über die Oberbrust führen — nicht über den Hals oder die Mittelbrust absenken.',
+      'Ellbogen kontrolliert absenken, dann explosiv nach oben drücken. Handgelenke gerade halten.',
+      'Tipp: Bankwinkel max. 45°. Füße fest auf dem Boden oder auf der Bank abstützen.'
+    ]
+  },
+  'Enger Griff Bankdrücken': {
+    primary: ['Trizeps', 'innere Brust'],
+    secondary: ['vorderer Deltoideus'],
+    steps: [
+      'Griffweite schulterbreit — nicht enger, sonst zu viel Stress auf den Handgelenken.',
+      'Ellbogen nah am Körper führen — nicht ausflaren, sonst wird der Trizeps entlastet.',
+      'Stange über den unteren Brustbereich absenken — nicht zum Bauch oder Hals.',
+      'Langsam absenken (2–3 Sek.), dann explosiv nach oben drücken. Volle Streckung am Ende.',
+      'Tipp: Handgelenke gerade halten. Bewusst den Trizeps anspannen.'
+    ]
   }
 };
 
@@ -3793,6 +4058,7 @@ var STRETCH_DB = [
 ];
 
 var STRETCH_GROUPS = ['Alle','Beine','Hüfte','Rücken','Schulter','Arme'];
+var STRETCH_GROUPS_LIST = STRETCH_GROUPS; // same list, used in routine editor
 var stretchActiveGroup = 'Alle';
 var stretchOpenId = null;
 
@@ -3821,6 +4087,7 @@ var QUICK_ROUTINES = {
 };
 
 function renderStretchPage() {
+  if(typeof STRETCH_GROUPS === 'undefined') return;
   renderStretchFilters();
   renderStretchExList();
   renderStretchRoutines();
@@ -4122,22 +4389,91 @@ function setSeshDur(sec) {
 }
 
 // ── ROUTINE EDITOR ──
+var routActiveGroup = 'Alle';
+var routFilterOpen = false;
+var routAddFormOpen = false;
+
+function toggleRoutFilter(){
+  routFilterOpen = !routFilterOpen;
+  document.getElementById('routFilterBody').style.display = routFilterOpen ? 'block' : 'none';
+  document.getElementById('routFilterArrow').textContent = routFilterOpen ? '▲' : '▼';
+}
+
+function toggleRoutAddForm(){
+  routAddFormOpen = !routAddFormOpen;
+  document.getElementById('routAddFormInner').style.display = routAddFormOpen ? 'block' : 'none';
+  document.getElementById('routAddIcon').textContent = routAddFormOpen ? '✕' : '＋';
+  if(routAddFormOpen) setTimeout(function(){ document.getElementById('routNewName').focus(); }, 50);
+}
+
+function setRoutGroup(g){
+  routActiveGroup = g;
+  updateRoutFilterChips();
+  renderRoutEditExList();
+}
+
+function updateRoutFilterChips(){
+  document.getElementById('routFilterChips').innerHTML = STRETCH_GROUPS_LIST.map(function(g){
+    var active = g === routActiveGroup;
+    return '<button onclick="setRoutGroup(\''+g+'\')" style="padding:.3rem .75rem;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1px solid '+(active?'#c8f03a':'#1e2229')+';border-radius:20px;background:'+(active?'#111a08':'transparent')+';cursor:pointer;color:'+(active?'#c8f03a':'#5a6070')+';min-height:32px;">'+g+'</button>';
+  }).join('');
+  document.getElementById('routFilterSummary').textContent = 'Filter: ' + routActiveGroup;
+}
+
+function renderRoutEditExList(){
+  var r = editingRoutineIdx !== null ? stretchRoutines[editingRoutineIdx] : {exIds:[]};
+  var filtered = STRETCH_DB.filter(function(e){
+    return routActiveGroup === 'Alle' || e.group === routActiveGroup;
+  });
+  document.getElementById('routEditExList').innerHTML = filtered.map(function(e){
+    var checked = r.exIds.indexOf(e.id) !== -1;
+    return '<label style="display:flex;align-items:center;gap:10px;padding:.55rem .85rem;cursor:pointer;border-bottom:1px solid #1e2229;">'
+      +'<input type="checkbox" value="'+e.id+'" '+(checked?'checked':'')+' style="accent-color:#c8f03a;width:18px;height:18px;flex-shrink:0;" />'
+      +'<div style="flex:1;min-width:0;">'
+      +'<div style="font-size:13px;color:#c8c4bc;">'+e.icon+' '+e.name+'</div>'
+      +'<div style="font-size:11px;color:#4a5260;">'+e.muscle+(e.sides?' · beidseitig':'')+'</div>'
+      +'</div>'
+      +'</label>';
+  }).join('');
+}
+
+function addRoutineStretchEx(){
+  var name = document.getElementById('routNewName').value.trim();
+  if(!name){ document.getElementById('routNewName').focus(); return; }
+  var muscle = document.getElementById('routNewMuscle').value.trim() || '—';
+  var group = document.getElementById('routNewGroup').value;
+  var sides = document.getElementById('routNewSides').value === '1';
+  // Generate unique id
+  var newId = 's_custom_' + Date.now();
+  STRETCH_DB.push({id:newId, icon:'🧘', name:name, muscle:muscle, group:group, sides:sides, desc:''});
+  // Reset form
+  document.getElementById('routNewName').value = '';
+  document.getElementById('routNewMuscle').value = '';
+  toggleRoutAddForm();
+  // Set filter to show the new exercise's group
+  routActiveGroup = group;
+  updateRoutFilterChips();
+  renderRoutEditExList();
+  // Auto-check the new exercise
+  var newCheck = document.querySelector('#routEditExList input[value="'+newId+'"]');
+  if(newCheck) newCheck.checked = true;
+  showToast(name+' hinzugefügt ✓');
+}
+
 function openRoutineEditor(ri) {
   editingRoutineIdx = ri;
+  routActiveGroup = 'Alle';
+  routFilterOpen = false;
+  routAddFormOpen = false;
   var r = ri !== null ? stretchRoutines[ri] : {name:'', exIds:[], holdSec:60};
   document.getElementById('routEditTitle').textContent = ri !== null ? 'Routine bearbeiten' : 'Neue Routine';
   document.getElementById('routEditName').value = r.name;
-
-  // List all stretch exercises with checkboxes
-  document.getElementById('routEditExList').innerHTML = STRETCH_DB.map(function(e){
-    var checked = r.exIds.indexOf(e.id) !== -1;
-    return '<label style="display:flex;align-items:center;gap:10px;padding:.5rem .3rem;cursor:pointer;border-bottom:1px solid #1e2229;">'
-      +'<input type="checkbox" value="'+e.id+'" '+(checked?'checked':'')+' style="accent-color:#c8f03a;width:18px;height:18px;flex-shrink:0;" />'
-      +'<span style="font-size:13px;color:#c8c4bc;">'+e.icon+' '+e.name+'</span>'
-      +'<span style="font-size:11px;color:#4a5260;margin-left:auto;">'+e.muscle+'</span>'
-      +'</label>';
-  }).join('');
-
+  document.getElementById('routFilterBody').style.display = 'none';
+  document.getElementById('routFilterArrow').textContent = '▼';
+  document.getElementById('routAddFormInner').style.display = 'none';
+  document.getElementById('routAddIcon').textContent = '＋';
+  updateRoutFilterChips();
+  renderRoutEditExList();
   document.getElementById('routEditOverlay').classList.remove('hidden');
 }
 
@@ -4152,9 +4488,20 @@ function routEditBgClose(e) {
 function saveRoutine() {
   var name = document.getElementById('routEditName').value.trim();
   if(!name){ document.getElementById('routEditName').focus(); return; }
-  var checked = Array.from(document.querySelectorAll('#routEditExList input:checked')).map(function(i){ return i.value; });
-  if(checked.length === 0){ showToast('Bitte mindestens eine Übung auswählen'); return; }
-  var r = {name:name, exIds:checked, holdSec:60};
+  // Collect all checked IDs — need to check across all groups
+  // Store current checked state, switch to Alle, collect, restore
+  var currentChecked = Array.from(document.querySelectorAll('#routEditExList input:checked')).map(function(i){ return i.value; });
+  // Merge with previously checked from other groups (not currently visible)
+  var prevIds = editingRoutineIdx !== null ? stretchRoutines[editingRoutineIdx].exIds : [];
+  // Get IDs of currently visible exercises
+  var visibleIds = STRETCH_DB.filter(function(e){
+    return routActiveGroup === 'Alle' || e.group === routActiveGroup;
+  }).map(function(e){ return e.id; });
+  // Keep previously checked from invisible groups, add currently checked visible ones
+  var merged = prevIds.filter(function(id){ return visibleIds.indexOf(id) === -1; })
+    .concat(currentChecked);
+  if(merged.length === 0){ showToast('Bitte mindestens eine Übung auswählen'); return; }
+  var r = {name:name, exIds:merged, holdSec:60};
   if(editingRoutineIdx !== null) {
     stretchRoutines[editingRoutineIdx] = r;
   } else {
@@ -4667,6 +5014,7 @@ function importData(event){
 function renderSettingsInfo(){
   var el = document.getElementById('settingsDataInfo');
   if(!el) return;
+  if(typeof trainingLog === 'undefined') return;
   try {
     var raw = localStorage.getItem(SAVE_KEY);
     if(!raw){ el.innerHTML = 'Keine gespeicherten Daten gefunden.'; return; }
@@ -4732,7 +5080,7 @@ function saveDebounced(){ clearTimeout(saveTimer); saveTimer=setTimeout(saveStat
 
 
 // ── EXERCISE PHOTO DATA ──
-var EX_PHOTO_MAP = {"Kniebeugen (BF)": 1, "Kniebeugen einbeinig": 2, "Ausfallschritt rückwärts": 3, "Beinstrecker sitzend": 4, "Beinstrecken einseitig": 5, "Kreuzheben gestreckte Beine": 6, "Kreuzheben (BF)": 7, "Bein-Curls stehend (BF)": 8, "Wadendrücken (BF)": 9, "Wadendrücken außen": 10, "Wadendrücken innen": 11, "Kickbacks einbeinig": 12, "Beindrücken": 13, "Hüftbeugen stehend": 14, "Hüftstrecken stehend": 15, "Abduktorenübung stehend": 16, "Adduktorenübung stehend": 17, "Hüftstrecker liegend": 18, "Abduktorenübung liegend": 19, "Abduktorenübung liegend einbeinig": 20, "Beinpresse liegend": 21, "Beinpresse einbeinig liegend": 22, "Scherentritte": 23, "Wedeltritte": 24, "Hüftkreisen liegend": 25, "Hüftkreisen einbeinig liegend": 26, "Beinpresse einbeinig sitzend": 27, "Abduktornübung einbeinig sitzend": 28, "Adduktorenübung einbeinig sitzend": 29, "Sprunggelenk laterale Rotation": 30, "Sprunggelenk mediale Rotation": 31, "Bankdrücken (BF)": 32, "Bankdrücken einarmig": 33, "Schrägbankdrücken (BF)": 34, "Schrägbankdrücken einarmig": 35, "Fliegende (BF)": 36, "Fliegende einarmig": 37, "Fliegende auf der Schrägbank": 38, "Fliegende Schrägbank einarmig": 39, "Negatives Schrägbankdrücken": 40, "Bankdrücken enger Griff": 41, "Latziehen zur Brust": 42, "Latzug nach vorne": 43, "Latzug einarmig": 44, "Latzug mit Untergriff": 45, "Latzug mit Untergriff einarmig": 46, "Latzug mit neutralem Griff": 47, "Latzug neutraler Griff einarmig": 48, "Überzüge sitzend": 49, "Überzüge einarmig sitzend": 50, "Seitdrücken": 51, "Seitdrücken einarmig": 52, "Rudern stehend (BF)": 53, "Rudern stehend einarmig": 54, "Rudern stehend Obergriff": 55, "Rudern Obergriff stehend einarmig": 56, "Rudern mit Untergriff stehend": 57, "Rudern Untergriff stehend einarmig": 58, "Überzüge stehend": 59, "Schulterdrücken sitzend": 60, "Schulterdrücken sitzend einarmig": 61, "Schulterziehen (Shrugs)": 62, "Nackenziehen": 63, "Frontheben stehend (BF)": 64, "Frontheben stehend einarmig": 65, "Seitheben stehend (BF)": 66, "Seitheben stehend einarmig": 67, "Delta-Rudern stehend": 68, "Rudern stehend einarmig (Schulter)": 69, "Cablecross": 70, "Frontheben sitzend": 71, "Frontheben sitzend einarmig": 72, "Seitheben sitzend": 73, "Seitheben sitzend einarmig": 74, "Handgelenk Außenrotation": 75, "Handgelenk Innenrotation": 76, "Schulter Rotation nach oben": 77, "Rückziehen": 78, "Schulter Außenrotation gestreckt": 79, "Schulter Innenrotation gestreckt": 80, "Bizeps-Curls stehend": 81, "Bizepscurls stehend einarmig": 82, "Hammer-Curls (BF)": 83, "Hammer-Curls einarmig": 84, "Bizeps-Curls Obergriff": 85, "Bizeps-Curls Obergriff einarmig": 86, "Bizeps-Curls gebogene Stange": 87, "Bizeps-Curls Obergriff gebogene Stange": 88, "Konzentrations-Curls sitzend": 89, "Unterarm-Curls sitzend": 90, "Unterarm-Curls Obergriff sitzend": 91, "Trizepsdrücken überkopf (BF)": 92, "Trizepsstrecken überkopf einarmig": 93, "Trizepsdrücken (BF)": 94, "Trizepsdrücken Untergriff": 95, "Getrenntes Trizepsdrücken": 96, "Trizepsdrücken einarmig": 97, "Trizepsdrücken einarmig Obergriff": 98, "Trizeps Kickback einarmig": 99, "Trizeps Kickback einarmig Untergriff": 100, "Trizeps Kickback (BF)": 101, "Trizeps Kickbacks Untergriff": 102, "Dips (BF)": 103, "Dips einarmig": 104, "Trizeps-Strecker gekreuzt": 105, "Bauch Crunches": 106, "Schräge Crunches": 107, "Oberkörperdrehen stehend": 108, "Seitbeugen": 109, "Rückenstrecker sitzend": 110};
+var EX_PHOTO_MAP = {"Kniebeugen (BF)": 1, "Kniebeugen einbeinig": 2, "Ausfallschritt rückwärts": 3, "Beinstrecker sitzend": 4, "Beinstrecken einseitig": 5, "Kreuzheben gestreckte Beine": 6, "Kreuzheben (BF)": 7, "Bein-Curls stehend (BF)": 8, "Wadendrücken (BF)": 9, "Wadendrücken außen": 10, "Wadendrücken innen": 11, "Kickbacks einbeinig": 12, "Beindrücken": 13, "Hüftbeugen stehend": 14, "Hüftstrecken stehend": 15, "Abduktorenübung stehend": 16, "Adduktorenübung stehend": 17, "Hüftstrecker liegend": 18, "Abduktorenübung liegend": 19, "Abduktorenübung liegend einbeinig": 20, "Beinpresse liegend": 21, "Beinpresse einbeinig liegend": 22, "Scherentritte": 23, "Wedeltritte": 24, "Hüftkreisen liegend": 25, "Hüftkreisen einbeinig liegend": 26, "Beinpresse einbeinig sitzend": 27, "Abduktornübung einbeinig sitzend": 28, "Adduktorenübung einbeinig sitzend": 29, "Sprunggelenk laterale Rotation": 30, "Sprunggelenk mediale Rotation": 31, "Bankdrücken (BF)": 32, "Bankdrücken einarmig": 33, "Schrägbankdrücken (BF)": 34, "Schrägbankdrücken einarmig": 35, "Fliegende (BF)": 36, "Fliegende einarmig": 37, "Fliegende auf der Schrägbank": 38, "Fliegende Schrägbank einarmig": 39, "Negatives Schrägbankdrücken": 40, "Bankdrücken enger Griff": 41, "Latziehen zur Brust": 42, "Latzug nach vorne": 43, "Latzug einarmig": 44, "Latzug mit Untergriff": 45, "Latzug mit Untergriff einarmig": 46, "Latzug mit neutralem Griff": 47, "Latzug neutraler Griff einarmig": 48, "Überzüge sitzend": 49, "Überzüge einarmig sitzend": 50, "Seitdrücken": 51, "Seitdrücken einarmig": 52, "Rudern stehend (BF)": 53, "Rudern stehend einarmig": 54, "Rudern stehend Obergriff": 55, "Rudern Obergriff stehend einarmig": 56, "Rudern mit Untergriff stehend": 57, "Rudern Untergriff stehend einarmig": 58, "Überzüge stehend": 59, "Schulterdrücken sitzend": 60, "Schulterdrücken sitzend einarmig": 61, "Schulterziehen (Shrugs)": 62, "Nackenziehen": 63, "Frontheben stehend (BF)": 64, "Frontheben stehend einarmig": 65, "Seitheben stehend (BF)": 66, "Seitheben stehend einarmig": 67, "Delta-Rudern stehend": 68, "Rudern stehend einarmig (Schulter)": 69, "Cablecross": 70, "Frontheben sitzend": 71, "Frontheben sitzend einarmig": 72, "Seitheben sitzend": 73, "Seitheben sitzend einarmig": 74, "Handgelenk Außenrotation": 75, "Handgelenk Innenrotation": 76, "Schulter Rotation nach oben": 77, "Rückziehen": 78, "Schulter Außenrotation gestreckt": 79, "Schulter Innenrotation gestreckt": 80, "Bizeps-Curls stehend": 81, "Bizepscurls stehend einarmig": 82, "Hammer-Curls (BF)": 83, "Hammer-Curls einarmig": 84, "Bizeps-Curls Obergriff": 85, "Bizeps-Curls Obergriff einarmig": 86, "Bizeps-Curls gebogene Stange": 87, "Bizeps-Curls Obergriff gebogene Stange": 88, "Konzentrations-Curls sitzend": 89, "Unterarm-Curls sitzend": 90, "Unterarm-Curls Obergriff sitzend": 91, "Trizepsdrücken überkopf (BF)": 92, "Trizepsstrecken überkopf einarmig": 93, "Trizepsdrücken (BF)": 94, "Trizepsdrücken Untergriff": 95, "Getrenntes Trizepsdrücken": 96, "Trizepsdrücken einarmig": 97, "Trizepsdrücken einarmig Obergriff": 98, "Trizeps Kickback einarmig": 99, "Trizeps Kickback einarmig Untergriff": 100, "Trizeps Kickback (BF)": 101, "Trizeps Kickbacks Untergriff": 102, "Dips (BF)": 103, "Dips einarmig": 104, "Trizeps-Strecker gekreuzt": 105, "Bauch Crunches": 106, "Schräge Crunches": 107, "Oberkörperdrehen stehend": 108, "Seitbeugen": 109, "Rückenstrecker sitzend": 110, "Bankdrücken mit Langhantel": 111, "Schrägbankdrücken mit Langhantel": 112, "Enger Griff Bankdrücken": 113};
 var EX_PHOTOS = null;
 
 var STRETCH_PHOTO_MAP = {
@@ -4756,7 +5104,7 @@ function getExPhotoSrc(num) {
 // Get image path for a stretch exercise (Dehnung) — folder not yet created
 function getStretchPhotoSrc(num) {
   if(!num) return null;
-  return 'Bilder/Dehnung/' + num + '.jpg';
+  return 'Bilder/Dehnen/' + num + '.jpg';
 }
 
 initCal();
