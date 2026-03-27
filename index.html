@@ -1014,9 +1014,9 @@ html,body{overflow-x:hidden;background:#0d0f12;}
 </div>
 
 <!-- FULLSCREEN IMAGE VIEWER -->
-<div class="imgview-overlay hidden" id="imgViewOverlay">
+<div class="imgview-overlay hidden" id="imgViewOverlay" onclick="event.stopPropagation()">
   <img id="imgViewImg" src="" alt="" draggable="false" />
-  <button class="imgview-close" onclick="closeImgView(event)">✕</button>
+  <button class="imgview-close" onclick="event.stopPropagation();closeImgView(event)">✕</button>
   <div class="imgview-hint" id="imgViewHint">Doppeltippen zum Zoomen · Ziehen zum Verschieben</div>
 </div>
 
@@ -4545,10 +4545,15 @@ function openImgView(src, alt){
 }
 
 function closeImgView(e){
-  if(e && e.stopPropagation) e.stopPropagation();
-  document.getElementById('imgViewOverlay').classList.add('hidden');
+  if(e){ e.stopPropagation(); e.preventDefault(); }
+  var ov = document.getElementById('imgViewOverlay');
+  // Temporarily disable pointer events on overlay to prevent click-through
+  ov.style.pointerEvents = 'none';
+  ov.classList.add('hidden');
   document.getElementById('imgViewImg').src = '';
   _ivUnbindEvents();
+  // Re-enable after a tick
+  setTimeout(function(){ ov.style.pointerEvents = ''; }, 50);
 }
 
 function _ivReset(){
@@ -4597,6 +4602,7 @@ function _ivBindEvents(){
     // Allow close button to work
     if(e.target.classList.contains('imgview-close') || e.target.closest('.imgview-close')){
       e.stopPropagation();
+      e.preventDefault();
       closeImgView(e);
       return;
     }
