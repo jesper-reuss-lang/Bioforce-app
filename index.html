@@ -1016,7 +1016,7 @@ html,body{overflow-x:hidden;background:#0d0f12;}
 <!-- FULLSCREEN IMAGE VIEWER -->
 <div class="imgview-overlay hidden" id="imgViewOverlay">
   <img id="imgViewImg" src="" alt="" draggable="false" />
-  <button class="imgview-close" onclick="closeImgView()">✕</button>
+  <button class="imgview-close" onclick="closeImgView(event)">✕</button>
   <div class="imgview-hint" id="imgViewHint">Doppeltippen zum Zoomen · Ziehen zum Verschieben</div>
 </div>
 
@@ -4544,7 +4544,8 @@ function openImgView(src, alt){
   _ivBindEvents();
 }
 
-function closeImgView(){
+function closeImgView(e){
+  if(e && e.stopPropagation) e.stopPropagation();
   document.getElementById('imgViewOverlay').classList.add('hidden');
   document.getElementById('imgViewImg').src = '';
   _ivUnbindEvents();
@@ -4595,7 +4596,8 @@ function _ivBindEvents(){
   _ivHandlers.touchstart = function(e){
     // Allow close button to work
     if(e.target.classList.contains('imgview-close') || e.target.closest('.imgview-close')){
-      closeImgView();
+      e.stopPropagation();
+      closeImgView(e);
       return;
     }
     e.preventDefault();
