@@ -4246,30 +4246,36 @@ function renderStretchExList() {
     return stretchActiveGroup === 'Alle' || e.group === stretchActiveGroup;
   });
   var html = filtered.map(function(e){
-    var isOpen = stretchOpenId === e.id;
-    var photoNum = STRETCH_PHOTO_MAP && STRETCH_PHOTO_MAP[e.name];
-    var photo = photoNum
-      ? '<div class="img-zoom-wrap"><img src="'+getStretchPhotoSrc(photoNum)+'" onerror="this.parentElement.style.display=\'none\'" onclick="openImgView(this.src,this.alt)" /></div>'
-      : '';
-    return '<div class="stretch-ex-card">'
-      +'<div class="stretch-ex-row" onclick="toggleStretchEx(\''+e.id+'\')">'
-      +'<div class="stretch-ex-icon">'+e.icon+'</div>'
-      +'<div class="stretch-ex-info"><div class="stretch-ex-name">'+e.name+'</div><div class="stretch-ex-muscle">'+e.muscle+(e.sides?' · beidseitig':'')+'</div></div>'
-      +'<div class="stretch-ex-dur" style="color:'+(isOpen?'var(--accent)':'var(--muted3)')+'">'+(isOpen?'▲':'▼')+'</div>'
-      +'</div>'
-      +'<div class="stretch-ex-detail'+(isOpen?' open':'')+'">'
-      +photo
-      +'<div style="font-size:12px;color:var(--text3);line-height:1.55;margin-bottom:.75rem;">'+e.desc+'</div>'
-      +'<button class="stretch-btn-start" onclick="startSingleStretch(\''+e.id+'\')">▶ Einzeln dehnen</button>'
-      +'</div>'
+    var safeName = e.name.replace(/'/g,"\\'");
+    return '<div class="ex-row" style="cursor:pointer;" onclick="openStretchDesc(\''+safeName+'\')">'
+      +'<div class="ex-icon">'+e.icon+'</div>'
+      +'<div class="ex-info"><div class="ex-name">'+e.name+'</div><div class="ex-muscle">'+e.muscle+(e.sides?' · beidseitig':'')+'</div></div>'
+      +'<button class="ex-info-btn" onclick="event.stopPropagation();openStretchDesc(\''+safeName+'\')">ℹ</button>'
       +'</div>';
   }).join('');
   document.getElementById('stretchExList').innerHTML = html || '<div style="color:var(--muted3);font-size:13px;padding:1rem;text-align:center;">Keine Übungen gefunden.</div>';
 }
 
-function toggleStretchEx(id) {
-  stretchOpenId = stretchOpenId === id ? null : id;
-  renderStretchExList();
+function openStretchDesc(name){
+  var e = STRETCH_DB.find(function(x){ return x.name===name; });
+  if(!e) return;
+  document.getElementById('exdescTitle').textContent = e.icon+' '+e.name;
+  var photoNum = STRETCH_PHOTO_MAP && STRETCH_PHOTO_MAP[e.name];
+  var photoHtml = photoNum
+    ? '<div class="img-zoom-wrap"><img src="'+getStretchPhotoSrc(photoNum)+'" onerror="this.parentElement.style.display=\'none\'" onclick="openImgView(this.src,this.alt)" alt="'+e.name+'"/></div>'
+    : '';
+  var body = photoHtml;
+  // Muscle tag
+  body += '<div class="exdesc-muscles"><span class="muscle-tag primary">'+e.muscle+'</span>'+(e.sides?'<span class="muscle-tag secondary">beidseitig</span>':'')+'</div>';
+  // Steps — split desc by '. ' into numbered steps
+  body += '<div class="exdesc-steps">';
+  var steps = e.desc.split(/(?<=\.) /).filter(function(s){ return s.trim().length > 0; });
+  steps.forEach(function(s, i){
+    body += '<div class="exdesc-step"><span class="exdesc-step-num">'+(i+1)+'</span><span class="exdesc-step-text">'+s.trim()+'</span></div>';
+  });
+  body += '</div>';
+  document.getElementById('exdescBody').innerHTML = body;
+  document.getElementById('exdescOverlay').classList.remove('hidden');
 }
 
 function renderStretchRoutines() {
