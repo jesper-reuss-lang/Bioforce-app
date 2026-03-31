@@ -4297,35 +4297,80 @@ function renderStretchRoutines() {
 }
 
 // ── QUICK ROUTINES ──
+function shuffle(arr){
+  var a = arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var t=a[i]; a[i]=a[j]; a[j]=t;
+  }
+  return a;
+}
+
 function startQuickRoutine(type) {
   if (type === 'morning') {
-    var r = QUICK_ROUTINES.morning;
-    var exs = r.exIds.map(function(id){ return STRETCH_DB.find(function(x){ return x.id===id; }); }).filter(Boolean);
-    startSeshFromExs(exs, r.holdSec, 'Morgens / Mobilität');
+    // Pick 6–8 exercises covering different groups with variation
+    var groups = ['Beine','Hüfte','Rücken','Schulter','Arme'];
+    var picked = [];
+    groups.forEach(function(g){
+      var pool = STRETCH_DB.filter(function(e){ return e.group===g; });
+      if(!pool.length) return;
+      // Pick 1–2 random from each group
+      var shuffled = shuffle(pool);
+      var n = (g==='Rücken'||g==='Beine') ? 2 : 1;
+      shuffled.slice(0,n).forEach(function(e){ picked.push(e); });
+    });
+    // Shuffle final list for variety
+    picked = shuffle(picked);
+    startSeshFromExs(picked, 40, 'Morgens / Mobilität');
+
   } else {
-    // Post-workout: pick exercises matching today's trained muscles
+    // Post-workout: match exercises to trained muscles
     var day = SPLITS[activeSplit] && SPLITS[activeSplit].days[activeDay];
     var exs = [];
-    if (day && day.main) {
+    if (day && day.main && day.main.length) {
       var muscles = day.main.map(function(e){ return (e.muscle||'').toLowerCase(); }).join(' ');
-      // Match stretch exercises to today's muscles
+
+      // Map muscle keywords to stretch groups and muscle keywords
+      var matchRules = [
+        {trainKw:['quadrizeps','oberschenkel','knie','beinstrecker'],  stretchKw:['oberschenkel','quadrizeps','fußbeuger','kniesitz']},
+        {trainKw:['hamstring','beinbizeps','bein-curl','kreuzheben'], stretchKw:['achillessehne','hintere','oberschenkel','kerze']},
+        {trainKw:['gesäß','gluteus','ausfallschritt','kickback'],      stretchKw:['gesäß','hüft','piriformis','gewinkelt']},
+        {trainKw:['hüftbeuger','hüfte','iliopsoas'],                   stretchKw:['hüftbeuger','becken','vorschub','fersensitz']},
+        {trainKw:['wade','wadendrücken','soleus'],                     stretchKw:['wade','ferse','achillessehne']},
+        {trainKw:['adduktoren','innerer oberschenkel'],                stretchKw:['adduktoren','grätsche','inneren']},
+        {trainKw:['brust','pectoral'],                                 stretchKw:['brust','brustmuskeln','durchhängen','armwandern']},
+        {trainKw:['schulter','deltoid'],                               stretchKw:['schulter','armschub','aufdrehen','überstrecktes']},
+        {trainKw:['rücken','latissimus','rhomboid','trapez'],          stretchKw:['rücken','rumpf','einrollen','pyramide','vorbeugen']},
+        {trainKw:['bizeps','trizeps','unterarm','curl'],               stretchKw:['trizeps','armdrehung','handbeuger','arme']},
+        {trainKw:['bauch','core','rumpf'],                             stretchKw:['rumpf','seitneigen','rotation','rumpfdrehung']}
+      ];
+
+      // Score each stretch exercise
       var scored = STRETCH_DB.map(function(e){
         var score = 0;
-        var mg = e.muscle.toLowerCase();
-        if(muscles.indexOf('quadrizeps')!==-1 && (mg.indexOf('quadrizeps')!==-1||mg.indexOf('oberschenkel')!==-1)) score+=2;
-        if(muscles.indexOf('hamstring')!==-1||muscles.indexOf('beinbizeps')!==-1) { if(mg.indexOf('achillessehne')!==-1||mg.indexOf('oberschenkel')!==-1) score+=2; }
-        if(muscles.indexOf('gesäß')!==-1) { if(mg.indexOf('hüft')!==-1||mg.indexOf('piriformis')!==-1||mg.indexOf('gesäß')!==-1) score+=2; }
-        if(muscles.indexOf('brust')!==-1||muscles.indexOf('schulter')!==-1) { if(mg.indexOf('schulter')!==-1||mg.indexOf('brust')!==-1||mg.indexOf('trizeps')!==-1) score+=2; }
-        if(muscles.indexOf('rücken')!==-1||muscles.indexOf('latis')!==-1) { if(mg.indexOf('rücken')!==-1||mg.indexOf('wirbel')!==-1) score+=2; }
-        if(muscles.indexOf('bizeps')!==-1||muscles.indexOf('trizeps')!==-1||muscles.indexOf('unterarm')!==-1) { if(mg.indexOf('trizeps')!==-1||mg.indexOf('arme')!==-1) score+=2; }
+        var mg = e.muscle.toLowerCase() + ' ' + e.name.toLowerCase() + ' ' + e.desc.toLowerCase();
+        matchRules.forEach(function(rule){
+          var trainHit = rule.trainKw.some(function(kw){ return muscles.indexOf(kw) !== -1; });
+          if(trainHit){
+            var stretchHit = rule.stretchKw.some(function(kw){ return mg.indexOf(kw) !== -1; });
+            if(stretchHit) score += 3;
+          }
+        });
+        // Small random factor for variation
+        score += Math.random() * 0.5;
         return {e:e, score:score};
       });
+
       scored.sort(function(a,b){ return b.score-a.score; });
-      exs = scored.slice(0,6).map(function(x){ return x.e; });
-      // fill up to 5 if needed
-      if(exs.length < 4) exs = STRETCH_DB.slice(0,5);
+
+      // Take top matches but add randomness — pick 6 from top 12
+      var topPool = scored.filter(function(x){ return x.score >= 1; }).slice(0,14);
+      if(topPool.length < 6) topPool = scored.slice(0,12);
+      exs = shuffle(topPool).slice(0,6).map(function(x){ return x.e; });
+
     } else {
-      exs = STRETCH_DB.slice(0,5);
+      // No training active — pick random selection across all groups
+      exs = shuffle(STRETCH_DB).slice(0,6);
     }
     startSeshFromExs(exs, 30, 'Nach dem Training');
   }
