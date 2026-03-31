@@ -1,5 +1,5 @@
 // BioForce PWA Service Worker
-const CACHE_NAME = 'bioforce-v4';
+const CACHE_NAME = 'bioforce-v6';
 const ASSETS = [
   './index.html',
   './manifest.json',
