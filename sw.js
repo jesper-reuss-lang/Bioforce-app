@@ -1,5 +1,5 @@
-// BioForce PWA Service Worker
-const CACHE_NAME = 'bioforce-v6';
+// BioForce PWA Service Worker — Network-first mit Auto-Update
+const CACHE_NAME = 'bioforce-v7';
 const ASSETS = [
   './index.html',
   './manifest.json',
@@ -7,7 +7,7 @@ const ASSETS = [
   './icon-512.png'
 ];
 
-// Install: cache all assets
+// Install: cache assets, skip waiting immediately
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
@@ -18,7 +18,7 @@ self.addEventListener('install', function(event) {
   );
 });
 
-// Activate: remove old caches
+// Activate: remove old caches, claim all clients immediately
 self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(keys) {
@@ -32,23 +32,45 @@ self.addEventListener('activate', function(event) {
   );
 });
 
-// Fetch: serve from cache, fall back to network
+// Fetch: Network-first für App-Dateien, Cache-first für Bilder
 self.addEventListener('fetch', function(event) {
+  var url = event.request.url;
+
+  // Bilder: Cache-first (ändern sich selten)
+  if (url.includes('/Bilder/')) {
+    event.respondWith(
+      caches.match(event.request).then(function(cached) {
+        if (cached) return cached;
+        return fetch(event.request).then(function(response) {
+          if (response && response.status === 200) {
+            var clone = response.clone();
+            caches.open(CACHE_NAME).then(function(cache) {
+              cache.put(event.request, clone);
+            });
+          }
+          return response;
+        }).catch(function() {
+          return new Response('', {status: 404});
+        });
+      })
+    );
+    return;
+  }
+
+  // App-Dateien: Network-first — immer neue Version laden wenn online
   event.respondWith(
-    caches.match(event.request).then(function(cached) {
-      if (cached) return cached;
-      return fetch(event.request).then(function(response) {
-        // Cache new successful responses dynamically
-        if (response && response.status === 200 && response.type === 'basic') {
-          var responseClone = response.clone();
-          caches.open(CACHE_NAME).then(function(cache) {
-            cache.put(event.request, responseClone);
-          });
-        }
-        return response;
-      }).catch(function() {
-        // Offline fallback: return cached index.html
-        return caches.match('./index.html');
+    fetch(event.request).then(function(response) {
+      if (response && response.status === 200) {
+        var clone = response.clone();
+        caches.open(CACHE_NAME).then(function(cache) {
+          cache.put(event.request, clone);
+        });
+      }
+      return response;
+    }).catch(function() {
+      // Offline: gecachte Version nutzen
+      return caches.match(event.request).then(function(cached) {
+        return cached || caches.match('./index.html');
       });
     })
   );
