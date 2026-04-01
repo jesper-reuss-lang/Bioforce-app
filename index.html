@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="var(--bg)">
@@ -65,6 +65,22 @@ html,body{overflow-x:hidden;background:var(--bg);}
 .split-desc{font-size:12px;color:var(--muted);margin-bottom:1rem;line-height:1.5;}
 .days-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem;}
 @media(min-width:480px){.days-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));}}
+
+/* Landscape / Querformat */
+@media(orientation:landscape) and (max-height:500px){
+  .header{padding:.5rem 1rem;}
+  .logo{font-size:18px;}
+  .top-nav{padding:0 .5rem;}
+  .top-nav-btn{padding:.5rem .75rem;font-size:11px;}
+  .split-nav{padding:0 .5rem;}
+  .split-tab{padding:.5rem .75rem;font-size:12px;}
+  .hist-page,.stretch-page,.stat-page{padding:.5rem;}
+  .shuf-box,.rout-edit-box{max-height:95vh;overflow-y:auto;}
+  .libov-panel{max-height:95vh;}
+  .exdesc-panel{max-height:95vh;}
+  .t-overlay{padding:.25rem;}
+  .wup-box,.shuf-box{padding:.75rem 1rem;}
+}
 .day-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;transition:border-color .2s;}
 .day-card:active{border-color:var(--muted3);}.day-card.active{border-color:var(--accent);}
 .day-card-header{display:flex;align-items:center;gap:8px;padding:.7rem .8rem;border-bottom:1px solid var(--border);}
@@ -574,6 +590,12 @@ html,body{overflow-x:hidden;background:var(--bg);}
 .ex-mv-btn:active{color:var(--accent);}
 .ex-sets-ctrl{display:flex;align-items:center;gap:2px;background:var(--accent3);border:1px solid #2a3a18;border-radius:5px;padding:0 2px;margin-right:4px;}
 .ex-sets-val{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;color:var(--accent);min-width:24px;text-align:center;}
+.ex-edit-stepper{width:44px;height:44px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text2);font-size:24px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ex-edit-stepper:active{background:var(--accent3);color:var(--accent);border-color:var(--accent);}
+.ex-drag-handle{font-size:20px;color:var(--muted3);cursor:grab;padding:0 8px 0 2px;min-width:28px;min-height:44px;display:flex;align-items:center;justify-content:center;touch-action:none;flex-shrink:0;}
+.ex-drag-handle:active{cursor:grabbing;color:var(--accent);}
+.ex-row.dragging{opacity:.4;background:var(--bg3);}
+.ex-row.drag-over{border-color:var(--accent);border-style:dashed;}
 .ex-info-btn{font-size:14px;color:var(--muted3);flex-shrink:0;padding:0 4px;background:none;border:none;cursor:pointer;min-height:36px;display:flex;align-items:center;}
 .ex-info-btn:active{color:var(--accent);}
 /* Add exercise inline */
@@ -1067,6 +1089,39 @@ html,body{overflow-x:hidden;background:var(--bg);}
   <div class="imgview-hint" id="imgViewHint">Doppeltippen zum Zoomen · Ziehen zum Verschieben</div>
 </div>
 
+<!-- EXERCISE EDIT OVERLAY -->
+<div class="shuf-overlay hidden" id="exEditOverlay" onclick="exEditBgClose(event)">
+  <div class="shuf-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--text);" id="exEditTitle">Übung bearbeiten</div>
+      <button onclick="closeExEdit()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;min-width:36px;min-height:36px;">✕</button>
+    </div>
+    <!-- Sätze -->
+    <div style="margin-bottom:1rem;">
+      <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;">Sätze</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button onclick="adjExEditVal('sets',-1)" class="ex-edit-stepper">−</button>
+        <input type="number" id="exEditSets" min="1" max="10" style="flex:1;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;color:var(--accent);background:var(--bg2);border:1px solid var(--border2);border-radius:7px;padding:.4rem;width:100%;" />
+        <button onclick="adjExEditVal('sets',1)" class="ex-edit-stepper">+</button>
+      </div>
+    </div>
+    <!-- Wiederholungen -->
+    <div style="margin-bottom:1.25rem;">
+      <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;">Wiederholungen</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button onclick="adjExEditVal('reps',-1)" class="ex-edit-stepper">−</button>
+        <input type="text" id="exEditReps" style="flex:1;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:var(--text2);background:var(--bg2);border:1px solid var(--border2);border-radius:7px;padding:.4rem;width:100%;" placeholder="z.B. 12 oder 8–12" />
+        <button onclick="adjExEditVal('reps',1)" class="ex-edit-stepper">+</button>
+      </div>
+      <div style="font-size:11px;color:var(--muted3);margin-top:.4rem;text-align:center;">Freitext möglich z.B. "8–12 Wdh." oder "30 Sek."</div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="shuf-cancel" onclick="closeExEdit()">Abbrechen</button>
+      <button class="shuf-go" onclick="saveExEdit()">✓ Übernehmen</button>
+    </div>
+  </div>
+</div>
+
 <!-- QUICK ADD SPLIT OVERLAY -->
 <div class="shuf-overlay hidden" id="quickSplitOverlay" onclick="quickSplitBgClose(event)">
   <div class="shuf-box">
@@ -1190,76 +1245,76 @@ html,body{overflow-x:hidden;background:var(--bg);}
 <script>
 var SPLITS_DEFAULT={gk:{name:"Ganzkörper",desc:"3× pro Woche · ca. 90 min pro Einheit",days:[
   {name:"Tag A",tags:["full"],meta:"ca. 90 min",main:[
-    {icon:"💪",name:"Bankdrücken (BF)",muscle:"Pectoralis, Trizeps, vordere Schulter",sets:3,reps:"8–10 Wdh.",bi:true},
-    {icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Teres major, Bizeps",sets:3,reps:"8–10 Wdh.",bi:true},
-    {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"10–12 Wdh.",bi:true},
-    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Rhomboiden, mittlerer Rücken",sets:3,reps:"10–12 Wdh.",bi:true},
-    {icon:"💪",name:"Fliegende (BF)",muscle:"Innere Brust, Pectoralis",sets:3,reps:"12–15 Wdh.",bi:true},
+    {icon:"💪",name:"Bankdrücken (BF)",muscle:"Pectoralis, Trizeps, vordere Schulter",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Teres major, Bizeps",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Rhomboiden, mittlerer Rücken",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"💪",name:"Fliegende (BF)",muscle:"Innere Brust, Pectoralis",sets:3,reps:"12 Wdh.",bi:true},
     {icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings, Bizeps femoris",sets:3,reps:"12 Wdh.",bi:true},
-    {icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps brachii",sets:3,reps:"10–12 Wdh.",bi:true},
-    {icon:"💪",name:"Trizepsdrücken (BF)",muscle:"Trizeps brachii",sets:3,reps:"10–12 Wdh.",bi:false},
-    {icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter, Rotatorenmanschette",sets:3,reps:"15 Wdh.",bi:false}
+    {icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps brachii",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"💪",name:"Trizepsdrücken (BF)",muscle:"Trizeps brachii",sets:3,reps:"12 Wdh.",bi:false},
+    {icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter, Rotatorenmanschette",sets:3,reps:"12 Wdh.",bi:false}
   ]},
   {name:"Tag B",tags:["full"],meta:"ca. 90 min",main:[
-    {icon:"💪",name:"Schrägbankdrücken (BF)",muscle:"Obere Brust, vordere Schulter, Trizeps",sets:3,reps:"8–10 Wdh.",bi:true},
-    {icon:"🏋",name:"Latzug nach vorne",muscle:"Latissimus, mittlerer Rücken",sets:3,reps:"8–10 Wdh.",bi:true},
-    {icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps, Stabilisation",sets:3,reps:"10 je Seite",bi:true},
-    {icon:"💪",name:"Schulterdrücken sitzend",muscle:"Deltoideus, Trizeps",sets:3,reps:"10–12 Wdh.",bi:true},
-    {icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12–15 Wdh.",bi:true},
-    {icon:"💪",name:"Seitheben stehend (BF)",muscle:"Lateraler Deltoideus",sets:3,reps:"12–15 Wdh.",bi:true},
-    {icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Brachialis, Unterarm",sets:3,reps:"10–12 Wdh.",bi:true},
-    {icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Langer Trizepskopf",sets:3,reps:"10–12 Wdh.",bi:false},
-    {icon:"🦵",name:"Adduktorenübung stehend",muscle:"Innerer Oberschenkel",sets:3,reps:"15 Wdh.",bi:true}
+    {icon:"💪",name:"Schrägbankdrücken (BF)",muscle:"Obere Brust, vordere Schulter, Trizeps",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🏋",name:"Latzug nach vorne",muscle:"Latissimus, mittlerer Rücken",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps, Stabilisation",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"💪",name:"Schulterdrücken sitzend",muscle:"Deltoideus, Trizeps",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"💪",name:"Seitheben stehend (BF)",muscle:"Lateraler Deltoideus",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Brachialis, Unterarm",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Langer Trizepskopf",sets:3,reps:"12 Wdh.",bi:false},
+    {icon:"🦵",name:"Adduktorenübung stehend",muscle:"Innerer Oberschenkel",sets:3,reps:"12 Wdh.",bi:true}
   ]},
   {name:"Tag C",tags:["full"],meta:"ca. 90 min",main:[
-    {icon:"🏋",name:"Bankdrücken (BF)",muscle:"Pectoralis, Trizeps",sets:3,reps:"6–8 Wdh.",bi:true},
-    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Mittlerer Rücken, Rhomboiden, Bizeps",sets:3,reps:"8–10 Wdh.",bi:true},
-    {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"8–10 Wdh.",bi:true},
-    {icon:"💪",name:"Fliegende (BF)",muscle:"Untere Brust",sets:3,reps:"12–15 Wdh.",bi:true},
-    {icon:"🏋",name:"Überzüge stehend",muscle:"Latissimus, Serratus anterior",sets:3,reps:"12–15 Wdh.",bi:true},
+    {icon:"🏋",name:"Bankdrücken (BF)",muscle:"Pectoralis, Trizeps",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Mittlerer Rücken, Rhomboiden, Bizeps",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"💪",name:"Fliegende (BF)",muscle:"Untere Brust",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🏋",name:"Überzüge stehend",muscle:"Latissimus, Serratus anterior",sets:3,reps:"12 Wdh.",bi:true},
     {icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings isoliert",sets:3,reps:"12 Wdh.",bi:true},
-    {icon:"🏋",name:"Konzentrations-Curls sitzend",muscle:"Bizeps, Supination",sets:3,reps:"12 je Seite",bi:true},
-    {icon:"💪",name:"Trizeps Kickback (BF)",muscle:"Äußerer Trizepskopf",sets:3,reps:"12–15 Wdh.",bi:false},
-    {icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:3,reps:"20 Wdh.",bi:false}
+    {icon:"🏋",name:"Konzentrations-Curls sitzend",muscle:"Bizeps, Supination",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"💪",name:"Trizeps Kickback (BF)",muscle:"Äußerer Trizepskopf",sets:3,reps:"12 Wdh.",bi:false},
+    {icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:3,reps:"12 Wdh.",bi:false}
   ]}
 ]},
 "3er":{name:"3er Split",desc:"Pull · Press · Beine · ca. 60 min ohne Aufwärmen",days:[
   {name:"Pull",tags:["pull","back","arms"],meta:"ca. 60 min",main:[
-    {icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Teres major",sets:3,reps:"8–12 Wdh.",bi:true},
-    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Mittlerer Rücken, Rhomboiden",sets:3,reps:"8–12 Wdh.",bi:true},
-    {icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter, Rotatorenmanschette",sets:3,reps:"12–15 Wdh.",bi:false},
-    {icon:"🏋",name:"Überzüge stehend",muscle:"Latissimus, Serratus",sets:3,reps:"12–15 Wdh.",bi:true},
-    {icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps brachii",sets:3,reps:"10–12 Wdh.",bi:true},
-    {icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Brachialis, Unterarm",sets:3,reps:"10–12 Wdh.",bi:true}
+    {icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Teres major",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Mittlerer Rücken, Rhomboiden",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter, Rotatorenmanschette",sets:3,reps:"12 Wdh.",bi:false},
+    {icon:"🏋",name:"Überzüge stehend",muscle:"Latissimus, Serratus",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps brachii",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Brachialis, Unterarm",sets:3,reps:"12 Wdh.",bi:true}
   ]},
   {name:"Press",tags:["push","chest","shoulder"],meta:"ca. 60 min",main:[
-    {icon:"💪",name:"Bankdrücken (BF)",muscle:"Pectoralis, vordere Schulter, Trizeps",sets:3,reps:"8–12 Wdh.",bi:true},
-    {icon:"💪",name:"Fliegende (BF)",muscle:"Innere Brust",sets:3,reps:"10–12 Wdh.",bi:true},
-    {icon:"💪",name:"Schulterdrücken sitzend",muscle:"Deltoideus, vorderer Anteil",sets:3,reps:"10–12 Wdh.",bi:true},
-    {icon:"💪",name:"Seitheben stehend (BF)",muscle:"Lateraler Deltoideus",sets:3,reps:"12–15 Wdh.",bi:true},
-    {icon:"💪",name:"Trizepsdrücken (BF)",muscle:"Trizeps brachii",sets:3,reps:"10–12 Wdh.",bi:false},
-    {icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Langer Trizepskopf",sets:3,reps:"10–12 Wdh.",bi:false}
+    {icon:"💪",name:"Bankdrücken (BF)",muscle:"Pectoralis, vordere Schulter, Trizeps",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"💪",name:"Fliegende (BF)",muscle:"Innere Brust",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"💪",name:"Schulterdrücken sitzend",muscle:"Deltoideus, vorderer Anteil",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"💪",name:"Seitheben stehend (BF)",muscle:"Lateraler Deltoideus",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"💪",name:"Trizepsdrücken (BF)",muscle:"Trizeps brachii",sets:3,reps:"12 Wdh.",bi:false},
+    {icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Langer Trizepskopf",sets:3,reps:"12 Wdh.",bi:false}
   ]},
   {name:"Beine",tags:["legs","glutes"],meta:"ca. 60 min",main:[
-    {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"10–12 Wdh.",bi:true},
-    {icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps, Stabilisation",sets:3,reps:"10 je Seite",bi:true},
-    {icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12–15 Wdh.",bi:true},
-    {icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:3,reps:"10–12 Wdh.",bi:true},
-    {icon:"🦵",name:"Adduktorenübung stehend",muscle:"Innerer Oberschenkel",sets:3,reps:"15 Wdh.",bi:true},
-    {icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:3,reps:"20 Wdh.",bi:false}
+    {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps, Stabilisation",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🦵",name:"Adduktorenübung stehend",muscle:"Innerer Oberschenkel",sets:3,reps:"12 Wdh.",bi:true},
+    {icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:3,reps:"12 Wdh.",bi:false}
   ]}
 ]},
 "5er":{name:"5er Split",desc:"Brust · Rücken · Schulter · Arme · Beine · ca. 60 min",days:[
   {name:"Brust",tags:["chest","push"],meta:"ca. 60 min",
-   main:[{icon:"💪",name:"Bankdrücken (BF)",muscle:"Pectoralis, Trizeps",sets:3,reps:"8–10 Wdh.",bi:true},{icon:"💪",name:"Schrägbankdrücken (BF)",muscle:"Obere Brust, vordere Schulter",sets:3,reps:"10–12 Wdh.",bi:true},{icon:"💪",name:"Fliegende (BF)",muscle:"Innere Brust",sets:3,reps:"12–15 Wdh.",bi:true},{icon:"💪",name:"Fliegende (BF)",muscle:"Untere Brust",sets:3,reps:"12–15 Wdh.",bi:true}]},
+   main:[{icon:"💪",name:"Bankdrücken (BF)",muscle:"Pectoralis, Trizeps",sets:3,reps:"12 Wdh.",bi:true},{icon:"💪",name:"Schrägbankdrücken (BF)",muscle:"Obere Brust, vordere Schulter",sets:3,reps:"12 Wdh.",bi:true},{icon:"💪",name:"Fliegende (BF)",muscle:"Innere Brust",sets:3,reps:"12 Wdh.",bi:true},{icon:"💪",name:"Fliegende (BF)",muscle:"Untere Brust",sets:3,reps:"12 Wdh.",bi:true}]},
   {name:"Rücken",tags:["back","pull"],meta:"ca. 60 min",
-   main:[{icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Teres major",sets:3,reps:"8–10 Wdh.",bi:true},{icon:"🏋",name:"Latzug nach vorne",muscle:"Latissimus, mittlerer Rücken",sets:3,reps:"10–12 Wdh.",bi:true},{icon:"🏋",name:"Rudern stehend (BF)",muscle:"Rhomboiden, Trapezius",sets:3,reps:"10–12 Wdh.",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter",sets:3,reps:"15 Wdh.",bi:false},{icon:"🏋",name:"Überzüge stehend",muscle:"Latissimus, Serratus",sets:3,reps:"12–15 Wdh.",bi:true}]},
+   main:[{icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Teres major",sets:3,reps:"12 Wdh.",bi:true},{icon:"🏋",name:"Latzug nach vorne",muscle:"Latissimus, mittlerer Rücken",sets:3,reps:"12 Wdh.",bi:true},{icon:"🏋",name:"Rudern stehend (BF)",muscle:"Rhomboiden, Trapezius",sets:3,reps:"12 Wdh.",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter",sets:3,reps:"12 Wdh.",bi:false},{icon:"🏋",name:"Überzüge stehend",muscle:"Latissimus, Serratus",sets:3,reps:"12 Wdh.",bi:true}]},
   {name:"Schulter",tags:["shoulder","push"],meta:"ca. 60 min",
-   main:[{icon:"💪",name:"Schulterdrücken sitzend",muscle:"Gesamter Deltoideus, Trizeps",sets:3,reps:"8–10 Wdh.",bi:true},{icon:"💪",name:"Seitheben stehend (BF)",muscle:"Lateraler Deltoideus",sets:3,reps:"12–15 Wdh.",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter",sets:3,reps:"15 Wdh.",bi:false},{icon:"💪",name:"Frontheben stehend (BF)",muscle:"Vorderer Deltoideus",sets:3,reps:"12–15 Wdh.",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Schulter, oberer Trapezius",sets:3,reps:"10–12 Wdh.",bi:false}]},
+   main:[{icon:"💪",name:"Schulterdrücken sitzend",muscle:"Gesamter Deltoideus, Trizeps",sets:3,reps:"12 Wdh.",bi:true},{icon:"💪",name:"Seitheben stehend (BF)",muscle:"Lateraler Deltoideus",sets:3,reps:"12 Wdh.",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter",sets:3,reps:"12 Wdh.",bi:false},{icon:"💪",name:"Frontheben stehend (BF)",muscle:"Vorderer Deltoideus",sets:3,reps:"12 Wdh.",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Schulter, oberer Trapezius",sets:3,reps:"12 Wdh.",bi:false}]},
   {name:"Arme",tags:["arms"],meta:"ca. 60 min",
-   main:[{icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps brachii",sets:3,reps:"10–12 Wdh.",bi:true},{icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Brachialis, Unterarm",sets:3,reps:"10–12 Wdh.",bi:true},{icon:"🏋",name:"Konzentrations-Curls sitzend",muscle:"Bizeps, Supination",sets:3,reps:"12 je Seite",bi:true},{icon:"💪",name:"Trizepsdrücken (BF)",muscle:"Trizeps brachii",sets:3,reps:"10–12 Wdh.",bi:false},{icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Langer Trizepskopf",sets:3,reps:"10–12 Wdh.",bi:false},{icon:"💪",name:"Trizeps Kickback (BF)",muscle:"Äußerer Trizepskopf",sets:3,reps:"12–15 Wdh.",bi:false}]},
+   main:[{icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps brachii",sets:3,reps:"12 Wdh.",bi:true},{icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Brachialis, Unterarm",sets:3,reps:"12 Wdh.",bi:true},{icon:"🏋",name:"Konzentrations-Curls sitzend",muscle:"Bizeps, Supination",sets:3,reps:"12 Wdh.",bi:true},{icon:"💪",name:"Trizepsdrücken (BF)",muscle:"Trizeps brachii",sets:3,reps:"12 Wdh.",bi:false},{icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Langer Trizepskopf",sets:3,reps:"12 Wdh.",bi:false},{icon:"💪",name:"Trizeps Kickback (BF)",muscle:"Äußerer Trizepskopf",sets:3,reps:"12 Wdh.",bi:false}]},
   {name:"Beine",tags:["legs","glutes"],meta:"ca. 60 min",
-   main:[{icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"10–12 Wdh.",bi:true},{icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps",sets:3,reps:"10 je Seite",bi:true},{icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12–15 Wdh.",bi:true},{icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:3,reps:"10–12 Wdh.",bi:true},{icon:"🦵",name:"Adduktorenübung stehend",muscle:"Innerer Oberschenkel",sets:3,reps:"15 Wdh.",bi:true},{icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:3,reps:"20 Wdh.",bi:false}]}
+   main:[{icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"12 Wdh.",bi:true},{icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps",sets:3,reps:"12 Wdh.",bi:true},{icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12 Wdh.",bi:true},{icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:3,reps:"12 Wdh.",bi:true},{icon:"🦵",name:"Adduktorenübung stehend",muscle:"Innerer Oberschenkel",sets:3,reps:"12 Wdh.",bi:true},{icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:3,reps:"12 Wdh.",bi:false}]}
 ]}};
 
 var LIBRARY_DEFAULT=[{cat:"legs",icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäßmuskel, Waden",bi:true,bioforce:true,custom:false},
@@ -1452,7 +1507,7 @@ function renderLibList(){
 function libAddToDay(gi){
   var e=library[gi];
   if(!editDraft[editSk]||editDraft[editSk].days[editDi].tags.indexOf('rest')!==-1){showToast('Bitte Trainingstag wählen');return;}
-  editDraft[editSk].days[editDi].main.push({icon:e.icon,name:e.name,muscle:e.muscle,sets:3,reps:"10–12 Wdh.",bi:e.bi});
+  editDraft[editSk].days[editDi].main.push({icon:e.icon,name:e.name,muscle:e.muscle,sets:3,reps:"12 Wdh.",bi:e.bi});
   showToast(e.name+' hinzugefügt ✓');
   switchEditTab('plan');renderEditExList();
 }
@@ -5024,6 +5079,169 @@ function toggleDetailEdit(){
   if(p) setTimeout(function(){ p.scrollIntoView({behavior:'smooth',block:'nearest'}); },50);
 }
 
+// ── EXERCISE EDIT OVERLAY ──
+var _exEditSk = '', _exEditDi = 0, _exEditEi = 0;
+
+function openExEdit(sk, di, ei){
+  _exEditSk = sk; _exEditDi = di; _exEditEi = ei;
+  var ex = SPLITS[sk].days[di].main[ei];
+  document.getElementById('exEditTitle').textContent = ex.icon + ' ' + ex.name;
+  document.getElementById('exEditSets').value = parseInt(ex.sets) || 3;
+  // Extract numeric reps if pattern like "12 Wdh." or "8–12 Wdh."
+  document.getElementById('exEditReps').value = ex.reps || '12 Wdh.';
+  document.getElementById('exEditOverlay').classList.remove('hidden');
+  setTimeout(function(){ document.getElementById('exEditSets').focus(); }, 100);
+}
+
+function closeExEdit(){
+  document.getElementById('exEditOverlay').classList.add('hidden');
+}
+
+function exEditBgClose(e){
+  if(e.target === document.getElementById('exEditOverlay')) closeExEdit();
+}
+
+function adjExEditVal(field, delta){
+  if(field === 'sets'){
+    var inp = document.getElementById('exEditSets');
+    var val = Math.max(1, Math.min(10, (parseInt(inp.value)||3) + delta));
+    inp.value = val;
+  } else {
+    // Reps: try to increment/decrement numeric value
+    var inp2 = document.getElementById('exEditReps');
+    var txt = inp2.value.trim();
+    // Try to find a number to increment
+    var match = txt.match(/^(\d+)(.*)/);
+    if(match){
+      var num = Math.max(1, parseInt(match[1]) + delta);
+      inp2.value = num + match[2];
+    } else {
+      // Has range like "8–12" — adjust both numbers
+      var rangeMatch = txt.match(/^(\d+)(–|-)(\d+)(.*)/);
+      if(rangeMatch){
+        var lo = Math.max(1, parseInt(rangeMatch[1]) + delta);
+        var hi = Math.max(lo, parseInt(rangeMatch[3]) + delta);
+        inp2.value = lo + rangeMatch[2] + hi + rangeMatch[4];
+      }
+    }
+  }
+}
+
+function saveExEdit(){
+  var ex = SPLITS[_exEditSk].days[_exEditDi].main[_exEditEi];
+  if(!ex) return;
+  ex.sets = Math.max(1, Math.min(10, parseInt(document.getElementById('exEditSets').value)||3));
+  var repsVal = document.getElementById('exEditReps').value.trim();
+  if(repsVal) ex.reps = repsVal;
+  saveState();
+  closeExEdit();
+  renderDetail();
+  showToast('✓ '+ex.name+' gespeichert');
+}
+
+// ── DRAG & DROP EXERCISE REORDER ──
+var _drag = {
+  ei: null,        // source index
+  ghost: null,     // floating clone element
+  startY: 0,
+  currentY: 0,
+  rows: [],        // cached row elements
+  overEi: null     // current drop target index
+};
+
+function dragStart(e, ei){
+  e.stopPropagation();
+  e.preventDefault();
+  _drag.ei = ei;
+  _drag.overEi = ei;
+  _drag.startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+
+  // Cache all rows
+  _drag.rows = Array.from(document.querySelectorAll('.ex-row.edit-mode'));
+
+  // Mark source row
+  var srcRow = document.getElementById('exrow-'+ei);
+  if(srcRow) srcRow.classList.add('dragging');
+
+  // Create ghost
+  var ghost = srcRow.cloneNode(true);
+  ghost.style.cssText = 'position:fixed;left:'+srcRow.getBoundingClientRect().left+'px;'
+    +'top:'+srcRow.getBoundingClientRect().top+'px;'
+    +'width:'+srcRow.offsetWidth+'px;opacity:.9;'
+    +'background:var(--bg2);border:1px solid var(--accent);border-radius:8px;'
+    +'z-index:9000;pointer-events:none;transition:none;box-shadow:0 8px 24px rgba(0,0,0,.4);';
+  document.body.appendChild(ghost);
+  _drag.ghost = ghost;
+  _drag.ghostOffsetY = e.clientY - srcRow.getBoundingClientRect().top;
+
+  document.addEventListener('pointermove', dragMove, {passive:false});
+  document.addEventListener('pointerup', dragEnd);
+}
+
+function dragMove(e){
+  if(_drag.ei === null) return;
+  e.preventDefault();
+  var y = e.clientY;
+
+  // Move ghost
+  _drag.ghost.style.top = (y - _drag.ghostOffsetY) + 'px';
+
+  // Find which row we're over
+  var overEi = _drag.ei;
+  _drag.rows.forEach(function(row){
+    var rect = row.getBoundingClientRect();
+    var mid = rect.top + rect.height / 2;
+    if(y > rect.top && y < rect.bottom){
+      overEi = parseInt(row.dataset.ei);
+    }
+  });
+
+  // Update visual feedback
+  _drag.rows.forEach(function(row){
+    var rei = parseInt(row.dataset.ei);
+    row.classList.remove('drag-over');
+    if(rei === overEi && overEi !== _drag.ei){
+      row.classList.add('drag-over');
+    }
+  });
+  _drag.overEi = overEi;
+}
+
+function dragEnd(e){
+  document.removeEventListener('pointermove', dragMove);
+  document.removeEventListener('pointerup', dragEnd);
+
+  // Remove ghost
+  if(_drag.ghost){ _drag.ghost.remove(); _drag.ghost = null; }
+
+  // Remove visual states
+  _drag.rows.forEach(function(row){
+    row.classList.remove('dragging','drag-over');
+  });
+
+  // Apply reorder if position changed
+  var fromEi = _drag.ei;
+  var toEi = _drag.overEi;
+  _drag.ei = null;
+
+  if(fromEi !== null && toEi !== null && fromEi !== toEi){
+    var day = SPLITS[activeSplit].days[activeDay];
+    var exs = day.main;
+    var moved = exs.splice(fromEi, 1)[0];
+    exs.splice(toEi, 0, moved);
+    saveState();
+    renderDetail();
+  }
+}
+
+function adjSets(sk, di, ei, delta){
+  var ex = SPLITS[sk].days[di].main[ei];
+  if(!ex) return;
+  ex.sets = Math.max(1, Math.min(10, (parseInt(ex.sets)||3) + delta));
+  saveState();
+  renderDetail();
+}
+
 function detailDeleteEx(ei){
   SPLITS[activeSplit].days[activeDay].main.splice(ei,1);
   saveState();
@@ -5081,17 +5299,15 @@ function renderDetail(){
     var safeName=e.name.replace(/'/g,"\\'");
     var safeIcon=(e.icon||'💪').replace(/'/g,"\\'");
     if(detailEditMode){
-      return '<div class="ex-row edit-mode">'
+      return '<div class="ex-row edit-mode" id="exrow-'+ei+'" data-ei="'+ei+'" onclick="openExEdit(\''+activeSplit+'\','+activeDay+','+ei+')" style="cursor:pointer;">'
+        +'<div class="ex-drag-handle" onpointerdown="dragStart(event,'+ei+')" onclick="event.stopPropagation()">⠿</div>'
         +'<div class="ex-icon">'+e.icon+'</div>'
-        +'<div class="ex-info"><div class="ex-name">'+e.name+'</div><div class="ex-muscle">'+e.muscle+'</div></div>'
-        +'<div class="ex-edit-btns">'
-        +'<div class="ex-sets-ctrl">'
-        +'<button class="ex-mv-btn" onclick="event.stopPropagation();adjSets(\''+activeSplit+'\','+activeDay+','+ei+',-1)">−</button>'
-        +'<span class="ex-sets-val">'+e.sets+'S</span>'
-        +'<button class="ex-mv-btn" onclick="event.stopPropagation();adjSets(\''+activeSplit+'\','+activeDay+','+ei+',1)">+</button>'
-        +'</div>'
-        +'<button class="ex-mv-btn" onclick="detailMoveEx('+ei+',-1)">▲</button>'
-        +'<button class="ex-mv-btn" onclick="detailMoveEx('+ei+',1)">▼</button>'
+        +'<div class="ex-info"><div class="ex-name">'+e.name+'</div>'
+        +'<div class="ex-muscle" style="display:flex;gap:6px;align-items:center;">'+e.muscle
+        +'<span style="color:var(--accent);font-family:\'Barlow Condensed\',sans-serif;font-size:12px;font-weight:800;">'+e.sets+'×</span>'
+        +'<span style="color:var(--muted2);font-family:\'Barlow Condensed\',sans-serif;font-size:12px;">'+e.reps+'</span>'
+        +'</div></div>'
+        +'<div class="ex-edit-btns" onclick="event.stopPropagation();">'
         +'<button class="ex-del-btn" onclick="detailDeleteEx('+ei+')">✕</button>'
         +'</div></div>';
     } else {
