@@ -56,18 +56,6 @@ html,body{overflow-x:hidden;background:var(--bg);}
 .logo{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;letter-spacing:.04em;color:var(--text);text-transform:uppercase;}
 .logo-accent{color:var(--accent);}
 .header-sub{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;}
-/* Manual rotation */
-body.rotated {
-  transform: rotate(90deg);
-  transform-origin: left top;
-  width: 100vh;
-  height: 100vw;
-  position: fixed;
-  top: 0;
-  left: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
 .btn-edit-plan{padding:.55rem .9rem;background:none;border:1px solid var(--border2);border-radius:5px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;min-height:40px;}
 .btn-edit-plan:active{border-color:var(--accent);color:var(--accent);}
 .split-nav{display:flex;padding:0 .75rem;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
@@ -752,7 +740,6 @@ body.rotated {
       <div class="header-sub">Training System</div>
     </div>
     <div style="display:flex;gap:6px;flex-shrink:0;">
-      <button class="btn-edit-plan" onclick="toggleRotate()" id="rotateBtn" title="Bildschirm drehen">⟳</button>
       <button class="btn-shuffle" onclick="openShuffle()">🔀 Shuffle</button>
       <button class="btn-library" onclick="openLibOv('manage')">📚 Bibliothek</button>
     </div>
@@ -2600,7 +2587,7 @@ function renderWeek(){
     rows += '<div class="week-row">'
       +'<div class="week-day-label'+(isToday?' today':'')+'">'+dayLbl+'</div>'
       +'<div class="week-dot'+(entries.length>0?' done':(isToday?' today-dot':''))+'"></div>'
-      +'<div class="week-entry"'+(entries.length>0?' onclick="clickLogDate(\''+dateStr+'\')" style="cursor:pointer;"':'')+'>'; 
+      +'<div class="week-entry"'+(entries.length>0?' onclick="showDayLog(\''+d.getFullYear()+'\',\''+(d.getMonth()+1)+'\',\''+d.getDate()+'\')" style="cursor:pointer;"':'')+'>'; 
     if(entries.length>0){
       rows += entries.map(function(e){
         var durStr = '';
@@ -5468,18 +5455,6 @@ function selectSplit(k){activeSplit=k;activeDay=0;detailEditMode=false;inlineAdd
 function selectDay(i){activeDay=i;detailEditMode=false;inlineAddOpen=false;renderDays();}
 
 // ── LOCALSTORAGE PERSISTENCE ──
-// ── SCREEN ROTATION ──
-var _isRotated = false;
-function toggleRotate(){
-  _isRotated = !_isRotated;
-  document.body.classList.toggle('rotated', _isRotated);
-  var btn = document.getElementById('rotateBtn');
-  if(btn){
-    btn.style.color = _isRotated ? 'var(--accent)' : '';
-    btn.style.borderColor = _isRotated ? 'var(--accent)' : '';
-  }
-}
-
 // ── THEME ──
 function setTheme(theme){
   document.body.setAttribute('data-theme', theme === 'light' ? 'light' : '');
