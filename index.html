@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<script>
+  // Unlock screen rotation for installed PWA on Android
+  if(screen.orientation && screen.orientation.unlock){
+    try { screen.orientation.unlock(); } catch(e){}
+  }
+</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="var(--bg)">
@@ -2581,7 +2587,7 @@ function renderWeek(){
     rows += '<div class="week-row">'
       +'<div class="week-day-label'+(isToday?' today':'')+'">'+dayLbl+'</div>'
       +'<div class="week-dot'+(entries.length>0?' done':(isToday?' today-dot':''))+'"></div>'
-      +'<div class="week-entry">';
+      +'<div class="week-entry"'+(entries.length>0?' onclick="clickLogDate(\''+dateStr+'\')" style="cursor:pointer;"':'')+'>'; 
     if(entries.length>0){
       rows += entries.map(function(e){
         var durStr = '';
@@ -2681,14 +2687,39 @@ function getMuscleGroup(muscleStr){
 }
 
 function calcVolumeByGroup(){
+  if(!trainingLog.length) return {weeks:[], data:{}};
+
+  // Find the earliest training date within the last 8 weeks
   var today = new Date();
+  var eightWeeksAgo = new Date(today);
+  eightWeeksAgo.setDate(today.getDate() - 56);
+
+  // Get all training dates within last 8 weeks
+  var recentLogs = trainingLog.filter(function(e){
+    return new Date(e.date) >= eightWeeksAgo;
+  });
+
+  if(!recentLogs.length) return {weeks:[], data:{}};
+
+  // Find the Monday of the week of the earliest training
+  var firstDate = new Date(recentLogs.reduce(function(min, e){
+    return e.date < min ? e.date : min;
+  }, recentLogs[0].date));
+
+  var firstMon = new Date(firstDate);
+  var day = firstMon.getDay();
+  firstMon.setDate(firstDate.getDate() - (day === 0 ? 6 : day - 1));
+
+  // Build weeks from first training Monday up to current week
   var weeks = [];
-  for(var i=7; i>=0; i--){
-    var d = new Date(today);
-    d.setDate(d.getDate() - i*7);
-    var mon = new Date(d);
-    mon.setDate(d.getDate() - d.getDay() + 1);
-    weeks.push(mon.toISOString().slice(0,10));
+  var cur = new Date(firstMon);
+  var todayMon = new Date(today);
+  todayMon.setDate(today.getDate() - (today.getDay() === 0 ? 6 : today.getDay() - 1));
+
+  while(cur <= todayMon && weeks.length <= 8){
+    weeks.push(cur.toISOString().slice(0,10));
+    cur = new Date(cur);
+    cur.setDate(cur.getDate() + 7);
   }
 
   var data = {};
@@ -2697,17 +2728,15 @@ function calcVolumeByGroup(){
   trainingLog.forEach(function(entry){
     var dt = new Date(entry.date);
     var mon = new Date(dt);
-    mon.setDate(dt.getDate() - dt.getDay() + 1);
+    var d = mon.getDay();
+    mon.setDate(dt.getDate() - (d === 0 ? 6 : d - 1));
     var wk = mon.toISOString().slice(0,10);
     if(!data[wk]) return;
     entry.exs.forEach(function(ex){
-      var grp = classifyMuscle(ex.name); // uses library cat
-      if(!data[wk][grp] && data[wk][grp] !== 0) return;
-      var sets = 3; // default
-      var reps = 12;
+      var grp = classifyMuscle(ex.name);
+      if(data[wk][grp] === undefined) return;
       var w = ex.bi ? (parseFloat(ex.wL)||0)+(parseFloat(ex.wR)||0) : (parseFloat(ex.wS)||0);
-      // Volume = weight × sets × reps
-      data[wk][grp] = (data[wk][grp]||0) + (w * sets * reps);
+      data[wk][grp] += w * 3 * 12;
     });
   });
 
@@ -2750,8 +2779,8 @@ function renderVolChart(){
   });
 
   // Canvas dimensions
-  var W = 600, H = 220;
-  var padL = 42, padR = 12, padT = 12, padB = 28;
+  var W = 600, H = 260;
+  var padL = 48, padR = 12, padT = 16, padB = 32;
   var chartW = W - padL - padR;
   var chartH = H - padT - padB;
 
@@ -2780,12 +2809,12 @@ function renderVolChart(){
     var gy = padT + (chartH/4)*gi;
     var gv = Math.round(maxVal*(1-gi/4));
     svg += '<line x1="'+padL+'" y1="'+gy+'" x2="'+(W-padR)+'" y2="'+gy+'" stroke="var(--border)" stroke-width="1"/>';
-    svg += '<text x="'+(padL-4)+'" y="'+(gy+4)+'" text-anchor="end" font-size="9" fill="var(--muted3)" font-family="Barlow Condensed">'+yLabel(gv)+'</text>';
+    svg += '<text x="'+(padL-4)+'" y="'+(gy+4)+'" text-anchor="end" font-size="11" fill="var(--muted3)" font-family="Barlow Condensed">'+yLabel(gv)+'</text>';
   }
 
   // X axis labels
   wkLabels.forEach(function(lbl, i){
-    svg += '<text x="'+xPos(i)+'" y="'+(H-6)+'" text-anchor="middle" font-size="9" fill="var(--muted3)" font-family="Barlow Condensed">'+lbl+'</text>';
+    svg += '<text x="'+xPos(i)+'" y="'+(H-6)+'" text-anchor="middle" font-size="11" fill="var(--muted3)" font-family="Barlow Condensed">'+lbl+'</text>';
   });
 
   // Lines per group
