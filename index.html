@@ -2306,7 +2306,7 @@ function renderPRGrid(){
       +'<span class="pr-group-arrow" id="prarrow-'+g.id+'">▼</span>'
       +'</span>'
       +'</button>';
-    html += '<div class="pr-group-body" id="prgroup-'+g.id+'">';
+    html += '<div class="pr-group-body" id="prgroup-'+g.id+'" style="display:none;">';
     groupKeys.forEach(function(k){
       var pr = prs[k];
       var wDisplay = pr.bi ? pr.wL+' / '+pr.wR+' kg' : pr.w+' kg';
@@ -2681,7 +2681,6 @@ function getMuscleGroup(muscleStr){
 }
 
 function calcVolumeByGroup(){
-  // Returns: { weekLabel: { chest: kg, back: kg, ... }, ... } for last 8 weeks
   var today = new Date();
   var weeks = [];
   for(var i=7; i>=0; i--){
@@ -2693,7 +2692,7 @@ function calcVolumeByGroup(){
   }
 
   var data = {};
-  weeks.forEach(function(w){ data[w] = {chest:0,back:0,shoulder:0,arms:0,legs:0,core:0}; });
+  weeks.forEach(function(w){ data[w] = {pull:0, push:0, legs:0, core:0}; });
 
   trainingLog.forEach(function(entry){
     var dt = new Date(entry.date);
@@ -2702,10 +2701,13 @@ function calcVolumeByGroup(){
     var wk = mon.toISOString().slice(0,10);
     if(!data[wk]) return;
     entry.exs.forEach(function(ex){
-      var grp = getMuscleGroup(ex.muscle||'');
-      if(!grp) return;
+      var grp = classifyMuscle(ex.name); // uses library cat
+      if(!data[wk][grp] && data[wk][grp] !== 0) return;
+      var sets = 3; // default
+      var reps = 12;
       var w = ex.bi ? (parseFloat(ex.wL)||0)+(parseFloat(ex.wR)||0) : (parseFloat(ex.wS)||0);
-      data[wk][grp] = (data[wk][grp]||0) + w;
+      // Volume = weight × sets × reps
+      data[wk][grp] = (data[wk][grp]||0) + (w * sets * reps);
     });
   });
 
@@ -2728,16 +2730,17 @@ function renderVolChart(){
 
   if(!hasData){ wrap.innerHTML=''; return; }
 
-  // Active groups only
-  var activeGroups = ['chest','back','shoulder','arms','legs','core'].filter(function(g){
+  // Active groups only — using MUSCLE_GROUPS
+  var groupColors = {pull:'#5a90d0', push:'#d06060', legs:'#60c060', core:'#9070d0'};
+  var groupNames  = {pull:'Pull', push:'Push', legs:'Legs', core:'Core'};
+
+  var activeGroups = ['pull','push','legs','core'].filter(function(g){
     return weeks.some(function(w){ return data[w][g]>0; });
   });
 
-  var groupNames = {chest:'Brust',back:'Rücken',shoulder:'Schulter',arms:'Arme',legs:'Beine',core:'Rumpf'};
-
   // Build legend
   var legend = activeGroups.map(function(g){
-    return '<div class="vol-legend-item"><div class="vol-legend-dot" style="background:'+VOL_COLORS[g]+'"></div>'+groupNames[g]+'</div>';
+    return '<div class="vol-legend-item"><div class="vol-legend-dot" style="background:'+groupColors[g]+'"></div>'+groupNames[g]+'</div>';
   }).join('');
 
   // Week labels (Mo DD.MM)
@@ -2760,7 +2763,8 @@ function renderVolChart(){
     });
   });
   if(maxVal === 0) maxVal = 1;
-  maxVal = Math.ceil(maxVal/100)*100;
+  maxVal = Math.ceil(maxVal/1000)*1000;
+  var yLabel = function(v){ return v >= 1000 ? Math.round(v/1000)+'k' : v; };
 
   var n = weeks.length;
   var xStep = chartW / (n-1);
@@ -2776,7 +2780,7 @@ function renderVolChart(){
     var gy = padT + (chartH/4)*gi;
     var gv = Math.round(maxVal*(1-gi/4));
     svg += '<line x1="'+padL+'" y1="'+gy+'" x2="'+(W-padR)+'" y2="'+gy+'" stroke="var(--border)" stroke-width="1"/>';
-    svg += '<text x="'+(padL-4)+'" y="'+(gy+4)+'" text-anchor="end" font-size="9" fill="var(--muted3)" font-family="Barlow Condensed">'+gv+'</text>';
+    svg += '<text x="'+(padL-4)+'" y="'+(gy+4)+'" text-anchor="end" font-size="9" fill="var(--muted3)" font-family="Barlow Condensed">'+yLabel(gv)+'</text>';
   }
 
   // X axis labels
@@ -2786,7 +2790,7 @@ function renderVolChart(){
 
   // Lines per group
   activeGroups.forEach(function(g){
-    var color = VOL_COLORS[g];
+    var color = groupColors[g];
     var points = weeks.map(function(w,i){
       return xPos(i)+','+yPos(data[w][g]);
     }).join(' ');
