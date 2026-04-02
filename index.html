@@ -5318,10 +5318,13 @@ function openExEdit(sk, di, ei){
   document.getElementById('exEditWeightS').style.display  = isBi ? 'none' : 'block';
   // Load current weights
   if(isBi){
-    document.getElementById('exEditWL').value = getW(sk,di,ei,'L') || 0;
-    document.getElementById('exEditWR').value = getW(sk,di,ei,'R') || 0;
+    var wL = getW(sk,di,ei,'L');
+    var wR = getW(sk,di,ei,'R');
+    document.getElementById('exEditWL').value = wL === 10 ? 0 : wL;
+    document.getElementById('exEditWR').value = wR === 10 ? 0 : wR;
   } else {
-    document.getElementById('exEditWS').value = getW(sk,di,ei,'S') || 0;
+    var wS = getW(sk,di,ei,'S');
+    document.getElementById('exEditWS').value = wS === 10 ? 0 : wS;
   }
   document.getElementById('exEditOverlay').classList.remove('hidden');
   setTimeout(function(){ document.getElementById('exEditSets').focus(); }, 100);
@@ -5367,19 +5370,16 @@ function saveExEdit(){
   ex.sets = Math.max(1, Math.min(10, parseInt(document.getElementById('exEditSets').value)||3));
   var repsVal = document.getElementById('exEditReps').value.trim();
   if(repsVal) ex.reps = repsVal;
-  // Save weights
+  // Save weights using correct setW function
   var isBi = ex.bi !== false;
-  var wKey = _exEditSk+'_'+_exEditDi+'_'+_exEditEi;
   if(isBi){
     var wL = parseFloat(document.getElementById('exEditWL').value)||0;
     var wR = parseFloat(document.getElementById('exEditWR').value)||0;
-    if(!weights[wKey]) weights[wKey] = {};
-    if(wL > 0) weights[wKey].L = wL;
-    if(wR > 0) weights[wKey].R = wR;
+    if(wL >= 0) setW(_exEditSk, _exEditDi, _exEditEi, 'L', wL);
+    if(wR >= 0) setW(_exEditSk, _exEditDi, _exEditEi, 'R', wR);
   } else {
     var wS = parseFloat(document.getElementById('exEditWS').value)||0;
-    if(!weights[wKey]) weights[wKey] = {};
-    if(wS > 0) weights[wKey].S = wS;
+    if(wS >= 0) setW(_exEditSk, _exEditDi, _exEditEi, 'S', wS);
   }
   saveState();
   closeExEdit();
