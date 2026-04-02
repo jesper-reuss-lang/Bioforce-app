@@ -368,6 +368,10 @@ html,body{overflow-x:hidden;background:var(--bg);}
 .cal-day.today::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--muted);}
 .cal-day.has-training{background:var(--accent3);color:var(--accent);border:1px solid #3a5020;cursor:pointer;font-weight:700;}
 .cal-day.has-training:active{background:#253d0a;}
+.cal-day.change-day{cursor:default;}
+.split-legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.75rem;}
+.split-legend-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text3);}
+.split-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 .cal-day.empty{opacity:0;}
 /* Week overview */
 .week-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:8px;margin-bottom:1.25rem;overflow:hidden;}
@@ -771,6 +775,7 @@ html,body{overflow-x:hidden;background:var(--bg);}
     <!-- Calendar -->
     <div>
       <div class="hist-section-title">Kalender</div>
+      <div class="split-legend" id="splitLegend"></div>
       <div class="cal-wrap">
         <div class="cal-header">
           <button class="cal-nav-btn" onclick="calPrev()">‹</button>
@@ -1461,7 +1466,7 @@ function openEditor(sk,di){
 }
 function closeEditor(){document.getElementById('editOverlay').classList.add('hidden');}
 function saveAndClose(){SPLITS=deepClone(editDraft);closeEditor();renderNav();renderDays();saveState();showToast('Plan gespeichert ✓');}
-function showToast(msg){var t=document.createElement('div');t.className='saved-toast';t.textContent=msg;document.body.appendChild(t);setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);},2000);}
+function showToast(msg, duration){var t=document.createElement('div');t.className='saved-toast';t.textContent=msg;document.body.appendChild(t);setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);},duration||2000);}
 function switchEditTab(tab){
   currentEditTab=tab;
   if(tab==='plan'){
@@ -1967,7 +1972,7 @@ function renderStep(){
       var progReady=false;
       var sides=ex.bi!==false?['L','R']:['S'];
       for(var s=0;s<sides.length;s++){
-        if(countSuccessfulSessions(step.sk,step.di,ei,sides[s],ex.sets)>=3){progReady=true;break;}
+        if(countSuccessfulSessions(step.sk,step.di,ei,sides[s],ex.sets)>=2){progReady=true;break;}
       }
       return '<div class="f-row"><span class="f-rname">'+ex.icon+' '+ex.name+(progReady?' <span class="ex-prog-indicator">▲</span>':'')+'</span><span class="f-rw">'+info+'</span></div>';
     }).join('');
@@ -2029,7 +2034,7 @@ function checkProgressionAfterTraining(sk,di){
     for(var s=0;s<sides.length;s++){
       var side=sides[s];
       var count=countSuccessfulSessions(sk,di,ei,side,ex.sets);
-      if(count>=3){
+      if(count>=2){
         var curW=getW(sk,di,ei,side);
         suggestions.push({sk:sk,di:di,ei:ei,side:side,name:ex.name,icon:ex.icon,bi:bilateral,curW:curW,newW:curW+2.5});
       }
@@ -2570,7 +2575,8 @@ function renderWeek(){
     var dayLbl = DAY_NAMES_SHORT[(d.getDay())];
     rows += '<div class="week-row">'
       +'<div class="week-day-label'+(isToday?' today':'')+'">'+dayLbl+'</div>'
-      +'<div class="week-dot'+(entries.length>0?' done':(isToday?' today-dot':''))+'"></div>'
+      +'<div class="week-dot'+(entries.length>0?' done':(isToday?' today-dot':''))+'"'
+      +(entries.length>0?' style="background:'+getSplitColor(entries[0].sk)+';"':'')+'></div>'
       +'<div class="week-entry"'+(entries.length>0?' onclick="showDayLog(\''+d.getFullYear()+'\',\''+(d.getMonth()+1)+'\',\''+d.getDate()+'\')" style="cursor:pointer;"':'')+'>'; 
     if(entries.length>0){
       rows += entries.map(function(e){
@@ -2613,6 +2619,18 @@ var MONTH_NAMES = ['Januar','Februar','März','April','Mai','Juni','Juli','Augus
 function renderCal(){
   if(calYear===undefined) initCal();
   document.getElementById('calMonth').textContent = MONTH_NAMES[calMonth2]+' '+calYear;
+
+  // Split legend
+  var legendEl = document.getElementById('splitLegend');
+  if(legendEl){
+    var usedSplits = {};
+    trainingLog.forEach(function(e){ usedSplits[e.sk] = e.splitName; });
+    legendEl.innerHTML = Object.keys(usedSplits).map(function(sk){
+      var col = getSplitColor(sk);
+      return '<div class="split-legend-item"><div class="split-legend-dot" style="background:'+col+';"></div>'+usedSplits[sk]+'</div>';
+    }).join('')
+    + '<div class="split-legend-item"><div class="split-legend-dot" style="background:#c8a800;"></div>Plan wechseln</div>';
+  }
   var today = new Date();
   var firstDay = new Date(calYear, calMonth2, 1).getDay(); // 0=Sun
   var startOffset = (firstDay+6)%7; // Mon=0
@@ -2631,12 +2649,33 @@ function renderCal(){
     return '<div class="cal-day-hdr">'+d+'</div>';
   }).join('');
   for(var i=0;i<startOffset;i++) html+='<div class="cal-day empty"></div>';
+  // Calculate 6-week change date from first training
+  var changeDate = null;
+  if(trainingLog.length){
+    var firstLog = trainingLog.reduce(function(min,e){ return e.date < min ? e.date : min; }, trainingLog[0].date);
+    var changeD = new Date(firstLog);
+    changeD.setDate(changeD.getDate() + 42);
+    changeDate = changeD;
+  }
+
   for(var day=1;day<=daysInMonth;day++){
     var isToday = (today.getFullYear()===calYear && today.getMonth()===calMonth2 && today.getDate()===day);
     var hasTrain = !!trainDates[day];
-    var cls = 'cal-day'+(isToday?' today':'')+(hasTrain?' has-training':'');
+    // Check if this is the 6-week change date
+    var isChangeDay = changeDate && changeDate.getFullYear()===calYear && changeDate.getMonth()===calMonth2 && changeDate.getDate()===day;
     var onclick = hasTrain ? ' onclick="showDayLog('+calYear+','+(calMonth2+1)+','+day+')"' : '';
-    html += '<div class="'+cls+'"'+onclick+'>'+day+'</div>';
+
+    var style = '';
+    if(isChangeDay){
+      style = ' style="background:#c8a800;color:#0d0f12;font-weight:800;border:none;"';
+    } else if(hasTrain){
+      // Color by split
+      var sk = trainDates[day][0].sk;
+      var col = getSplitColor(sk);
+      style = ' style="background:'+col+'22;color:'+col+';border:1px solid '+col+'55;"';
+    }
+    var cls = 'cal-day'+(isToday?' today':'')+(hasTrain?' has-training':'')+(isChangeDay?' change-day':'');
+    html += '<div class="'+cls+'"'+onclick+style+'>'+day+(isChangeDay?'<span style="position:absolute;bottom:1px;left:50%;transform:translateX(-50%);font-size:7px;">🔄</span>':'')+'</div>';
   }
   document.getElementById('calGrid').innerHTML = html;
 }
@@ -2647,6 +2686,44 @@ function showDayLog(y, m, d){
   // scroll to log and highlight
   renderLog(dateStr);
   document.getElementById('logList').scrollIntoView({behavior:'smooth'});
+}
+
+
+// ── SPLIT COLORS ──
+var SPLIT_COLORS = {
+  'gk':  '#e0a030', // Ganzkörper — Gold/Gelb
+  '3er': '#40b0a0', // 3er Split — Türkis
+  '5er': '#c060d0', // 5er Split — Lila
+};
+var SPLIT_COLOR_POOL = [
+  '#d07060','#50b0d0','#9070d0','#70a050','#e06090','#60a0d0','#d09030','#80c080'
+];
+
+function getSplitColor(sk){
+  if(SPLIT_COLORS[sk]) return SPLIT_COLORS[sk];
+  var keys = Object.keys(SPLITS).filter(function(k){ return !SPLIT_COLORS[k]; });
+  var idx = keys.indexOf(sk);
+  return SPLIT_COLOR_POOL[idx % SPLIT_COLOR_POOL.length];
+}
+
+// ── 6-WEEK PLAN CHANGE REMINDER ──
+function checkPlanChangeReminder(){
+  if(!trainingLog.length) return;
+  var firstLog = trainingLog.reduce(function(min,e){ return e.date < min ? e.date : min; }, trainingLog[0].date);
+  var firstDate = new Date(firstLog);
+  var changeDate = new Date(firstDate);
+  changeDate.setDate(firstDate.getDate() + 42);
+  var today = new Date();
+  today.setHours(0,0,0,0);
+  changeDate.setHours(0,0,0,0);
+  var diff = Math.round((today - changeDate) / (24*3600*1000));
+  if(diff === 0){
+    setTimeout(function(){ showToast('🔄 6 Wochen erreicht — Zeit den Trainingsplan zu wechseln!', 6000); }, 1500);
+  } else if(diff > 0 && diff <= 7){
+    setTimeout(function(){ showToast('🔄 Trainingsplan seit '+diff+' Tag'+(diff>1?'en':'')+' überfällig — Plan wechseln!', 6000); }, 1500);
+  } else if(diff === -3){
+    setTimeout(function(){ showToast('⏰ In 3 Tagen: Trainingsplan nach 6 Wochen wechseln!', 5000); }, 1500);
+  }
 }
 
 // ── VOLUME LINE CHART ──
@@ -5137,7 +5214,12 @@ function confirmDeleteSplitDirect(sk){
 
 function renderNav(){
   var tabs = Object.keys(SPLITS).map(function(k){
-    return '<button class="split-tab '+(k===activeSplit?'active':'')+'" onclick="selectSplit(\''+k+'\')">'
+    var isActive = k===activeSplit;
+    var col = getSplitColor(k);
+    var style = isActive
+      ? 'color:'+col+';border-bottom-color:'+col+';'
+      : 'color:var(--muted2);';
+    return '<button class="split-tab" style="'+style+'" onclick="selectSplit(\''+k+'\')">'
       +SPLITS[k].name
       +(Object.keys(SPLITS).length>1?'<button class="split-nav-del" onclick="event.stopPropagation();confirmDeleteSplitDirect(\''+k+'\')" title="Löschen">✕</button>':'')
       +'</button>';
@@ -5460,7 +5542,7 @@ function renderDetail(){
   var exRows=day.main.map(function(e,ei){
     var progReady=false;
     var sides=e.bi!==false?['L','R']:['S'];
-    for(var s=0;s<sides.length;s++){if(countSuccessfulSessions(sk,di,ei,sides[s],e.sets)>=3){progReady=true;break;}}
+    for(var s=0;s<sides.length;s++){if(countSuccessfulSessions(sk,di,ei,sides[s],e.sets)>=2){progReady=true;break;}}
     var badge=progReady?'<span class="prog-badge">▲ +2,25 kg</span>':'';
     var safeName=e.name.replace(/'/g,"\\'");
     var safeIcon=(e.icon||'💪').replace(/'/g,"\\'");
@@ -5839,6 +5921,7 @@ if(!trainingLog.length){
 }
 
 renderNav();renderDays();
+checkPlanChangeReminder();
 </script>
 
 <script>
