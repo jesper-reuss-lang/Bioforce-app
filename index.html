@@ -5625,7 +5625,28 @@ function loadState(){
     if(data.SPLITS) SPLITS=data.SPLITS;
     if(data.library) {
       library = data.library;
-      // Merge any new non-custom exercises from LIBRARY_DEFAULT that aren't in saved library
+      // Rename old exercise names
+      var renames = {
+        'Abduktorenübung stehend': 'Abduktoren außen',
+        'Adduktorenübung stehend': 'Adduktoren innen',
+        'Abduktornübung einbeinig sitzend': null,
+        'Adduktorenübung einbeinig sitzend': null,
+      };
+      // List of removed exercises (no longer in default)
+      var defaultNames = LIBRARY_DEFAULT.map(function(e){ return e.name; });
+      library = library.filter(function(e){
+        // Remove exercises that were deleted from default (non-custom only)
+        if(!e.custom && defaultNames.indexOf(e.name) === -1){
+          // Check if it has a rename
+          if(renames[e.name] === null) return false; // deleted
+          if(renames[e.name]) { e.name = renames[e.name]; return true; }
+          return false; // not in default anymore
+        }
+        // Apply renames for custom exercises too
+        if(renames[e.name]) e.name = renames[e.name];
+        return true;
+      });
+      // Merge any new non-custom exercises from LIBRARY_DEFAULT
       LIBRARY_DEFAULT.forEach(function(def){
         if(def.custom) return;
         var exists = library.find(function(e){ return e.name === def.name; });
