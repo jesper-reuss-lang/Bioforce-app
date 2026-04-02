@@ -3,12 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<script>
-  // Unlock screen rotation for installed PWA on Android
-  if(screen.orientation && screen.orientation.unlock){
-    try { screen.orientation.unlock(); } catch(e){}
-  }
-</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="var(--bg)">
@@ -735,7 +729,7 @@ html,body{overflow-x:hidden;background:var(--bg);}
 
 <div class="app" id="mainApp">
   <div class="header">
-    <div>
+    <div onclick="showPage('plan')" style="cursor:pointer;" title="Home">
       <div class="logo">BIO<span class="logo-accent">FORCE</span></div>
       <div class="header-sub">Training System</div>
     </div>
@@ -1227,6 +1221,8 @@ html,body{overflow-x:hidden;background:var(--bg);}
       <div id="libovFilterBody" style="display:none;">
         <div class="libov-filter-lbl" style="margin-top:.5rem;">Kategorie</div>
         <div class="libov-filter-row" id="libovCatRow"></div>
+        <div class="libov-filter-lbl" style="margin-top:.35rem;">Art</div>
+        <div class="libov-filter-row" id="libovEqRow"></div>
         <div class="libov-filter-lbl" style="margin-top:.35rem;">Muskelgruppe</div>
         <div class="libov-filter-row" id="libovMgRow"></div>
       </div>
@@ -1424,13 +1420,13 @@ var LIBRARY_DEFAULT=[{cat:"legs",icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quad
   {cat:"core",icon:"🎯",name:"Oberkörperdrehen stehend",muscle:"Gerade Bauchmuskeln, schräge Bauchmuskeln",bi:false,bioforce:true,custom:false},
   {cat:"core",icon:"🎯",name:"Seitbeugen",muscle:"Gerade Bauchmuskeln, seitliche Beugemuskeln, Sägemuskeln",bi:false,bioforce:true,custom:false},
   {cat:"pull",icon:"🏋",name:"Rückenstrecker sitzend",muscle:"Untere Rückenmuskulatur",bi:true,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Bankdrücken mit Langhantel",muscle:"Brust, vorderer Deltoideus, Trizeps",bi:false,bioforce:false,custom:false},
-  {cat:"push",icon:"💪",name:"Schrägbankdrücken mit Langhantel",muscle:"Obere Brust, vorderer Deltoideus, Trizeps",bi:false,bioforce:false,custom:false},
-  {cat:"push",icon:"💪",name:"Enger Griff Bankdrücken",muscle:"Trizeps, innere Brust",bi:false,bioforce:false,custom:false},
-  {cat:"pull",icon:"🏋",name:"Rudern sitzend enger Griff",muscle:"Mittlerer Rücken, Rhomboiden, Bizeps",bi:false,bioforce:false,custom:false},
-  {cat:"pull",icon:"🏋",name:"Rudern sitzend breiter Griff",muscle:"Latissimus, hintere Schulter, Rhomboiden",bi:false,bioforce:false,custom:false},
-  {cat:"push",icon:"💪",name:"Kurzhantel Bankdrücken",muscle:"Brust (gesamt), vorderer Deltoideus, Trizeps",bi:true,bioforce:false,custom:false},
-  {cat:"pull",icon:"🏋",name:"Rudern mit Kurzhanteln",muscle:"Mittlerer Rücken, Rhomboiden, Bizeps",bi:true,bioforce:false,custom:false}
+  {cat:"push",icon:"💪",name:"Bankdrücken mit Langhantel",muscle:"Brust, vorderer Deltoideus, Trizeps",bi:false,bioforce:false,equipment:"langhantel",custom:false},
+  {cat:"push",icon:"💪",name:"Schrägbankdrücken mit Langhantel",muscle:"Obere Brust, vorderer Deltoideus, Trizeps",bi:false,bioforce:false,equipment:"langhantel",custom:false},
+  {cat:"push",icon:"💪",name:"Enger Griff Bankdrücken",muscle:"Trizeps, innere Brust",bi:false,bioforce:false,equipment:"langhantel",custom:false},
+  {cat:"pull",icon:"🏋",name:"Rudern sitzend enger Griff",muscle:"Mittlerer Rücken, Rhomboiden, Bizeps",bi:false,bioforce:false,equipment:"bioforce",custom:false},
+  {cat:"pull",icon:"🏋",name:"Rudern sitzend breiter Griff",muscle:"Latissimus, hintere Schulter, Rhomboiden",bi:false,bioforce:false,equipment:"bioforce",custom:false},
+  {cat:"push",icon:"💪",name:"Kurzhantel Bankdrücken",muscle:"Brust (gesamt), vorderer Deltoideus, Trizeps",bi:true,bioforce:false,equipment:"kurzhantel",custom:false},
+  {cat:"pull",icon:"🏋",name:"Rudern mit Kurzhanteln",muscle:"Mittlerer Rücken, Rhomboiden, Bizeps",bi:true,bioforce:false,equipment:"kurzhantel",custom:false}
 ];
 function deepClone(o){return JSON.parse(JSON.stringify(o));}
 var SPLITS=deepClone(SPLITS_DEFAULT);
@@ -2444,7 +2440,7 @@ function renderStatDetail(mgId){
         ? hist[0].wL+' / '+hist[0].wR+' kg'
         : hist[0].wS+' kg';
 
-      html += '<div class="ex-prog-item" onclick="selectExerciseChart(\''+exName.replace(/'/g,"\\'")+'\')\" style="cursor:pointer;">'
+      html += '<div class="ex-prog-item" onclick="selectExerciseChart(\''+exName.replace(/'/g,"\\'")+ '\')" style="cursor:pointer;">'
         +'<div class="ex-prog-item-head">'
         +'<span class="ex-prog-item-name">'+ex.icon+' '+exName+'</span>'
         +'<span class="ex-prog-item-delta '+(isUp?'up':'same')+'">'+deltaStr+'</span>'
@@ -3763,15 +3759,22 @@ function closeExDesc(e){
 // ── BIBLIOTHEK OVERLAY ──
 var libovMode = 'manage'; // 'pick' = add to day, 'manage' = edit library
 var libovActiveCat = 'all';
-var libovActiveMg = 'all';
+var libovActiveEq  = 'all';
+var libovActiveMg  = 'all';
 
 var LIBOV_CATS = [
-  {id:'all',      label:'Alle'},
-  {id:'bioforce', label:'🏋 BioForce'},
+  {id:'all',  label:'Alle'},
   {id:'pull', label:'Pull'},
   {id:'push', label:'Push'},
   {id:'legs', label:'Legs'},
   {id:'core', label:'Core'}
+];
+
+var LIBOV_EQS = [
+  {id:'all',        label:'Alle'},
+  {id:'bioforce',   label:'🏋 BioForce'},
+  {id:'langhantel', label:'Langhantel'},
+  {id:'kurzhantel', label:'Kurzhantel'},
 ];
 var LIBOV_MGS = [
   {id:'all',      label:'Alle'},
@@ -3792,7 +3795,8 @@ var libovFiltersOpen = false;
 function openLibOv(mode){
   libovMode = mode || 'manage';
   libovActiveCat = 'all';
-  libovActiveMg = 'all';
+  libovActiveEq  = 'all';
+  libovActiveMg  = 'all';
   libovFiltersOpen = false;
   var title = document.getElementById('libovTitle');
   var sub = document.getElementById('libovSubtitle');
@@ -3843,32 +3847,51 @@ function updateFilterSummary(){
 }
 
 function renderLibovFilters(){
-  // Only show MGs that have exercises in current cat selection
-  var activeMGs = {};
+  var parts = [];
+  if(libovActiveCat !== 'all'){ var fc=LIBOV_CATS.find(function(x){return x.id===libovActiveCat;}); if(fc) parts.push(fc.label); }
+  if(libovActiveEq  !== 'all'){ var fe=LIBOV_EQS.find(function(x){return x.id===libovActiveEq;});   if(fe) parts.push(fe.label); }
+  if(libovActiveMg  !== 'all') parts.push(libovActiveMg);
+  document.getElementById('libovFilterSummary').textContent = parts.length ? parts.join(' · ') : 'Filter';
+
+  document.getElementById('libovCatRow').innerHTML = LIBOV_CATS.map(function(c){
+    return '<button class="libov-chip cat-'+c.id+(libovActiveCat===c.id?' active':'')+' " onclick="setLibovCat(\'' +c.id+ '\')">'+c.label+'</button>';
+  }).join('');
+
+  var activeEqs = {};
   library.forEach(function(e){
     var catOk = libovActiveCat==='all' || e.cat===libovActiveCat;
     if(!catOk) return;
+    var eq = e.equipment || (e.bioforce ? 'bioforce' : 'other');
+    activeEqs[eq] = true;
+  });
+  var eqRow = document.getElementById('libovEqRow');
+  if(eqRow) eqRow.innerHTML = LIBOV_EQS.filter(function(eq){
+    return eq.id==='all' || activeEqs[eq.id];
+  }).map(function(eq){
+    var cls = eq.id==='bioforce' ? 'cat-bioforce' : eq.id==='langhantel' ? 'cat-pull' : eq.id==='kurzhantel' ? 'cat-legs' : 'cat-all';
+    return '<button class="libov-chip '+cls+(libovActiveEq===eq.id?' active':'')+'" onclick="setLibovEq(\''+eq.id+'\')">'+eq.label+'</button>';
+  }).join('');
+
+  var activeMGs = {};
+  library.forEach(function(e){
+    var catOk = libovActiveCat==='all' || e.cat===libovActiveCat;
+    var eqOk  = libovActiveEq==='all'  || (e.equipment||(e.bioforce?'bioforce':'other'))===libovActiveEq;
+    if(!catOk||!eqOk) return;
     var m = e.muscle || '';
     LIBOV_MGS.forEach(function(mg){
       if(mg.id==='all') return;
       if(m.toLowerCase().indexOf(mg.id.toLowerCase())!==-1) activeMGs[mg.id]=true;
     });
   });
-
-  document.getElementById('libovCatRow').innerHTML = LIBOV_CATS.map(function(c){
-    return '<button class="libov-chip cat-'+c.id+(libovActiveCat===c.id?' active':'')+'" onclick="setLibovCat(\''+c.id+'\')">'+c.label+'</button>';
-  }).join('');
-
   document.getElementById('libovMgRow').innerHTML = LIBOV_MGS.filter(function(m){
     return m.id==='all' || activeMGs[m.id];
   }).map(function(m){
     return '<button class="libov-chip mg'+(libovActiveMg===m.id?' active':'')+'" onclick="setLibovMg(\''+m.id+'\')">'+m.label+'</button>';
   }).join('');
-
-  updateFilterSummary();
 }
-function setLibovCat(cat){ libovActiveCat=cat; renderLibovFilters(); renderLibovList(); }
-function setLibovMg(mg){ libovActiveMg=mg; renderLibovFilters(); renderLibovList(); }
+function setLibovCat(cat){ libovActiveCat=cat; libovActiveEq='all'; libovActiveMg='all'; renderLibovFilters(); renderLibovList(); }
+function setLibovEq(eq){  libovActiveEq=eq;   libovActiveMg='all'; renderLibovFilters(); renderLibovList(); }
+function setLibovMg(mg){  libovActiveMg=mg;   renderLibovFilters(); renderLibovList(); }
 
 // Check if muscle name matches mg filter
 function mgMatch(muscle, mg){
@@ -3880,11 +3903,10 @@ function renderLibovList(){
   var catCls={pull:'cat-pull',push:'cat-push',legs:'cat-legs',core:'cat-core',cardio:'cat-cardio',stretch:'cat-stretch',bioforce:'cat-bioforce'};
   var catLbl={pull:'Pull',push:'Push',legs:'Legs',core:'Core',cardio:'Cardio',stretch:'Stretch'};
   var filtered = library.filter(function(e){
-    var catOk = libovActiveCat==='all'
-      || (libovActiveCat==='bioforce' && e.bioforce)
-      || (libovActiveCat!=='bioforce' && e.cat===libovActiveCat);
-    var mgOk = libovActiveMg==='all' || mgMatch(e.muscle||'', libovActiveMg);
-    return catOk && mgOk;
+    var catOk = libovActiveCat==='all' || e.cat===libovActiveCat;
+    var eqOk  = libovActiveEq==='all'  || (e.equipment||(e.bioforce?'bioforce':'other'))===libovActiveEq;
+    var mgOk  = libovActiveMg==='all'  || mgMatch(e.muscle||'', libovActiveMg);
+    return catOk && eqOk && mgOk;
   });
   if(filtered.length===0){
     document.getElementById('libovList').innerHTML='<div style="color:var(--muted3);font-size:13px;padding:1rem;text-align:center;">Keine Übungen gefunden.</div>';

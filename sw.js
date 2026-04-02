@@ -1,5 +1,5 @@
 // BioForce PWA Service Worker — Network-first mit Auto-Update
-const CACHE_NAME = 'bioforce-v7';
+const CACHE_NAME = 'bioforce-v8';
 const ASSETS = [
   './index.html',
   './manifest.json',
