@@ -1428,7 +1428,8 @@ var LIBRARY_DEFAULT=[{cat:"legs",icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quad
   {cat:"push",icon:"💪",name:"Schrägbankdrücken mit Langhantel",muscle:"Obere Brust, vorderer Deltoideus, Trizeps",bi:false,bioforce:false,custom:false},
   {cat:"push",icon:"💪",name:"Enger Griff Bankdrücken",muscle:"Trizeps, innere Brust",bi:false,bioforce:false,custom:false},
   {cat:"pull",icon:"🏋",name:"Rudern sitzend enger Griff",muscle:"Mittlerer Rücken, Rhomboiden, Bizeps",bi:false,bioforce:false,custom:false},
-  {cat:"pull",icon:"🏋",name:"Rudern sitzend breiter Griff",muscle:"Latissimus, hintere Schulter, Rhomboiden",bi:false,bioforce:false,custom:false}
+  {cat:"pull",icon:"🏋",name:"Rudern sitzend breiter Griff",muscle:"Latissimus, hintere Schulter, Rhomboiden",bi:false,bioforce:false,custom:false},
+  {cat:"push",icon:"💪",name:"Kurzhantel Bankdrücken",muscle:"Brust (gesamt), vorderer Deltoideus, Trizeps",bi:true,bioforce:false,custom:false}
 ];
 function deepClone(o){return JSON.parse(JSON.stringify(o));}
 var SPLITS=deepClone(SPLITS_DEFAULT);
@@ -3655,6 +3656,15 @@ var EX_DB = {
     ]
   },
 
+  'Kurzhantel Bankdrücken': {
+    primary: ['Brust (gesamt)', 'vorderer Deltoideus', 'Trizeps'],
+    secondary: ['Stabilisatoren der Schulter'],
+    steps: [
+      'Auf der Bank liegen, eine Kurzhantel in jeder Hand. Hände auf Brusthöhe, Ellbogen ca. 45–75° vom Körper — nicht senkrecht ausgestreckt. Kurzhanteln ermöglichen einen tieferen Bewegungsumfang als die Langhantel.',
+      'Kurzhanteln kontrolliert absenken bis die Ellbogen leicht unter Bankhöhe kommen — maximale Dehnung der Brust. Handgelenke gerade halten, nicht nach hinten abknicken lassen.',
+      'Explosiv nach oben drücken und die Kurzhanteln leicht aufeinander zuführen — dadurch wird die Brust oben stärker kontrahiert. Schulterblätter die ganze Zeit zusammengezogen halten.'
+    ]
+  },
   'Rudern sitzend enger Griff': {
     primary: ['Mittlerer Rücken', 'Rhomboiden', 'Bizeps'],
     secondary: ['hintere Schulter', 'Unterarme'],
@@ -5675,7 +5685,7 @@ function saveDebounced(){ clearTimeout(saveTimer); saveTimer=setTimeout(saveStat
 
 
 // ── EXERCISE PHOTO DATA ──
-var EX_PHOTO_MAP = {"Kniebeugen (BF)": 1, "Kniebeugen einbeinig": 2, "Ausfallschritt rückwärts": 3, "Beinstrecker sitzend": 4, "Beinstrecken einseitig": 5, "Kreuzheben gestreckte Beine": 6, "Kreuzheben (BF)": 7, "Bein-Curls stehend (BF)": 8, "Wadendrücken (BF)": 9, "Wadendrücken außen": 10, "Wadendrücken innen": 11, "Kickbacks einbeinig": 12, "Beindrücken": 13, "Abduktoren außen": 16, "Adduktoren innen": 17, "Abduktorenübung liegend": 19, "Abduktorenübung liegend einbeinig": 20, "Sprunggelenk laterale Rotation": 30, "Sprunggelenk mediale Rotation": 31, "Bankdrücken (BF)": 32, "Schrägbankdrücken (BF)": 34, "Fliegende (BF)": 36, "Fliegende auf der Schrägbank": 38, "Negatives Schrägbankdrücken": 40, "Latziehen zur Brust": 42, "Latzug nach vorne": 43, "Überzüge sitzend": 49, "Seitdrücken": 51, "Rudern stehend (BF)": 53, "Überzüge stehend": 59, "Schulterdrücken sitzend": 60, "Schulterziehen (Shrugs)": 62, "Frontheben stehend (BF)": 64, "Seitheben stehend (BF)": 66, "Seitheben stehend einarmig": 67, "Delta-Rudern stehend": 68, "Cablecross": 70, "Frontheben sitzend": 71, "Frontheben sitzend einarmig": 72, "Seitheben sitzend": 73, "Handgelenk Außenrotation": 75, "Handgelenk Innenrotation": 76, "Schulter Rotation nach oben": 77, "Rückziehen": 78, "Schulter Außenrotation gestreckt": 79, "Schulter Innenrotation gestreckt": 80, "Bizeps-Curls stehend": 81, "Hammer-Curls (BF)": 83, "Bizeps-Curls gebogene Stange": 87, "Konzentrations-Curls sitzend": 89, "Unterarm-Curls sitzend": 90, "Trizepsdrücken überkopf (BF)": 92, "Trizepsdrücken (BF)": 94, "Getrenntes Trizepsdrücken": 96, "Trizeps Kickback (BF)": 101, "Trizeps Kickbacks Untergriff": 102, "Dips (BF)": 103, "Bauch Crunches": 106, "Schräge Crunches": 107, "Oberkörperdrehen stehend": 108, "Seitbeugen": 109, "Rückenstrecker sitzend": 110, "Bankdrücken mit Langhantel": 111, "Schrägbankdrücken mit Langhantel": 112, "Enger Griff Bankdrücken": 113, "Rudern sitzend enger Griff": 114, "Rudern sitzend breiter Griff": 115};
+var EX_PHOTO_MAP = {"Kniebeugen (BF)": 1, "Kniebeugen einbeinig": 2, "Ausfallschritt rückwärts": 3, "Beinstrecker sitzend": 4, "Beinstrecken einseitig": 5, "Kreuzheben gestreckte Beine": 6, "Kreuzheben (BF)": 7, "Bein-Curls stehend (BF)": 8, "Wadendrücken (BF)": 9, "Wadendrücken außen": 10, "Wadendrücken innen": 11, "Kickbacks einbeinig": 12, "Beindrücken": 13, "Abduktoren außen": 16, "Adduktoren innen": 17, "Abduktorenübung liegend": 19, "Abduktorenübung liegend einbeinig": 20, "Sprunggelenk laterale Rotation": 30, "Sprunggelenk mediale Rotation": 31, "Bankdrücken (BF)": 32, "Schrägbankdrücken (BF)": 34, "Fliegende (BF)": 36, "Fliegende auf der Schrägbank": 38, "Negatives Schrägbankdrücken": 40, "Latziehen zur Brust": 42, "Latzug nach vorne": 43, "Überzüge sitzend": 49, "Seitdrücken": 51, "Rudern stehend (BF)": 53, "Überzüge stehend": 59, "Schulterdrücken sitzend": 60, "Schulterziehen (Shrugs)": 62, "Frontheben stehend (BF)": 64, "Seitheben stehend (BF)": 66, "Seitheben stehend einarmig": 67, "Delta-Rudern stehend": 68, "Cablecross": 70, "Frontheben sitzend": 71, "Frontheben sitzend einarmig": 72, "Seitheben sitzend": 73, "Handgelenk Außenrotation": 75, "Handgelenk Innenrotation": 76, "Schulter Rotation nach oben": 77, "Rückziehen": 78, "Schulter Außenrotation gestreckt": 79, "Schulter Innenrotation gestreckt": 80, "Bizeps-Curls stehend": 81, "Hammer-Curls (BF)": 83, "Bizeps-Curls gebogene Stange": 87, "Konzentrations-Curls sitzend": 89, "Unterarm-Curls sitzend": 90, "Trizepsdrücken überkopf (BF)": 92, "Trizepsdrücken (BF)": 94, "Getrenntes Trizepsdrücken": 96, "Trizeps Kickback (BF)": 101, "Trizeps Kickbacks Untergriff": 102, "Dips (BF)": 103, "Bauch Crunches": 106, "Schräge Crunches": 107, "Oberkörperdrehen stehend": 108, "Seitbeugen": 109, "Rückenstrecker sitzend": 110, "Bankdrücken mit Langhantel": 111, "Schrägbankdrücken mit Langhantel": 112, "Enger Griff Bankdrücken": 113, "Rudern sitzend enger Griff": 114, "Rudern sitzend breiter Griff": 115, "Kurzhantel Bankdrücken": 116};
 var EX_PHOTOS = null;
 
 var STRETCH_PHOTO_MAP = {
