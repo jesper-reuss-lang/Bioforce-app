@@ -356,16 +356,16 @@ html,body{overflow-x:hidden;background:var(--bg);}
 .log-entry-arrow.open{transform:rotate(180deg);}
 .hist-section-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;padding-bottom:.35rem;border-bottom:1px solid var(--border);}
 /* Calendar */
-.cal-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.9rem;margin-bottom:1.25rem;}
-.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;}
-.cal-month{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--text);}
-.cal-nav-btn{background:none;border:1px solid var(--border2);color:var(--muted);border-radius:4px;cursor:pointer;padding:.3rem .7rem;font-size:16px;min-height:36px;min-width:36px;}
+.cal-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.5rem .6rem;margin-bottom:1rem;}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem;}
+.cal-month{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--text);}
+.cal-nav-btn{background:none;border:1px solid var(--border2);color:var(--muted);border-radius:4px;cursor:pointer;padding:.15rem .5rem;font-size:14px;min-height:28px;min-width:28px;}
 .cal-nav-btn:active{border-color:var(--accent);color:var(--accent);}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
-.cal-day-hdr{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted3);text-align:center;padding:.2rem 0;font-family:'Barlow Condensed',sans-serif;}
-.cal-day{aspect-ratio:1;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--muted2);cursor:default;position:relative;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cal-day-hdr{font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted3);text-align:center;padding:.15rem 0;font-family:'Barlow Condensed',sans-serif;}
+.cal-day{aspect-ratio:1;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--muted2);cursor:default;position:relative;}
 .cal-day.today{color:var(--text);font-weight:700;}
-.cal-day.today::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--muted);}
+.cal-day.today::after{content:'';position:absolute;bottom:1px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;background:var(--muted);}
 .cal-day.has-training{background:var(--accent3);color:var(--accent);border:1px solid #3a5020;cursor:pointer;font-weight:700;}
 .cal-day.has-training:active{background:#253d0a;}
 .cal-day.change-day{cursor:default;}
@@ -374,8 +374,10 @@ html,body{overflow-x:hidden;background:var(--bg);}
 .split-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 .cal-day.empty{opacity:0;}
 /* Week overview */
-.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:1rem;}
-.week-cell{background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:.5rem .3rem;text-align:center;cursor:default;min-height:64px;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.week-scroll-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-bottom:1rem;}
+.week-scroll-wrap::-webkit-scrollbar{display:none;}
+.week-scroll-inner{display:flex;gap:4px;padding:0 4px;}
+.week-cell{flex:0 0 calc((100vw - 48px)/7);background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:.5rem .2rem;text-align:center;cursor:default;min-height:64px;display:flex;flex-direction:column;align-items:center;gap:3px;}
 .week-cell.has-entry{cursor:pointer;}
 .week-cell.has-entry:active{background:var(--bg3);}
 .week-cell.today-cell{border-color:var(--accent);}
@@ -762,16 +764,12 @@ html,body{overflow-x:hidden;background:var(--bg);}
 
   <!-- HISTORY PAGE -->
   <div class="hist-page" id="histPage">
-    <!-- Diese Woche — nebeneinander mit Swipe -->
+    <!-- Diese Woche — scrollbares Karussell -->
     <div style="padding:.25rem 0 .75rem;">
-      <div class="hist-section-title" style="display:flex;align-items:center;justify-content:space-between;">
-        <button onclick="changeWeek(-1)" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;min-width:36px;min-height:36px;padding:0;">‹</button>
-        <span id="weekRangeLabel" style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);">Diese Woche</span>
-        <button onclick="changeWeek(1)" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;min-width:36px;min-height:36px;padding:0;">›</button>
+      <div class="hist-section-title">Diese Woche</div>
+      <div class="week-scroll-wrap" id="weekWrap">
+        <div class="week-scroll-inner" id="weekInner"></div>
       </div>
-      <div class="week-grid" id="weekWrap"
-        ontouchstart="weekSwipeStart(event)"
-        ontouchend="weekSwipeEnd(event)"></div>
     </div>
     <!-- Kalender + Aktivität Button -->
     <div>
@@ -789,9 +787,7 @@ html,body{overflow-x:hidden;background:var(--bg);}
         <div class="cal-grid" id="calGrid"></div>
       </div>
     </div>
-    <!-- Volumen pro Woche -->
-    <div id="volChartWrap"></div>
-    <!-- Log (nur bei Klick) -->
+    <!-- Log (nur bei Klick, unter Kalender) -->
     <div id="logSection" style="display:none;">
       <div class="hist-section-title" style="display:flex;align-items:center;justify-content:space-between;">
         <span id="logSectionTitle">Trainingsprotokoll</span>
@@ -799,6 +795,8 @@ html,body{overflow-x:hidden;background:var(--bg);}
       </div>
       <div id="logList"></div>
     </div>
+    <!-- Volumen pro Woche -->
+    <div id="volChartWrap"></div>
   </div>
 
   <!-- ACTIVITY LOG OVERLAY -->
@@ -2265,7 +2263,7 @@ function showPage(page){
   document.getElementById('navStat').classList.toggle('active', page==='stat');
   document.getElementById('navStretch').classList.toggle('active', page==='stretch');
   document.getElementById('navSettings').classList.toggle('active', page==='settings');
-  if(page==='hist'){ weekOffset=0; renderWeek(); renderCal(); renderVolChart(); hideLog(); }
+  if(page==='hist'){ renderWeek(); renderCal(); renderVolChart(); hideLog(); }
   if(page==='stat'){ renderStatPage(); }
   if(page==='stretch'){ renderStretchPage(); }
   if(page==='settings'){ renderSettingsInfo(); }
@@ -2600,72 +2598,67 @@ function renderExerciseChart(exName, history){
 // ── WEEK VIEW ──
 var DAY_NAMES_SHORT = ['So','Mo','Di','Mi','Do','Fr','Sa'];
 var DAY_NAMES_LONG  = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
-var weekOffset = 0; // 0 = current week, -1 = last week, +1 = next week
+var weekOffset = 0;
 var _swipeStartX = 0;
 
-function changeWeek(dir){
-  weekOffset += dir;
-  renderWeek();
-}
-
-function weekSwipeStart(e){
-  _swipeStartX = e.touches[0].clientX;
-}
-
+function changeWeek(dir){ weekOffset += dir * 7; renderWeek(); }
+function weekSwipeStart(e){ _swipeStartX = e.touches[0].clientX; }
 function weekSwipeEnd(e){
   var dx = e.changedTouches[0].clientX - _swipeStartX;
-  if(Math.abs(dx) > 40){
-    changeWeek(dx < 0 ? 1 : -1); // swipe left = next week, swipe right = prev week
-  }
+  if(Math.abs(dx) > 40) changeWeek(dx < 0 ? 1 : -1);
 }
 
 function renderWeek(){
   var today = new Date();
-  var todayDay = today.getDay();
-  var weekStart = new Date(today);
-  weekStart.setDate(today.getDate() - ((todayDay+6)%7) + weekOffset*7);
-
-  // Update label
-  var weekEnd = new Date(weekStart);
-  weekEnd.setDate(weekStart.getDate()+6);
-  var lbl = weekOffset === 0 ? 'Diese Woche'
-    : weekOffset === -1 ? 'Letzte Woche'
-    : weekOffset === 1 ? 'Nächste Woche'
-    : weekStart.getDate()+'.'+(weekStart.getMonth()+1)+'. – '+weekEnd.getDate()+'.'+(weekEnd.getMonth()+1)+'.';
-  var lblEl = document.getElementById('weekRangeLabel');
-  if(lblEl) lblEl.textContent = lbl;
+  // Show 28 days centered around today: 14 before, today, 13 after
+  var totalDays = 28;
+  var startOffset = -14;
 
   var cells = '';
-  for(var i=0;i<7;i++){
-    var d = new Date(weekStart);
-    d.setDate(weekStart.getDate()+i);
-    var isToday = d.toDateString()===today.toDateString();
+  var todayIdx = -1;
+  for(var i = 0; i < totalDays; i++){
+    var d = new Date(today);
+    d.setDate(today.getDate() + startOffset + i);
+    var isToday = d.toDateString() === today.toDateString();
+    if(isToday) todayIdx = i;
     var dateStr = d.toISOString().slice(0,10);
     var entries = trainingLog.filter(function(e){ return e.date.slice(0,10)===dateStr; });
     var acts = activityLog.filter(function(e){ return e.date.slice(0,10)===dateStr; });
     var hasAny = entries.length > 0 || acts.length > 0;
-    var dayLbl = DAY_NAMES_SHORT[(d.getDay())];
+    var dayLbl = DAY_NAMES_SHORT[d.getDay()] || '';
     var dotColor = entries.length > 0 ? getSplitColor(entries[0].sk) : (acts.length > 0 ? acts[0].color : '');
     var dotStyle = dotColor ? ' style="background:'+dotColor+';width:10px;height:10px;"' : '';
 
     var icons = '';
     entries.forEach(function(e){
       var col = getSplitColor(e.sk);
-      icons += '<div style="font-size:11px;color:'+col+';font-family:\'Barlow Condensed\',sans-serif;font-weight:700;line-height:1.2;">'+e.splitName.slice(0,3).toUpperCase()+'</div>';
+      icons += '<div style="font-size:10px;color:'+col+';font-family:\'Barlow Condensed\',sans-serif;font-weight:700;line-height:1.3;">'+e.splitName.slice(0,3).toUpperCase()+'</div>';
     });
     acts.forEach(function(a){
       icons += '<div class="week-cell-icon">'+a.icon+'</div>';
     });
 
     var onclick = hasAny ? ' onclick="showDayLog(\''+d.getFullYear()+'\',\''+(d.getMonth()+1)+'\',\''+d.getDate()+'\')"' : '';
-    cells += '<div class="week-cell'+(hasAny?' has-entry':'')+(isToday?' today-cell':'')+'"'+onclick+'>'
+    var id = isToday ? ' id="weekToday"' : '';
+    cells += '<div class="week-cell'+(hasAny?' has-entry':'')+(isToday?' today-cell':'')+'"'+onclick+id+'>'
       +'<div class="week-cell-lbl'+(isToday?' today':'')+'">'+dayLbl+'</div>'
       +'<div class="week-cell-dot'+(hasAny?' done':'')+(isToday&&!hasAny?' today-dot':'')+'"'+dotStyle+'></div>'
       +icons
       +'<div style="font-size:10px;color:var(--muted3);margin-top:auto;">'+d.getDate()+'</div>'
       +'</div>';
   }
-  document.getElementById('weekWrap').innerHTML = cells;
+
+  document.getElementById('weekInner').innerHTML = cells;
+
+  // Scroll so today is visible (2nd cell from left)
+  setTimeout(function(){
+    var todayEl = document.getElementById('weekToday');
+    var wrap = document.getElementById('weekWrap');
+    if(todayEl && wrap){
+      var cellW = todayEl.offsetWidth + 4;
+      wrap.scrollLeft = todayEl.offsetLeft - cellW * 2;
+    }
+  }, 30);
 }
 
 function formatDate(iso){
@@ -3078,41 +3071,42 @@ function getActivityColor(typeId){
 
 // ── TRAINING LOG LIST ──
 function renderLog(highlightDate){
-  // Merge training log and activity log, sort newest first
+  // Only show entries for the selected date
   var combined = [];
-  trainingLog.forEach(function(e){ combined.push({type:'training', date:e.date, data:e}); });
-  activityLog.forEach(function(e){ combined.push({type:'activity', date:e.date, data:e}); });
+  trainingLog.forEach(function(e){
+    if(!highlightDate || e.date.slice(0,10)===highlightDate)
+      combined.push({type:'training', date:e.date, data:e});
+  });
+  activityLog.forEach(function(e){
+    if(!highlightDate || e.date.slice(0,10)===highlightDate)
+      combined.push({type:'activity', date:e.date, data:e});
+  });
   combined.sort(function(a,b){ return b.date.localeCompare(a.date); });
 
   if(!combined.length){
-    document.getElementById('logList').innerHTML='<div class="log-empty">Noch keine Einträge vorhanden.</div>';
+    document.getElementById('logList').innerHTML='<div class="log-empty">Keine Einträge für diesen Tag.</div>';
     return;
   }
 
   document.getElementById('logList').innerHTML = combined.map(function(item){
-    var isHL = highlightDate && item.date.slice(0,10)===highlightDate;
-    var hlStyle = isHL ? 'border-color:var(--accent);' : '';
-
     if(item.type === 'activity'){
       var a = item.data;
-      var durStr = a.duration+' min';
-      return '<div class="log-entry" style="'+hlStyle+'">'
+      return '<div class="log-entry">'
         +'<div class="log-entry-head">'
         +'<div class="log-entry-date" style="color:'+a.color+';">'+a.icon+' '+a.label+'</div>'
-        +'<div class="log-entry-plan">'+formatDate(a.date)+' · ⏱ '+durStr+(a.note?' · '+a.note:'')+'</div>'
+        +'<div class="log-entry-plan">⏱ '+a.duration+' min'+(a.note?' · '+a.note:'')+'</div>'
         +'</div>'
         +'</div>';
     }
-
     var e = item.data;
     var exList = e.exs.map(function(ex){
       var w = ex.bi ? ex.wL+' / '+ex.wR+' kg' : ex.wS+' kg';
       return ex.icon+' '+ex.name+' — '+w;
     }).join('<br>');
-    return '<div class="log-entry" style="'+hlStyle+'">'
+    return '<div class="log-entry">'
       +'<div class="log-entry-head">'
-      +'<div class="log-entry-date">'+formatDate(e.date)+'</div>'
-      +'<div class="log-entry-plan">'+e.splitName+' · '+e.dayName+'</div>'
+      +'<div class="log-entry-date">'+e.splitName+' · '+e.dayName+'</div>'
+      +'<div class="log-entry-plan">'+formatTime(e.date)+(e.duration?' · ⏱ '+e.duration+' min':'')+'</div>'
       +'</div>'
       +'<div class="log-entry-exs">'+exList+'</div>'
       +'</div>';
