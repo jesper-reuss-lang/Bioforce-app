@@ -369,6 +369,7 @@ html,body{overflow-x:hidden;background:var(--bg);}
 .cal-day.has-training{background:var(--accent3);color:var(--accent);border:1px solid #3a5020;cursor:pointer;font-weight:700;}
 .cal-day.has-training:active{background:#253d0a;}
 .cal-day.change-day{cursor:default;}
+.cal-day.cal-selected{outline:2px solid var(--text);outline-offset:1px;}
 .split-legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.75rem;}
 .split-legend-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text3);}
 .split-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
@@ -771,6 +772,14 @@ html,body{overflow-x:hidden;background:var(--bg);}
         <div class="week-scroll-inner" id="weekInner"></div>
       </div>
     </div>
+    <!-- Inline log panel (zwischen Diese Woche und Kalender) -->
+    <div id="logSection" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.75rem;margin-bottom:1rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;">
+        <span id="logSectionTitle" style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--text);"></span>
+        <button onclick="hideLog()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;min-width:30px;min-height:30px;padding:0;">✕</button>
+      </div>
+      <div id="logList"></div>
+    </div>
     <!-- Kalender + Aktivität Button -->
     <div>
       <div class="hist-section-title" style="display:flex;align-items:center;justify-content:space-between;">
@@ -787,14 +796,6 @@ html,body{overflow-x:hidden;background:var(--bg);}
         <div class="cal-grid" id="calGrid"></div>
       </div>
     </div>
-    <!-- Log (nur bei Klick, unter Kalender) -->
-    <div id="logSection" style="display:none;">
-      <div class="hist-section-title" style="display:flex;align-items:center;justify-content:space-between;">
-        <span id="logSectionTitle">Trainingsprotokoll</span>
-        <button onclick="hideLog()" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:none;border:none;color:var(--muted);padding:.3rem;cursor:pointer;min-height:32px;">✕ Schließen</button>
-      </div>
-      <div id="logList"></div>
-    </div>
     <!-- Volumen pro Woche -->
     <div id="volChartWrap"></div>
   </div>
@@ -810,6 +811,11 @@ html,body{overflow-x:hidden;background:var(--bg);}
       <div style="margin-bottom:1rem;">
         <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;">Sportart</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;" id="activityTypeRow"></div>
+      </div>
+      <!-- Datum -->
+      <div style="margin-bottom:1rem;">
+        <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;">Datum</div>
+        <input type="date" id="activityDate" style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border2);border-radius:7px;color:var(--text2);font-size:16px;padding:.5rem .75rem;font-family:inherit;" />
       </div>
       <!-- Dauer -->
       <div style="margin-bottom:1rem;">
@@ -2263,7 +2269,7 @@ function showPage(page){
   document.getElementById('navStat').classList.toggle('active', page==='stat');
   document.getElementById('navStretch').classList.toggle('active', page==='stretch');
   document.getElementById('navSettings').classList.toggle('active', page==='settings');
-  if(page==='hist'){ renderWeek(); renderCal(); renderVolChart(); hideLog(); }
+  if(page==='hist'){ _selectedDayStr=null; renderWeek(); renderCal(); renderVolChart(); hideLog(); }
   if(page==='stat'){ renderStatPage(); }
   if(page==='stretch'){ renderStretchPage(); }
   if(page==='settings'){ renderSettingsInfo(); }
@@ -2750,29 +2756,45 @@ function renderCal(){
       var acol = actDates[day][0].color;
       style = ' style="background:'+acol+'22;color:'+acol+';border:1px solid '+acol+'55;"';
     }
-    var cls = 'cal-day'+(isToday?' today':'')+((hasTrain||hasAct)?' has-training':'')+(isChangeDay?' change-day':'');
+    var selDateStr = calYear+'-'+String(calMonth2+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+    var isSelected = _selectedDayStr === selDateStr;
+    var cls = 'cal-day'+(isToday?' today':'')+((hasTrain||hasAct)?' has-training':'')+(isChangeDay?' change-day':'')+(isSelected?' cal-selected':'');
     html += '<div class="'+cls+'"'+onclick+style+'>'+day+(isChangeDay?'<span style="position:absolute;bottom:1px;left:50%;transform:translateX(-50%);font-size:7px;">🔄</span>':'')+'</div>';
   }
   document.getElementById('calGrid').innerHTML = html;
 }
+var _selectedDayStr = null;
+
 function showDayLog(y, m, d){
   var dateStr = y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
   var entries = trainingLog.filter(function(e){ return e.date.slice(0,10)===dateStr; });
   var acts = activityLog.filter(function(e){ return e.date.slice(0,10)===dateStr; });
   if(!entries.length && !acts.length) return;
-  // Show log section with date as title
+
+  // Toggle: clicking same day again closes it
+  if(_selectedDayStr === dateStr){
+    hideLog();
+    return;
+  }
+  _selectedDayStr = dateStr;
+
+  // Update title
   var dt = new Date(dateStr);
-  var lbl = DAY_NAMES_SHORT[dt.getDay()||7]+'. '+dt.getDate()+'.'+(dt.getMonth()+1)+'.'+dt.getFullYear();
-  var titleEl = document.getElementById('logSectionTitle');
-  if(titleEl) titleEl.textContent = lbl;
+  var dayNames = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+  var lbl = dayNames[dt.getDay()]+'. '+dt.getDate()+'.'+(dt.getMonth()+1)+'.'+dt.getFullYear();
+  document.getElementById('logSectionTitle').textContent = lbl;
   document.getElementById('logSection').style.display = 'block';
+
+  // Re-render calendar to show selected day highlight
+  renderCal();
   renderLog(dateStr);
-  document.getElementById('logSection').scrollIntoView({behavior:'smooth'});
 }
 
 function hideLog(){
+  _selectedDayStr = null;
   document.getElementById('logSection').style.display = 'none';
   document.getElementById('logList').innerHTML = '';
+  renderCal(); // remove highlight
 }
 
 
@@ -3009,6 +3031,9 @@ function openActivityLog(){
   _activeActivityType = 'handball';
   document.getElementById('activityDur').value = 60;
   document.getElementById('activityNote').value = '';
+  // Set date to today
+  var today = new Date();
+  document.getElementById('activityDate').value = today.toISOString().slice(0,10);
   renderActivityTypes();
   document.getElementById('activityOverlay').classList.remove('hidden');
 }
@@ -3048,8 +3073,11 @@ function saveActivity(){
   var type = ACTIVITY_TYPES.find(function(t){ return t.id===_activeActivityType; });
   var dur  = parseInt(document.getElementById('activityDur').value)||60;
   var note = document.getElementById('activityNote').value.trim();
+  var dateVal = document.getElementById('activityDate').value;
+  // Build ISO date string — use selected date at midday to avoid timezone issues
+  var dateIso = dateVal ? new Date(dateVal+'T12:00:00').toISOString() : new Date().toISOString();
   activityLog.push({
-    date: new Date().toISOString(),
+    date: dateIso,
     type: type.id,
     icon: type.icon,
     label: type.label,
