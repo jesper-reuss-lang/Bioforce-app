@@ -894,11 +894,9 @@ html,body{overflow-x:hidden;background:var(--bg);}
     <!-- Meine Routinen -->
     <div class="stretch-section-title" style="display:flex;align-items:center;justify-content:space-between;">
       Meine Routinen
-      <div style="display:flex;gap:4px;">
-        <button onclick="openStretchLib()" title="Dehnen-Bibliothek" style="background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:18px;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;padding:0;">📖</button>
-        <button onclick="openRoutineEditor(null)" title="Neue Routine" style="background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:18px;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;padding:0;">＋</button>
-      </div>
+      <button onclick="openStretchLib()" title="Dehnen-Bibliothek" style="background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:18px;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;padding:0;">📖</button>
     </div>
+    <button onclick="openRoutineEditor(null)" style="width:100%;margin-bottom:.75rem;padding:.55rem;background:none;border:1px dashed var(--border2);border-radius:7px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;min-height:40px;">＋ Neue Routine erstellen</button>
     <div id="stretchRoutineList"></div>
   </div>
 
@@ -983,10 +981,11 @@ html,body{overflow-x:hidden;background:var(--bg);}
   </div>
 
   <!-- ROUTINE EDITOR OVERLAY -->
+  <!-- ROUTINE EDITOR — opens as full library with name field on top -->
   <div class="rout-edit-overlay hidden" id="routEditOverlay">
     <div class="rout-edit-box" id="routEditBox">
       <!-- Header -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;flex-shrink:0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-shrink:0;">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--text);" id="routEditTitle">Neue Routine</div>
         <button onclick="closeRoutineEditor()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;min-width:36px;min-height:36px;">✕</button>
       </div>
@@ -998,43 +997,33 @@ html,body{overflow-x:hidden;background:var(--bg);}
           <span style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;">s</span>
         </div>
       </div>
-      <!-- Exercise list — like plan day -->
-      <div id="routExRows" style="flex:1;overflow-y:auto;min-height:80px;margin-bottom:.75rem;"></div>
-      <!-- Add from library button -->
-      <button onclick="openStretchLibForRoutine()" style="width:100%;padding:.65rem;background:var(--bg3);border:1px dashed var(--border2);border-radius:8px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;min-height:42px;margin-bottom:.75rem;flex-shrink:0;">📖 Aus Bibliothek hinzufügen</button>
+      <!-- Selected exercises list -->
+      <div id="routExRows" style="flex-shrink:0;max-height:180px;overflow-y:auto;margin-bottom:.5rem;border:1px solid var(--border);border-radius:7px;"></div>
+      <!-- Filter bar -->
+      <div style="flex-shrink:0;margin-bottom:.4rem;">
+        <button onclick="toggleStretchPickFilters()" style="width:100%;display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:.4rem .75rem;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);min-height:34px;">
+          <span id="stretchPickFilterSummary">Filter</span>
+          <span id="stretchPickFilterArrow">▼</span>
+        </button>
+        <div id="stretchPickFilterBody" style="display:none;padding:.5rem 0 0;">
+          <div style="font-size:10px;color:var(--muted3);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Position</div>
+          <div class="stretch-filter-row" id="stretchPickPosRow"></div>
+          <div style="font-size:10px;color:var(--muted3);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;margin-top:.4rem;">Muskelgruppe</div>
+          <div class="stretch-filter-row" id="stretchPickGrpRow"></div>
+        </div>
+      </div>
+      <!-- Library exercise list -->
+      <div id="stretchPickExList" style="flex:1;overflow-y:auto;min-height:0;"></div>
       <!-- Save/Cancel -->
-      <div style="display:flex;gap:8px;flex-shrink:0;">
+      <div style="display:flex;gap:8px;flex-shrink:0;margin-top:.75rem;">
         <button class="shuf-cancel" onclick="closeRoutineEditor()">Abbrechen</button>
         <button class="shuf-go" onclick="saveRoutine()">✓ Speichern</button>
       </div>
     </div>
   </div>
 
-  <!-- STRETCH LIB FOR ROUTINE PICKER -->
-  <div class="shuf-overlay hidden" id="stretchLibPickOverlay" onclick="stretchLibPickBgClose(event)">
-    <div class="shuf-box" style="max-height:85vh;display:flex;flex-direction:column;padding:1rem;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-shrink:0;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--text);">📖 Übung hinzufügen</div>
-        <button onclick="closeStretchLibPick()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;min-width:36px;min-height:36px;">✕</button>
-      </div>
-      <!-- Filters -->
-      <div style="flex-shrink:0;margin-bottom:.5rem;">
-        <button onclick="toggleStretchPickFilters()" style="width:100%;display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:.4rem .75rem;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);min-height:34px;">
-          <span id="stretchPickFilterSummary">Filter</span>
-          <span id="stretchPickFilterArrow">▼</span>
-        </button>
-        <div id="stretchPickFilterBody" style="display:none;padding:.6rem 0 0;">
-          <div style="font-size:10px;color:var(--muted3);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Position</div>
-          <div class="stretch-filter-row" id="stretchPickPosRow"></div>
-          <div style="font-size:10px;color:var(--muted3);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;margin-top:.5rem;">Muskelgruppe</div>
-          <div class="stretch-filter-row" id="stretchPickGrpRow"></div>
-        </div>
-      </div>
-      <div id="stretchPickExList" style="overflow-y:auto;flex:1;"></div>
-    </div>
   </div>
 
-  </div>
 
 </div>
 <div class="edit-overlay hidden" id="editOverlay">
@@ -1272,16 +1261,44 @@ html,body{overflow-x:hidden;background:var(--bg);}
   <div class="shuf-box">
     <div class="shuf-icon">🔀</div>
     <div class="shuf-title">Neuer Trainingsplan</div>
-    <div class="shuf-desc">Wähle einen Split — die Übungen werden automatisch neu zusammengestellt.</div>
+    <div class="shuf-desc">Wähle einen Split — die Übungen werden automatisch zusammengestellt.</div>
     <div class="shuf-options" id="shufOpts"></div>
+    <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;margin-top:.75rem;">Trainingstyp pro Tag</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.75rem;" id="shufTypeRow"></div>
+    <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;">Fokus Muskelgruppe <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.75rem;" id="shufMgRow"></div>
     <div class="shuf-range-row">
       <span class="shuf-range-lbl">Übungen / Tag</span>
-      <input type="range" class="shuf-range" id="shufCount" min="4" max="10" value="6" oninput="document.getElementById('shufCountVal').textContent=this.value"/>
+      <input type="range" class="shuf-range" id="shufCount" min="4" max="15" value="6" oninput="document.getElementById('shufCountVal').textContent=this.value"/>
       <span class="shuf-range-val" id="shufCountVal">6</span>
     </div>
     <div class="shuf-btns">
       <button class="shuf-cancel" onclick="closeShuffle()">Abbrechen</button>
       <button class="shuf-go" onclick="doShuffle()">🔀 Generieren</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHUFFLE DAY OVERLAY -->
+<div class="shuf-overlay hidden" id="shufDayOverlay">
+  <div class="shuf-box">
+    <div class="shuf-icon">🔀</div>
+    <div class="shuf-title" id="shufDayTitle">Tag neu würfeln</div>
+    <!-- Day type -->
+    <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;">Trainingstyp</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.85rem;" id="shufDayTypeRow"></div>
+    <!-- Muscle focus -->
+    <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;">Fokus Muskelgruppe <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.85rem;" id="shufDayMgRow"></div>
+    <!-- Count -->
+    <div class="shuf-range-row">
+      <span class="shuf-range-lbl">Übungen</span>
+      <input type="range" class="shuf-range" id="shufDayCount" min="4" max="15" value="6" oninput="document.getElementById('shufDayCountVal').textContent=this.value"/>
+      <span class="shuf-range-val" id="shufDayCountVal">6</span>
+    </div>
+    <div class="shuf-btns">
+      <button class="shuf-cancel" onclick="closeShufDay()">Abbrechen</button>
+      <button class="shuf-go" onclick="doShufDay()">🔀 Neu würfeln</button>
     </div>
   </div>
 </div>
@@ -1366,53 +1383,53 @@ html,body{overflow-x:hidden;background:var(--bg);}
 <script>
 var SPLITS_DEFAULT={gk:{name:"Ganzkörper",desc:"3× pro Woche · ca. 90 min pro Einheit",days:[
   {name:"Tag A",tags:["full"],meta:"ca. 90 min",main:[
-    {icon:"💪",name:"Bankdrücken (BF)",muscle:"Pectoralis, Trizeps, vordere Schulter",sets:3,reps:"12",bi:true},
+    {icon:"💪",name:"Bankdrücken (BF)",muscle:"Brust, Schultern, Trizeps",sets:3,reps:"12",bi:true},
     {icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Teres major, Bizeps",sets:3,reps:"12",bi:true},
     {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"12",bi:true},
-    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Rhomboiden, mittlerer Rücken",sets:3,reps:"12",bi:true},
-    {icon:"💪",name:"Fliegende (BF)",muscle:"Innere Brust, Pectoralis",sets:3,reps:"12",bi:true},
-    {icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings, Bizeps femoris",sets:3,reps:"12",bi:true},
+    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Rücken, Schultern, Bizeps",sets:3,reps:"12",bi:true},
+    {icon:"💪",name:"Fliegende (BF)",muscle:"Brust, Schultern",sets:3,reps:"12",bi:true},
+    {icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:3,reps:"12",bi:true},
     {icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps brachii",sets:3,reps:"12",bi:true},
     {icon:"💪",name:"Trizepsdrücken (BF)",muscle:"Trizeps brachii",sets:3,reps:"12",bi:false},
-    {icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter, Rotatorenmanschette",sets:3,reps:"12",bi:false}
+    {icon:"💪",name:"Delta-Rudern stehend",muscle:"Schultern, Rücken",sets:3,reps:"12",bi:false}
   ]},
   {name:"Tag B",tags:["full"],meta:"ca. 90 min",main:[
-    {icon:"💪",name:"Schrägbankdrücken (BF)",muscle:"Obere Brust, vordere Schulter, Trizeps",sets:3,reps:"12",bi:true},
+    {icon:"💪",name:"Schrägbankdrücken (BF)",muscle:"Brust, Schultern, Trizeps",sets:3,reps:"12",bi:true},
     {icon:"🏋",name:"Latzug nach vorne",muscle:"Latissimus, mittlerer Rücken",sets:3,reps:"12",bi:true},
     {icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps, Stabilisation",sets:3,reps:"12",bi:true},
-    {icon:"💪",name:"Schulterdrücken sitzend",muscle:"Deltoideus, Trizeps",sets:3,reps:"12",bi:true},
+    {icon:"💪",name:"Schulterdrücken sitzend",muscle:"Schultern, Trizeps",sets:3,reps:"12",bi:true},
     {icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12",bi:true},
-    {icon:"💪",name:"Seitheben stehend (BF)",muscle:"Lateraler Deltoideus",sets:3,reps:"12",bi:true},
+    {icon:"💪",name:"Seitheben stehend (BF)",muscle:"Schultern, seitlicher Deltoideus",sets:3,reps:"12",bi:true},
     {icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Brachialis, Unterarm",sets:3,reps:"12",bi:true},
     {icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Langer Trizepskopf",sets:3,reps:"12",bi:false},
-    {icon:"🦵",name:"Adduktoren innen",muscle:"Innerer Oberschenkel",sets:3,reps:"12",bi:true}
+    {icon:"🦵",name:"Adduktoren innen",muscle:"Adduktoren",sets:3,reps:"12",bi:true}
   ]},
   {name:"Tag C",tags:["full"],meta:"ca. 90 min",main:[
-    {icon:"🏋",name:"Bankdrücken (BF)",muscle:"Pectoralis, Trizeps",sets:3,reps:"12",bi:true},
-    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Mittlerer Rücken, Rhomboiden, Bizeps",sets:3,reps:"12",bi:true},
+    {icon:"🏋",name:"Bankdrücken (BF)",muscle:"Brust, Schultern, Trizeps",sets:3,reps:"12",bi:true},
+    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Rücken, Schultern, Bizeps",sets:3,reps:"12",bi:true},
     {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"12",bi:true},
-    {icon:"💪",name:"Fliegende (BF)",muscle:"Untere Brust",sets:3,reps:"12",bi:true},
+    {icon:"💪",name:"Fliegende (BF)",muscle:"Brust, Schultern",sets:3,reps:"12",bi:true},
     {icon:"🏋",name:"Überzüge stehend",muscle:"Latissimus, Serratus anterior",sets:3,reps:"12",bi:true},
-    {icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings isoliert",sets:3,reps:"12",bi:true},
+    {icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:3,reps:"12",bi:true},
     {icon:"🏋",name:"Konzentrations-Curls sitzend",muscle:"Bizeps, Supination",sets:3,reps:"12",bi:true},
-    {icon:"💪",name:"Trizeps Kickback (BF)",muscle:"Äußerer Trizepskopf",sets:3,reps:"12",bi:false},
+    {icon:"💪",name:"Trizeps Kickback (BF)",muscle:"Trizeps",sets:3,reps:"12",bi:false},
     {icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:3,reps:"12",bi:false}
   ]}
 ]},
 "3er":{name:"3er Split",desc:"Pull · Press · Beine · ca. 60 min ohne Aufwärmen",days:[
   {name:"Pull",tags:["pull","back","arms"],meta:"ca. 60 min",main:[
     {icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Teres major",sets:3,reps:"12",bi:true},
-    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Mittlerer Rücken, Rhomboiden",sets:3,reps:"12",bi:true},
-    {icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter, Rotatorenmanschette",sets:3,reps:"12",bi:false},
+    {icon:"🏋",name:"Rudern stehend (BF)",muscle:"Rücken, Schultern, Bizeps",sets:3,reps:"12",bi:true},
+    {icon:"💪",name:"Delta-Rudern stehend",muscle:"Schultern, Rücken",sets:3,reps:"12",bi:false},
     {icon:"🏋",name:"Überzüge stehend",muscle:"Latissimus, Serratus",sets:3,reps:"12",bi:true},
     {icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps brachii",sets:3,reps:"12",bi:true},
     {icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Brachialis, Unterarm",sets:3,reps:"12",bi:true}
   ]},
   {name:"Press",tags:["push","chest","shoulder"],meta:"ca. 60 min",main:[
-    {icon:"💪",name:"Bankdrücken (BF)",muscle:"Pectoralis, vordere Schulter, Trizeps",sets:3,reps:"12",bi:true},
-    {icon:"💪",name:"Fliegende (BF)",muscle:"Innere Brust",sets:3,reps:"12",bi:true},
-    {icon:"💪",name:"Schulterdrücken sitzend",muscle:"Deltoideus, vorderer Anteil",sets:3,reps:"12",bi:true},
-    {icon:"💪",name:"Seitheben stehend (BF)",muscle:"Lateraler Deltoideus",sets:3,reps:"12",bi:true},
+    {icon:"💪",name:"Bankdrücken (BF)",muscle:"Brust, Schultern, Trizeps",sets:3,reps:"12",bi:true},
+    {icon:"💪",name:"Fliegende (BF)",muscle:"Brust, Schultern",sets:3,reps:"12",bi:true},
+    {icon:"💪",name:"Schulterdrücken sitzend",muscle:"Schultern, Trizeps",sets:3,reps:"12",bi:true},
+    {icon:"💪",name:"Seitheben stehend (BF)",muscle:"Schultern, seitlicher Deltoideus",sets:3,reps:"12",bi:true},
     {icon:"💪",name:"Trizepsdrücken (BF)",muscle:"Trizeps brachii",sets:3,reps:"12",bi:false},
     {icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Langer Trizepskopf",sets:3,reps:"12",bi:false}
   ]},
@@ -1421,21 +1438,21 @@ var SPLITS_DEFAULT={gk:{name:"Ganzkörper",desc:"3× pro Woche · ca. 90 min pro
     {icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps, Stabilisation",sets:3,reps:"12",bi:true},
     {icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12",bi:true},
     {icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:3,reps:"12",bi:true},
-    {icon:"🦵",name:"Adduktoren innen",muscle:"Innerer Oberschenkel",sets:3,reps:"12",bi:true},
+    {icon:"🦵",name:"Adduktoren innen",muscle:"Adduktoren",sets:3,reps:"12",bi:true},
     {icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:3,reps:"12",bi:false}
   ]}
 ]},
 "5er":{name:"5er Split",desc:"Brust · Rücken · Schulter · Arme · Beine · ca. 60 min",days:[
   {name:"Brust",tags:["chest","push"],meta:"ca. 60 min",
-   main:[{icon:"💪",name:"Bankdrücken (BF)",muscle:"Pectoralis, Trizeps",sets:3,reps:"12",bi:true},{icon:"💪",name:"Schrägbankdrücken (BF)",muscle:"Obere Brust, vordere Schulter",sets:3,reps:"12",bi:true},{icon:"💪",name:"Fliegende (BF)",muscle:"Innere Brust",sets:3,reps:"12",bi:true},{icon:"💪",name:"Fliegende (BF)",muscle:"Untere Brust",sets:3,reps:"12",bi:true}]},
+   main:[{icon:"💪",name:"Bankdrücken (BF)",muscle:"Brust, Schultern, Trizeps",sets:3,reps:"12",bi:true},{icon:"💪",name:"Schrägbankdrücken (BF)",muscle:"Brust, Schultern, Trizeps",sets:3,reps:"12",bi:true},{icon:"💪",name:"Fliegende (BF)",muscle:"Brust, Schultern",sets:3,reps:"12",bi:true},{icon:"💪",name:"Fliegende (BF)",muscle:"Brust, Schultern",sets:3,reps:"12",bi:true}]},
   {name:"Rücken",tags:["back","pull"],meta:"ca. 60 min",
-   main:[{icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Teres major",sets:3,reps:"12",bi:true},{icon:"🏋",name:"Latzug nach vorne",muscle:"Latissimus, mittlerer Rücken",sets:3,reps:"12",bi:true},{icon:"🏋",name:"Rudern stehend (BF)",muscle:"Rhomboiden, Trapezius",sets:3,reps:"12",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter",sets:3,reps:"12",bi:false},{icon:"🏋",name:"Überzüge stehend",muscle:"Latissimus, Serratus",sets:3,reps:"12",bi:true}]},
+   main:[{icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Teres major",sets:3,reps:"12",bi:true},{icon:"🏋",name:"Latzug nach vorne",muscle:"Latissimus, mittlerer Rücken",sets:3,reps:"12",bi:true},{icon:"🏋",name:"Rudern stehend (BF)",muscle:"Rücken, Schultern, Bizeps",sets:3,reps:"12",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Schultern, Rücken",sets:3,reps:"12",bi:false},{icon:"🏋",name:"Überzüge stehend",muscle:"Latissimus, Serratus",sets:3,reps:"12",bi:true}]},
   {name:"Schulter",tags:["shoulder","push"],meta:"ca. 60 min",
-   main:[{icon:"💪",name:"Schulterdrücken sitzend",muscle:"Gesamter Deltoideus, Trizeps",sets:3,reps:"12",bi:true},{icon:"💪",name:"Seitheben stehend (BF)",muscle:"Lateraler Deltoideus",sets:3,reps:"12",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Hintere Schulter",sets:3,reps:"12",bi:false},{icon:"💪",name:"Frontheben stehend (BF)",muscle:"Vorderer Deltoideus",sets:3,reps:"12",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Schulter, oberer Trapezius",sets:3,reps:"12",bi:false}]},
+   main:[{icon:"💪",name:"Schulterdrücken sitzend",muscle:"Schultern, Trizeps",sets:3,reps:"12",bi:true},{icon:"💪",name:"Seitheben stehend (BF)",muscle:"Schultern, seitlicher Deltoideus",sets:3,reps:"12",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Schultern, Rücken",sets:3,reps:"12",bi:false},{icon:"💪",name:"Frontheben stehend (BF)",muscle:"Schultern, vorderer Deltoideus",sets:3,reps:"12",bi:true},{icon:"💪",name:"Delta-Rudern stehend",muscle:"Schultern, Rücken",sets:3,reps:"12",bi:false}]},
   {name:"Arme",tags:["arms"],meta:"ca. 60 min",
-   main:[{icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps brachii",sets:3,reps:"12",bi:true},{icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Brachialis, Unterarm",sets:3,reps:"12",bi:true},{icon:"🏋",name:"Konzentrations-Curls sitzend",muscle:"Bizeps, Supination",sets:3,reps:"12",bi:true},{icon:"💪",name:"Trizepsdrücken (BF)",muscle:"Trizeps brachii",sets:3,reps:"12",bi:false},{icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Langer Trizepskopf",sets:3,reps:"12",bi:false},{icon:"💪",name:"Trizeps Kickback (BF)",muscle:"Äußerer Trizepskopf",sets:3,reps:"12",bi:false}]},
+   main:[{icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps brachii",sets:3,reps:"12",bi:true},{icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Brachialis, Unterarm",sets:3,reps:"12",bi:true},{icon:"🏋",name:"Konzentrations-Curls sitzend",muscle:"Bizeps, Supination",sets:3,reps:"12",bi:true},{icon:"💪",name:"Trizepsdrücken (BF)",muscle:"Trizeps brachii",sets:3,reps:"12",bi:false},{icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Langer Trizepskopf",sets:3,reps:"12",bi:false},{icon:"💪",name:"Trizeps Kickback (BF)",muscle:"Trizeps",sets:3,reps:"12",bi:false}]},
   {name:"Beine",tags:["legs","glutes"],meta:"ca. 60 min",
-   main:[{icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Adduktoren innen",muscle:"Innerer Oberschenkel",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:3,reps:"12",bi:false}]}
+   main:[{icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Adduktoren innen",muscle:"Adduktoren",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:3,reps:"12",bi:false}]}
 ]}};
 
 var LIBRARY_DEFAULT=[{cat:"legs",icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäßmuskel, Waden",bi:true,bioforce:true,custom:false},
@@ -1443,48 +1460,48 @@ var LIBRARY_DEFAULT=[{cat:"legs",icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quad
   {cat:"legs",icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Quadrizeps, Gesäßmuskel, Waden",bi:false,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps",bi:true,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Beinstrecken einseitig",muscle:"Quadrizeps",bi:false,bioforce:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Kreuzheben gestreckte Beine",muscle:"Beinbizeps, Gesäßmuskel, unterer Rücken",bi:true,bioforce:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Kreuzheben (BF)",muscle:"Oberer/unterer Rücken, Gesäßmuskel, Oberschenkel",bi:true,bioforce:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Beinbizeps",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Kreuzheben gestreckte Beine",muscle:"Hamstrings, Gesäßmuskel, Rücken",bi:true,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Kreuzheben (BF)",muscle:"Rücken, Gesäßmuskel, Oberschenkel",bi:true,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",bi:false,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Wadendrücken (BF)",muscle:"Waden",bi:true,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Wadendrücken außen",muscle:"Waden",bi:true,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Wadendrücken innen",muscle:"Waden",bi:true,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Kickbacks einbeinig",muscle:"Gesäßmuskel",bi:false,bioforce:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Abduktoren außen",muscle:"Äußerer Oberschenkelmuskel",bi:false,bioforce:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Adduktoren innen",muscle:"Innerer Oberschenkelmuskel",bi:false,bioforce:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Abduktorenübung liegend",muscle:"Innerer Oberschenkelmuskel, Gesäßmuskel, Bauch",bi:true,bioforce:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Abduktorenübung liegend einbeinig",muscle:"Innerer Oberschenkelmuskel, Gesäßmuskel, Bauch",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Abduktoren außen",muscle:"Abduktoren, Gesäßmuskel",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Adduktoren innen",muscle:"Adduktoren",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Abduktorenübung liegend",muscle:"Abduktoren, Gesäßmuskel",bi:true,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Abduktorenübung liegend einbeinig",muscle:"Abduktoren, Gesäßmuskel",bi:false,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Sprunggelenk laterale Rotation",muscle:"Wadenbeinmuskel, laterale Wadenmuskulatur",bi:false,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Sprunggelenk mediale Rotation",muscle:"Wadenbeinmuskel, mediale Wadenmuskulatur",bi:false,bioforce:true,custom:false},
   // ── BioForce Handbuch — Brust & Rücken ──
-  {cat:"push",icon:"💪",name:"Bankdrücken (BF)",muscle:"Schultern, Brust, Trizeps",bi:true,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Schrägbankdrücken (BF)",muscle:"Schultern, Brust, Trizeps",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Bankdrücken (BF)",muscle:"Brust, Schultern, Trizeps",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Schrägbankdrücken (BF)",muscle:"Brust, Schultern, Trizeps",bi:true,bioforce:true,custom:false},
   {cat:"push",icon:"💪",name:"Fliegende (BF)",muscle:"Brust, Schultern",bi:true,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Fliegende auf der Schrägbank",muscle:"Schultern, Brust",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Fliegende auf der Schrägbank",muscle:"Brust, Schultern",bi:true,bioforce:true,custom:false},
   {cat:"push",icon:"💪",name:"Negatives Schrägbankdrücken",muscle:"Brust, Schultern, Trizeps",bi:true,bioforce:true,custom:false},
   {cat:"pull",icon:"🏋",name:"Latziehen zur Brust",muscle:"Latissimus, Bizeps",bi:true,bioforce:true,custom:false},
   {cat:"pull",icon:"🏋",name:"Latzug nach vorne",muscle:"Latissimus, Bizeps",bi:true,bioforce:true,custom:false},
   {cat:"pull",icon:"🏋",name:"Überzüge sitzend",muscle:"Latissimus, Schultern",bi:true,bioforce:true,custom:false},
   {cat:"pull",icon:"🏋",name:"Seitdrücken",muscle:"Latissimus",bi:true,bioforce:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Rudern stehend (BF)",muscle:"Schultern, Latissimus, Bizeps",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Rudern stehend (BF)",muscle:"Rücken, Schultern, Bizeps",bi:true,bioforce:true,custom:false},
   {cat:"pull",icon:"🏋",name:"Überzüge stehend",muscle:"Latissimus, Schultern",bi:true,bioforce:true,custom:false},
   // ── BioForce Handbuch — Schultern ──
-  {cat:"push",icon:"💪",name:"Schulterdrücken sitzend",muscle:"Schultern",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Schulterdrücken sitzend",muscle:"Schultern, Trizeps",bi:true,bioforce:true,custom:false},
   {cat:"push",icon:"💪",name:"Schulterziehen (Shrugs)",muscle:"Trapezmuskel",bi:true,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Frontheben stehend (BF)",muscle:"Schultern",bi:true,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Seitheben stehend (BF)",muscle:"Schultern",bi:true,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Seitheben stehend einarmig",muscle:"Schultern",bi:false,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Delta-Rudern stehend",muscle:"Schultern",bi:true,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Cablecross",muscle:"Schultern",bi:true,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Frontheben sitzend",muscle:"Schultern",bi:true,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Frontheben sitzend einarmig",muscle:"Schultern",bi:false,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Seitheben sitzend",muscle:"Schultern",bi:true,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Handgelenk Außenrotation",muscle:"Schultern",bi:false,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Handgelenk Innenrotation",muscle:"Schultern",bi:false,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Schulter Rotation nach oben",muscle:"Schultern",bi:false,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Rückziehen",muscle:"Schultern, Latissimus",bi:true,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Schulter Außenrotation gestreckt",muscle:"Äußere Schultern",bi:false,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Schulter Innenrotation gestreckt",muscle:"Schultern",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Frontheben stehend (BF)",muscle:"Schultern, vorderer Deltoideus",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Seitheben stehend (BF)",muscle:"Schultern, seitlicher Deltoideus",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Seitheben stehend einarmig",muscle:"Schultern, seitlicher Deltoideus",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"💪",name:"Delta-Rudern stehend",muscle:"Schultern, Rücken",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Reverse Cablecross",muscle:"Schultern, Rücken",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Frontheben sitzend",muscle:"Schultern, vorderer Deltoideus",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Frontheben sitzend einarmig",muscle:"Schultern, vorderer Deltoideus",bi:false,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Seitheben sitzend",muscle:"Schultern, seitlicher Deltoideus",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"💪",name:"Handgelenk Außenrotation",muscle:"Schultern, Unterarme",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"💪",name:"Handgelenk Innenrotation",muscle:"Schultern, Unterarme",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"💪",name:"Schulter Rotation nach oben",muscle:"Schultern, Trapezmuskel",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"💪",name:"Rückziehen",muscle:"Rücken, Latissimus",bi:true,bioforce:true,custom:false},
+  {cat:"pull",icon:"💪",name:"Schulter Außenrotation gestreckt",muscle:"Schultern, hinterer Deltoideus",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"💪",name:"Schulter Innenrotation gestreckt",muscle:"Schultern, vorderer Deltoideus",bi:false,bioforce:true,custom:false},
   // ── BioForce Handbuch — Arme ──
   {cat:"pull",icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps, Unterarme",bi:true,bioforce:true,custom:false},
   {cat:"pull",icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Bizeps, Unterarme",bi:true,bioforce:true,custom:false},
@@ -1496,20 +1513,20 @@ var LIBRARY_DEFAULT=[{cat:"legs",icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quad
   {cat:"push",icon:"💪",name:"Getrenntes Trizepsdrücken",muscle:"Trizeps",bi:true,bioforce:true,custom:false},
   {cat:"push",icon:"💪",name:"Trizeps Kickback (BF)",muscle:"Trizeps",bi:true,bioforce:true,custom:false},
   {cat:"push",icon:"💪",name:"Trizeps Kickbacks Untergriff",muscle:"Trizeps",bi:true,bioforce:true,custom:false},
-  {cat:"push",icon:"💪",name:"Dips (BF)",muscle:"Trizeps, Deltamuskel, Brustmuskel",bi:true,bioforce:true,custom:false},
+  {cat:"push",icon:"💪",name:"Dips (BF)",muscle:"Trizeps, Brust, Schultern",bi:true,bioforce:true,custom:false},
   // ── BioForce Handbuch — Bauch & Rücken ──
-  {cat:"core",icon:"🎯",name:"Bauch Crunches",muscle:"Gerade Bauchmuskeln",bi:true,bioforce:true,custom:false},
-  {cat:"core",icon:"🎯",name:"Schräge Crunches",muscle:"Gerade Bauchmuskeln, schräge Bauchmuskeln",bi:false,bioforce:true,custom:false},
-  {cat:"core",icon:"🎯",name:"Oberkörperdrehen stehend",muscle:"Gerade Bauchmuskeln, schräge Bauchmuskeln",bi:false,bioforce:true,custom:false},
-  {cat:"core",icon:"🎯",name:"Seitbeugen",muscle:"Gerade Bauchmuskeln, seitliche Beugemuskeln, Sägemuskeln",bi:false,bioforce:true,custom:false},
-  {cat:"pull",icon:"🏋",name:"Rückenstrecker sitzend",muscle:"Untere Rückenmuskulatur",bi:true,bioforce:true,custom:false},
+  {cat:"core",icon:"🎯",name:"Bauch Crunches",muscle:"Bauch",bi:true,bioforce:true,custom:false},
+  {cat:"core",icon:"🎯",name:"Schräge Crunches",muscle:"Bauch, schräge Bauchmuskeln",bi:false,bioforce:true,custom:false},
+  {cat:"core",icon:"🎯",name:"Oberkörperdrehen stehend",muscle:"Bauch, schräge Bauchmuskeln",bi:false,bioforce:true,custom:false},
+  {cat:"core",icon:"🎯",name:"Seitbeugen",muscle:"Bauch, seitliche Rumpfmuskeln",bi:false,bioforce:true,custom:false},
+  {cat:"pull",icon:"🏋",name:"Rückenstrecker sitzend",muscle:"Rücken, unterer Rücken",bi:true,bioforce:true,custom:false},
   {cat:"push",icon:"💪",name:"Bankdrücken mit Langhantel",muscle:"Brust, vorderer Deltoideus, Trizeps",bi:false,bioforce:false,equipment:"langhantel",custom:false},
-  {cat:"push",icon:"💪",name:"Schrägbankdrücken mit Langhantel",muscle:"Obere Brust, vorderer Deltoideus, Trizeps",bi:false,bioforce:false,equipment:"langhantel",custom:false},
+  {cat:"push",icon:"💪",name:"Schrägbankdrücken mit Langhantel",muscle:"Brust, Schultern, Trizeps",bi:false,bioforce:false,equipment:"langhantel",custom:false},
   {cat:"push",icon:"💪",name:"Enger Griff Bankdrücken",muscle:"Trizeps, innere Brust",bi:false,bioforce:false,equipment:"langhantel",custom:false},
-  {cat:"pull",icon:"🏋",name:"Rudern sitzend enger Griff",muscle:"Mittlerer Rücken, Rhomboiden, Bizeps",bi:false,bioforce:false,equipment:"bioforce",custom:false},
-  {cat:"pull",icon:"🏋",name:"Rudern sitzend breiter Griff",muscle:"Latissimus, hintere Schulter, Rhomboiden",bi:false,bioforce:false,equipment:"bioforce",custom:false},
-  {cat:"push",icon:"💪",name:"Kurzhantel Bankdrücken",muscle:"Brust (gesamt), vorderer Deltoideus, Trizeps",bi:true,bioforce:false,equipment:"kurzhantel",custom:false},
-  {cat:"pull",icon:"🏋",name:"Rudern mit Kurzhanteln",muscle:"Mittlerer Rücken, Rhomboiden, Bizeps",bi:true,bioforce:false,equipment:"kurzhantel",custom:false}
+  {cat:"pull",icon:"🏋",name:"Rudern sitzend enger Griff",muscle:"Latissimus, Rhomboiden, Bizeps",bi:false,bioforce:false,equipment:"bioforce",custom:false},
+  {cat:"pull",icon:"🏋",name:"Rudern sitzend breiter Griff",muscle:"Rücken, Rhomboiden, Schultern",bi:false,bioforce:false,equipment:"bioforce",custom:false},
+  {cat:"push",icon:"💪",name:"Kurzhantel Bankdrücken",muscle:"Brust, Schultern, Trizeps",bi:true,bioforce:false,equipment:"kurzhantel",custom:false},
+  {cat:"pull",icon:"🏋",name:"Rudern mit Kurzhanteln",muscle:"Rücken, Rhomboiden, Bizeps",bi:true,bioforce:false,equipment:"kurzhantel",custom:false}
 ];
 function deepClone(o){return JSON.parse(JSON.stringify(o));}
 var SPLITS=deepClone(SPLITS_DEFAULT);
@@ -2646,7 +2663,9 @@ function weekSwipeEnd(e){
   if(Math.abs(dx) > 40) changeWeek(dx < 0 ? 1 : -1);
 }
 
-function renderWeek(){
+function renderWeek(preserveScroll){
+  var wrap = document.getElementById('weekWrap');
+  var savedScroll = preserveScroll && wrap ? wrap.scrollLeft : null;
   var today = new Date();
   // Show 28 days centered around today: 14 before, today, 13 after
   var totalDays = 28;
@@ -2689,13 +2708,18 @@ function renderWeek(){
 
   document.getElementById('weekInner').innerHTML = cells;
 
-  // Scroll so today is visible (2nd cell from left)
+  // Scroll to today only on initial load, otherwise restore saved position
   setTimeout(function(){
-    var todayEl = document.getElementById('weekToday');
     var wrap = document.getElementById('weekWrap');
-    if(todayEl && wrap){
-      var cellW = todayEl.offsetWidth + 4;
-      wrap.scrollLeft = todayEl.offsetLeft - cellW * 2;
+    if(!wrap) return;
+    if(savedScroll !== null){
+      wrap.scrollLeft = savedScroll;
+    } else {
+      var todayEl = document.getElementById('weekToday');
+      if(todayEl){
+        var cellW = todayEl.offsetWidth + 4;
+        wrap.scrollLeft = todayEl.offsetLeft - cellW * 2;
+      }
     }
   }, 30);
 }
@@ -2823,8 +2847,8 @@ function showDayLog(y, m, d){
   document.getElementById('logSectionTitle').textContent = lbl;
   document.getElementById('logSection').style.display = 'block';
 
-  // Re-render week and calendar to show selected highlight
-  renderWeek();
+  // Re-render week and calendar to show selected highlight — preserve scroll position
+  renderWeek(true);
   renderCal();
   renderLog(dateStr);
 }
@@ -2833,7 +2857,8 @@ function hideLog(){
   _selectedDayStr = null;
   document.getElementById('logSection').style.display = 'none';
   document.getElementById('logList').innerHTML = '';
-  renderCal(); // remove highlight
+  renderWeek(true);
+  renderCal();
 }
 
 
@@ -3647,7 +3672,7 @@ var EX_DB = {
       '', 260, 152)
   },
   'Bein-Curls stehend (BF)': {
-    primary:['Beinbizeps','Hamstrings'],secondary:['Gesäßmuskel'],
+    primary:['Hamstrings'],secondary:['Gesäßmuskel'],
     steps:['Zum Gerät hin stehen. Oberschenkel gegen oberes Polster drücken. Knöchel einhaken.',
         'Bein anwinkeln bis Unterschenkel parallel zum Boden. Kontrolliert.',
         'Kurz halten, Beinbizeps pressen. Dann langsam strecken.',
@@ -3912,7 +3937,7 @@ var EX_DB = {
       '', 200, 158)
   },
   'Beindrücken': {
-    primary:['Waden','Quadrizeps'],secondary:['Beinbizeps'],
+    primary:['Waden','Quadrizeps'],secondary:['Hamstrings'],
     steps:['Zum Gerät hin stehen, mit beiden Händen am Haltegriff abstützen. Ein Bein in die Fußschlaufe.',
         'Bein kontrolliert nach hinten durchdrücken — Bewegung aus der Hüfte. Fast ganz strecken.',
         'Kurz halten, dann kontrolliert in die Ausgangsposition zurück.',
@@ -4107,17 +4132,21 @@ var LIBOV_EQS = [
   {id:'kurzhantel', label:'Kurzhantel'},
 ];
 var LIBOV_MGS = [
-  {id:'all',      label:'Alle'},
-  {id:'Brust',    label:'Brust'},
-  {id:'Rücken',   label:'Rücken'},
-  {id:'Schulter', label:'Schulter'},
-  {id:'Bizeps',   label:'Bizeps'},
-  {id:'Trizeps',  label:'Trizeps'},
-  {id:'Unterarm', label:'Unterarm'},
-  {id:'Beine',    label:'Beine'},
-  {id:'Gesäß',    label:'Gesäß'},
-  {id:'Wade',     label:'Wade'},
-  {id:'Bauch',    label:'Bauch'},
+  {id:'all',          label:'Alle'},
+  {id:'Brust',        label:'Brust'},
+  {id:'Rücken',       label:'Rücken'},
+  {id:'Latissimus',   label:'Latissimus'},
+  {id:'Schultern',    label:'Schultern'},
+  {id:'Bizeps',       label:'Bizeps'},
+  {id:'Trizeps',      label:'Trizeps'},
+  {id:'Unterarme',    label:'Unterarme'},
+  {id:'Quadrizeps',   label:'Quadrizeps'},
+  {id:'Hamstrings',   label:'Hamstrings'},
+  {id:'Gesäßmuskel',  label:'Gesäß'},
+  {id:'Waden',        label:'Wade'},
+  {id:'Abduktoren',   label:'Abduktoren'},
+  {id:'Adduktoren',   label:'Adduktoren'},
+  {id:'Bauch',        label:'Bauch'},
 ];
 
 var libovFiltersOpen = false;
@@ -4207,10 +4236,10 @@ function renderLibovFilters(){
     var catOk = libovActiveCat==='all' || e.cat===libovActiveCat;
     var eqOk  = libovActiveEq==='all'  || (e.equipment||(e.bioforce?'bioforce':'other'))===libovActiveEq;
     if(!catOk||!eqOk) return;
-    var m = e.muscle || '';
+    var primary = (e.muscle || '').split(',')[0].trim().toLowerCase();
     LIBOV_MGS.forEach(function(mg){
       if(mg.id==='all') return;
-      if(m.toLowerCase().indexOf(mg.id.toLowerCase())!==-1) activeMGs[mg.id]=true;
+      if(primary.indexOf(mg.id.toLowerCase())!==-1) activeMGs[mg.id]=true;
     });
   });
   document.getElementById('libovMgRow').innerHTML = LIBOV_MGS.filter(function(m){
@@ -4226,7 +4255,9 @@ function setLibovMg(mg){  libovActiveMg=mg;   renderLibovFilters(); renderLibovL
 // Check if muscle name matches mg filter
 function mgMatch(muscle, mg){
   if(mg==='all') return true;
-  return muscle.toLowerCase().indexOf(mg.toLowerCase())!==-1;
+  // Only match against the PRIMARY muscle (first entry before comma)
+  var primary = muscle.split(',')[0].trim().toLowerCase();
+  return primary.indexOf(mg.toLowerCase()) !== -1;
 }
 
 function renderLibovList(){
@@ -4577,6 +4608,8 @@ function getExercisesForCats(cats, count, usedNames) {
 
 function openShuffle() {
   shufSelectedSplit = activeSplit;
+  _shufDayType = 'full';
+  _shufDayMg = 'all';
   var html = '';
   Object.keys(SPLITS).forEach(function(k) {
     var sp = SPLITS[k];
@@ -4589,6 +4622,7 @@ function openShuffle() {
       '</div>';
   });
   document.getElementById('shufOpts').innerHTML = html;
+  renderShufDayUI();
   document.getElementById('shufOverlay').classList.remove('hidden');
 }
 
@@ -4613,7 +4647,26 @@ function doShuffle() {
 
   split.days.forEach(function(day) {
     if (day.tags.indexOf('rest') !== -1) return;
-    day.main = buildStructuredDay(day, count, usedNames);
+    // Apply chosen type
+    var tmpDay = {tags: [_shufDayType], main: day.main};
+    var slots;
+    if(_shufDayMg !== 'all'){
+      var catMap = {brust:'push',schulter:'push',trizeps:'push',rücken:'pull',bizeps:'pull',quadrizeps:'legs',gesäß:'legs',hamstring:'legs'};
+      var cat = catMap[_shufDayMg] || _shufDayType;
+      slots = [];
+      for(var i=0;i<count;i++) slots.push({cat:cat, kw:[_shufDayMg]});
+    } else {
+      var slotFn = DAY_SLOTS[_shufDayType] || DAY_SLOTS['full'];
+      slots = slotFn(count);
+    }
+    var result = [];
+    var localUsed = usedNames.slice();
+    slots.forEach(function(slot){
+      var picked = pickFromLibrary(slot.cat, slot.kw, 1, localUsed);
+      if(picked.length>0){ localUsed.push(picked[0].name); result.push(makeExObj(picked[0])); }
+    });
+    if(result.length < count) result = result.concat(buildStructuredDay(tmpDay, count-result.length, localUsed));
+    day.main = result.slice(0, count);
     day.main.forEach(function(e){ usedNames.push(e.name); });
   });
 
@@ -4836,9 +4889,9 @@ function renderStretchExList() {
   var html = filtered.map(function(e){
     var safeName = e.name.replace(/'/g,"\\'");
     var photoNum = STRETCH_PHOTO_MAP && STRETCH_PHOTO_MAP[e.name];
-    var thumb = '<div style="width:44px;height:44px;flex-shrink:0;border-radius:6px;overflow:hidden;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:20px;">'
+    var thumb = '<div style="width:56px;height:56px;flex-shrink:0;border-radius:6px;overflow:hidden;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:20px;">'
       + (photoNum
-        ? '<img src="'+getStretchPhotoSrc(photoNum)+'" onerror="this.style.display=\'none\'" style="width:44px;height:44px;object-fit:cover;display:block;" />'
+        ? '<img src="'+getStretchPhotoSrc(photoNum)+'" onerror="this.style.display=\'none\'" style="width:56px;height:56px;object-fit:contain;display:block;" />'
         : e.icon)
       + '</div>';
     return '<div class="ex-row" style="cursor:pointer;gap:10px;" onclick="openStretchDesc(\''+safeName+'\')">'
@@ -5186,7 +5239,15 @@ function openRoutineEditor(ri) {
   document.getElementById('routEditName').value = r.name;
   document.getElementById('routEditHold').value = r.holdSec || 45;
   _routCurrentExIds = r.exIds.slice();
+  _pickActivePos = 'Alle';
+  _pickActiveGrp = 'Alle';
+  _pickFiltersOpen = false;
+  document.getElementById('stretchPickFilterBody').style.display = 'none';
+  document.getElementById('stretchPickFilterArrow').textContent = '▼';
+  document.getElementById('stretchPickFilterSummary').textContent = 'Filter';
   renderRoutExRows();
+  renderStretchPickFilters();
+  renderStretchPickList();
   document.getElementById('routEditOverlay').classList.remove('hidden');
 }
 
@@ -5223,6 +5284,7 @@ function renderRoutExRows(){
 function removeRoutEx(idx){
   _routCurrentExIds.splice(idx, 1);
   renderRoutExRows();
+  renderStretchPickList();
 }
 
 function saveRoutine() {
@@ -5250,26 +5312,6 @@ function deleteRoutine(ri) {
 }
 
 // ── STRETCH LIBRARY PICKER (for routine editor) ──
-function openStretchLibForRoutine(){
-  _pickActivePos = 'Alle';
-  _pickActiveGrp = 'Alle';
-  _pickFiltersOpen = false;
-  document.getElementById('stretchPickFilterBody').style.display = 'none';
-  document.getElementById('stretchPickFilterArrow').textContent = '▼';
-  document.getElementById('stretchPickFilterSummary').textContent = 'Filter';
-  renderStretchPickFilters();
-  renderStretchPickList();
-  document.getElementById('stretchLibPickOverlay').classList.remove('hidden');
-}
-
-function closeStretchLibPick(){
-  document.getElementById('stretchLibPickOverlay').classList.add('hidden');
-}
-
-function stretchLibPickBgClose(e){
-  if(e.target === document.getElementById('stretchLibPickOverlay')) closeStretchLibPick();
-}
-
 function toggleStretchPickFilters(){
   _pickFiltersOpen = !_pickFiltersOpen;
   document.getElementById('stretchPickFilterBody').style.display = _pickFiltersOpen ? 'block' : 'none';
@@ -5307,9 +5349,9 @@ function renderStretchPickList(){
   el.innerHTML = filtered.map(function(e){
     var alreadyAdded = _routCurrentExIds.indexOf(e.id) !== -1;
     var photoNum = STRETCH_PHOTO_MAP && STRETCH_PHOTO_MAP[e.name];
-    var thumb = '<div style="width:44px;height:44px;flex-shrink:0;border-radius:6px;overflow:hidden;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:20px;">'
+    var thumb = '<div style="width:56px;height:56px;flex-shrink:0;border-radius:6px;overflow:hidden;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:20px;">'
       + (photoNum
-        ? '<img src="'+getStretchPhotoSrc(photoNum)+'" onerror="this.style.display=\'none\'" style="width:44px;height:44px;object-fit:cover;display:block;" />'
+        ? '<img src="'+getStretchPhotoSrc(photoNum)+'" onerror="this.style.display=\'none\'" style="width:56px;height:56px;object-fit:contain;display:block;" />'
         : e.icon)
       + '</div>';
     return '<div style="display:flex;align-items:center;gap:10px;padding:.55rem .4rem;border-bottom:1px solid var(--border);">'
@@ -5944,23 +5986,91 @@ function renderDetail(){
 }
 function shuffleDay(){
   var day = SPLITS[activeSplit].days[activeDay];
-  if(day.tags.indexOf('rest') !== -1) return;
+  if(day.tags && day.tags.indexOf('rest') !== -1) return;
+  if(!day.main || !day.main.length){ showToast('Keine Übungen zum Ersetzen'); return; }
 
-  var count = day.main.length || 6;
-  var usedNames = day.main.map(function(e){ return e.name; });
-  var newExercises = buildStructuredDay(day, count, usedNames);
+  var currentNames = day.main.map(function(e){ return e.name; });
 
-  // If not enough new (small library), allow repeats
-  if(newExercises.length < count){
-    newExercises = buildStructuredDay(day, count, []);
-  }
+  day.main = day.main.map(function(ex){
+    // Find the muscle keyword from this exercise
+    var muscle = (ex.muscle || '').toLowerCase();
+    var cat = ex.cat || classifyMuscle(ex.name);
 
-  day.main = newExercises;
+    // Keywords derived from muscle string
+    var kws = muscle.split(/[,\/\s]+/).filter(function(w){ return w.length > 3; });
+
+    // Try to find a replacement with same muscle keywords, different exercise
+    var candidate = null;
+    for(var k=0; k<kws.length; k++){
+      var picks = pickFromLibrary(cat, [kws[k]], 1, currentNames);
+      if(picks.length){ candidate = picks[0]; break; }
+    }
+    // Fallback: same category, different exercise
+    if(!candidate){
+      var picks2 = pickFromLibrary(cat, [], 1, currentNames);
+      if(picks2.length) candidate = picks2[0];
+    }
+
+    if(candidate){
+      currentNames.push(candidate.name);
+      return makeExObj(candidate);
+    }
+    return ex; // keep original if nothing found
+  });
+
   detailEditMode = false;
   saveState();
   renderDetail();
-  showToast('🔀 '+day.name+' neu gewürfelt!');
+  showToast('🔀 Übungen ersetzt!');
 }
+
+var SHUF_DAY_TYPES = [
+  {id:'full', label:'💪 Ganzkörper'},
+  {id:'pull', label:'🏋 Pull'},
+  {id:'push', label:'💪 Push'},
+  {id:'legs', label:'🦵 Legs'},
+];
+
+var SHUF_DAY_MGS = [
+  {id:'all',        label:'Alle'},
+  {id:'brust',      label:'Brust'},
+  {id:'rücken',     label:'Rücken'},
+  {id:'schulter',   label:'Schulter'},
+  {id:'bizeps',     label:'Bizeps'},
+  {id:'trizeps',    label:'Trizeps'},
+  {id:'quadrizeps', label:'Quadrizeps'},
+  {id:'gesäß',      label:'Gesäß'},
+  {id:'hamstring',  label:'Hamstring'},
+];
+
+function renderShufDayUI(){
+  ['shufTypeRow'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.innerHTML = SHUF_DAY_TYPES.map(function(t){
+      var active = t.id === _shufDayType;
+      return '<button onclick="setShufDayType(\'' +t.id+ '\')\" style="padding:.4rem .85rem;font-family:\'Barlow Condensed\',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:6px;cursor:pointer;min-height:36px;'
+        +'border:1px solid '+(active?'var(--accent)':'var(--border2)')+';'
+        +'background:'+(active?'var(--accent2)':'transparent')+';'
+        +'color:'+(active?'var(--accent)':'var(--muted)')+';">'+t.label+'</button>';
+    }).join('');
+  });
+  ['shufMgRow'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.innerHTML = SHUF_DAY_MGS.map(function(m){
+      var active = m.id === _shufDayMg;
+      return '<button onclick="setShufDayMg(\'' +m.id+ '\')\" style="padding:.35rem .75rem;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:20px;cursor:pointer;min-height:32px;'
+        +'border:1px solid '+(active?'var(--accent)':'var(--border)')+';'
+        +'background:'+(active?'var(--accent2)':'transparent')+';'
+        +'color:'+(active?'var(--accent)':'var(--muted)')+';">'+m.label+'</button>';
+    }).join('');
+  });
+}
+
+function setShufDayType(t){ _shufDayType=t; renderShufDayUI(); }
+function setShufDayMg(m){ _shufDayMg=m; renderShufDayUI(); }
+function closeShufDay(){ document.getElementById('shufDayOverlay') && document.getElementById('shufDayOverlay').classList.add('hidden'); }
 
 function selectSplit(k){activeSplit=k;activeDay=0;detailEditMode=false;inlineAddOpen=false;renderNav();renderDays();}
 function selectDay(i){activeDay=i;detailEditMode=false;inlineAddOpen=false;renderDays();}
@@ -6155,7 +6265,7 @@ function saveDebounced(){ clearTimeout(saveTimer); saveTimer=setTimeout(saveStat
 
 
 // ── EXERCISE PHOTO DATA ──
-var EX_PHOTO_MAP = {"Kniebeugen (BF)": 1, "Kniebeugen einbeinig": 2, "Ausfallschritt rückwärts": 3, "Beinstrecker sitzend": 4, "Beinstrecken einseitig": 5, "Kreuzheben gestreckte Beine": 6, "Kreuzheben (BF)": 7, "Bein-Curls stehend (BF)": 8, "Wadendrücken (BF)": 9, "Wadendrücken außen": 10, "Wadendrücken innen": 11, "Kickbacks einbeinig": 12, "Beindrücken": 13, "Abduktoren außen": 16, "Adduktoren innen": 17, "Abduktorenübung liegend": 19, "Abduktorenübung liegend einbeinig": 20, "Sprunggelenk laterale Rotation": 30, "Sprunggelenk mediale Rotation": 31, "Bankdrücken (BF)": 32, "Schrägbankdrücken (BF)": 34, "Fliegende (BF)": 36, "Fliegende auf der Schrägbank": 38, "Negatives Schrägbankdrücken": 40, "Latziehen zur Brust": 42, "Latzug nach vorne": 43, "Überzüge sitzend": 49, "Seitdrücken": 51, "Rudern stehend (BF)": 53, "Überzüge stehend": 59, "Schulterdrücken sitzend": 60, "Schulterziehen (Shrugs)": 62, "Frontheben stehend (BF)": 64, "Seitheben stehend (BF)": 66, "Seitheben stehend einarmig": 67, "Delta-Rudern stehend": 68, "Cablecross": 70, "Frontheben sitzend": 71, "Frontheben sitzend einarmig": 72, "Seitheben sitzend": 73, "Handgelenk Außenrotation": 75, "Handgelenk Innenrotation": 76, "Schulter Rotation nach oben": 77, "Rückziehen": 78, "Schulter Außenrotation gestreckt": 79, "Schulter Innenrotation gestreckt": 80, "Bizeps-Curls stehend": 81, "Hammer-Curls (BF)": 83, "Bizeps-Curls gebogene Stange": 87, "Konzentrations-Curls sitzend": 89, "Unterarm-Curls sitzend": 90, "Trizepsdrücken überkopf (BF)": 92, "Trizepsdrücken (BF)": 94, "Getrenntes Trizepsdrücken": 96, "Trizeps Kickback (BF)": 101, "Trizeps Kickbacks Untergriff": 102, "Dips (BF)": 103, "Bauch Crunches": 106, "Schräge Crunches": 107, "Oberkörperdrehen stehend": 108, "Seitbeugen": 109, "Rückenstrecker sitzend": 110, "Bankdrücken mit Langhantel": 111, "Schrägbankdrücken mit Langhantel": 112, "Enger Griff Bankdrücken": 113, "Rudern sitzend enger Griff": 114, "Rudern sitzend breiter Griff": 115, "Kurzhantel Bankdrücken": 116, "Rudern mit Kurzhanteln": 117};
+var EX_PHOTO_MAP = {"Kniebeugen (BF)": 1, "Kniebeugen einbeinig": 2, "Ausfallschritt rückwärts": 3, "Beinstrecker sitzend": 4, "Beinstrecken einseitig": 5, "Kreuzheben gestreckte Beine": 6, "Kreuzheben (BF)": 7, "Bein-Curls stehend (BF)": 8, "Wadendrücken (BF)": 9, "Wadendrücken außen": 10, "Wadendrücken innen": 11, "Kickbacks einbeinig": 12, "Beindrücken": 13, "Abduktoren außen": 16, "Adduktoren innen": 17, "Abduktorenübung liegend": 19, "Abduktorenübung liegend einbeinig": 20, "Sprunggelenk laterale Rotation": 30, "Sprunggelenk mediale Rotation": 31, "Bankdrücken (BF)": 32, "Schrägbankdrücken (BF)": 34, "Fliegende (BF)": 36, "Fliegende auf der Schrägbank": 38, "Negatives Schrägbankdrücken": 40, "Latziehen zur Brust": 42, "Latzug nach vorne": 43, "Überzüge sitzend": 49, "Seitdrücken": 51, "Rudern stehend (BF)": 53, "Überzüge stehend": 59, "Schulterdrücken sitzend": 60, "Schulterziehen (Shrugs)": 62, "Frontheben stehend (BF)": 64, "Seitheben stehend (BF)": 66, "Seitheben stehend einarmig": 67, "Delta-Rudern stehend": 68, "Reverse Cablecross": 70, "Frontheben sitzend": 71, "Frontheben sitzend einarmig": 72, "Seitheben sitzend": 73, "Handgelenk Außenrotation": 75, "Handgelenk Innenrotation": 76, "Schulter Rotation nach oben": 77, "Rückziehen": 78, "Schulter Außenrotation gestreckt": 79, "Schulter Innenrotation gestreckt": 80, "Bizeps-Curls stehend": 81, "Hammer-Curls (BF)": 83, "Bizeps-Curls gebogene Stange": 87, "Konzentrations-Curls sitzend": 89, "Unterarm-Curls sitzend": 90, "Trizepsdrücken überkopf (BF)": 92, "Trizepsdrücken (BF)": 94, "Getrenntes Trizepsdrücken": 96, "Trizeps Kickback (BF)": 101, "Trizeps Kickbacks Untergriff": 102, "Dips (BF)": 103, "Bauch Crunches": 106, "Schräge Crunches": 107, "Oberkörperdrehen stehend": 108, "Seitbeugen": 109, "Rückenstrecker sitzend": 110, "Bankdrücken mit Langhantel": 111, "Schrägbankdrücken mit Langhantel": 112, "Enger Griff Bankdrücken": 113, "Rudern sitzend enger Griff": 114, "Rudern sitzend breiter Griff": 115, "Kurzhantel Bankdrücken": 116, "Rudern mit Kurzhanteln": 117};
 var EX_PHOTOS = null;
 
 var STRETCH_PHOTO_MAP = {
