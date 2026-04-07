@@ -381,7 +381,8 @@ html,body{overflow-x:hidden;background:var(--bg);}
 .week-cell{flex:0 0 calc((100vw - 48px)/7);background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:.5rem .2rem;text-align:center;cursor:default;min-height:64px;display:flex;flex-direction:column;align-items:center;gap:3px;}
 .week-cell.has-entry{cursor:pointer;}
 .week-cell.has-entry:active{background:var(--bg3);}
-.week-cell.today-cell{border-color:var(--accent);}
+.week-cell.today-cell{border-color:var(--muted2);}
+.week-cell.selected-cell{border-color:var(--accent);border-width:2px;}
 .week-cell-lbl{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted3);}
 .week-cell-lbl.today{color:var(--accent);}
 .week-cell-dot{width:8px;height:8px;border-radius:50%;background:var(--border);flex-shrink:0;}
@@ -571,7 +572,7 @@ html,body{overflow-x:hidden;background:var(--bg);}
 .pr-toast{position:fixed;top:1rem;left:50%;transform:translateX(-50%);background:#1a1808;border:1px solid #c8a030;border-radius:8px;padding:.75rem 1.25rem;color:#c8a030;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;z-index:3000;animation:prToastIn .3s ease both;pointer-events:none;white-space:nowrap;text-align:center;}
 @keyframes prToastIn{from{opacity:0;transform:translateX(-50%) translateY(-8px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
 /* EXERCISE DESCRIPTION OVERLAY — centered */
-.exdesc-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:1500;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.exdesc-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:3000;display:flex;align-items:center;justify-content:center;padding:1rem;}
 .exdesc-panel{background:var(--bg);border:1px solid var(--border2);border-radius:14px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:1.5rem;}
 .exdesc-handle{display:none;}
 .exdesc-head{display:flex;align-items:flex-start;justify-content:space-between;padding:.75rem 1.1rem .5rem;border-bottom:1px solid var(--border);}
@@ -739,10 +740,6 @@ html,body{overflow-x:hidden;background:var(--bg);}
       <div class="logo">BIO<span class="logo-accent">FORCE</span></div>
       <div class="header-sub">Training System</div>
     </div>
-    <div style="display:flex;gap:6px;flex-shrink:0;">
-      <button class="btn-shuffle" onclick="openShuffle()">🔀 Shuffle</button>
-      <button class="btn-library" onclick="openLibOv('manage')">📚 Bibliothek</button>
-    </div>
   </div>
   <div class="top-nav">
     <button class="top-nav-btn active" id="navPlan" onclick="showPage('plan')">📋 Plan</button>
@@ -756,7 +753,13 @@ html,body{overflow-x:hidden;background:var(--bg);}
   <div id="planPage">
     <div class="split-nav" id="splitNav"></div>
     <div class="split-content">
-      <div id="splitTitle" class="split-title"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
+        <div id="splitTitle" class="split-title"></div>
+        <div style="display:flex;gap:4px;flex-shrink:0;">
+          <button onclick="openShuffle()" title="Shuffle" style="background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:18px;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;padding:0;">🔀</button>
+          <button onclick="openLibOv('manage')" title="Bibliothek" style="background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:18px;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;padding:0;">📚</button>
+        </div>
+      </div>
       <div id="splitDesc" class="split-desc"></div>
       <div class="days-grid" id="daysGrid"></div>
       <div id="detailPanel"></div>
@@ -877,15 +880,50 @@ html,body{overflow-x:hidden;background:var(--bg);}
         <div class="stretch-quick-name">Morgens / Mobilität</div>
         <div class="stretch-quick-meta">10–12 min · Ganzkörper</div>
       </div>
+      <div class="stretch-quick-card" onclick="startQuickRoutine('upper')">
+        <div class="stretch-quick-icon">💪</div>
+        <div class="stretch-quick-name">Oberkörper</div>
+        <div class="stretch-quick-meta">8–10 min · Schulter, Rücken, Arme</div>
+      </div>
+      <div class="stretch-quick-card" onclick="startQuickRoutine('lower')">
+        <div class="stretch-quick-icon">🦵</div>
+        <div class="stretch-quick-name">Unterkörper</div>
+        <div class="stretch-quick-meta">8–10 min · Beine, Hüfte</div>
+      </div>
     </div>
-    <!-- Eigene Routinen -->
-    <div class="stretch-section-title">Meine Routinen</div>
-    <button class="stretch-add-routine-btn" onclick="openRoutineEditor(null)">＋ Neue Routine erstellen</button>
+    <!-- Meine Routinen -->
+    <div class="stretch-section-title" style="display:flex;align-items:center;justify-content:space-between;">
+      Meine Routinen
+      <div style="display:flex;gap:4px;">
+        <button onclick="openStretchLib()" title="Dehnen-Bibliothek" style="background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:18px;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;padding:0;">📖</button>
+        <button onclick="openRoutineEditor(null)" title="Neue Routine" style="background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:18px;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;padding:0;">＋</button>
+      </div>
+    </div>
     <div id="stretchRoutineList"></div>
-    <!-- Übungssammlung -->
-    <div class="stretch-section-title">Übungssammlung</div>
-    <div class="stretch-filter-row" id="stretchFilterRow"></div>
-    <div id="stretchExList"></div>
+  </div>
+
+  <!-- STRETCH LIBRARY OVERLAY -->
+  <div class="shuf-overlay hidden" id="stretchLibOverlay" onclick="stretchLibBgClose(event)">
+    <div class="shuf-box" style="max-height:85vh;display:flex;flex-direction:column;padding:1rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-shrink:0;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--text);">📖 Dehnen Bibliothek</div>
+        <button onclick="closeStretchLib()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;min-width:36px;min-height:36px;">✕</button>
+      </div>
+      <!-- Collapsible filters -->
+      <div style="flex-shrink:0;margin-bottom:.5rem;">
+        <button onclick="toggleStretchFilters()" style="width:100%;display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:.4rem .75rem;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);min-height:34px;">
+          <span id="stretchLibFilterSummary">Filter</span>
+          <span id="stretchLibFilterArrow">▼</span>
+        </button>
+        <div id="stretchLibFilterBody" style="display:none;padding:.6rem 0 0;">
+          <div style="font-size:10px;color:var(--muted3);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Position</div>
+          <div class="stretch-filter-row" id="stretchPosRow"></div>
+          <div style="font-size:10px;color:var(--muted3);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;margin-top:.5rem;">Muskelgruppe</div>
+          <div class="stretch-filter-row" id="stretchFilterRow"></div>
+        </div>
+      </div>
+      <div id="stretchExList" style="overflow-y:auto;flex:1;"></div>
+    </div>
   </div>
 
   <!-- SETTINGS PAGE -->
@@ -945,63 +983,57 @@ html,body{overflow-x:hidden;background:var(--bg);}
   </div>
 
   <!-- ROUTINE EDITOR OVERLAY -->
-  <div class="rout-edit-overlay hidden" id="routEditOverlay" onclick="routEditBgClose(event)">
+  <div class="rout-edit-overlay hidden" id="routEditOverlay">
     <div class="rout-edit-box" id="routEditBox">
       <!-- Header -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--text);" id="routEditTitle">Routine bearbeiten</div>
-        <button class="libov-close" onclick="closeRoutineEditor()">✕</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;flex-shrink:0;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--text);" id="routEditTitle">Neue Routine</div>
+        <button onclick="closeRoutineEditor()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;min-width:36px;min-height:36px;">✕</button>
       </div>
-      <!-- Name -->
-      <div style="margin-bottom:.75rem;">
-        <label style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:.3rem;">Name</label>
-        <input class="add-input" id="routEditName" placeholder="z.B. Oberkörper Dehnen" style="width:100%;box-sizing:border-box;" />
-      </div>
-      <!-- Filter (collapsible) -->
-      <div style="border:1px solid var(--border);border-radius:7px;margin-bottom:.6rem;overflow:hidden;">
-        <button onclick="toggleRoutFilter()" style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:.55rem .85rem;background:none;border:none;cursor:pointer;min-height:38px;">
-          <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);" id="routFilterSummary">Filter: Alle</span>
-          <span style="color:#4a5060;font-size:12px;" id="routFilterArrow">▼</span>
-        </button>
-        <div id="routFilterBody" style="display:none;padding:.5rem .85rem .75rem;border-top:1px solid var(--border);">
-          <div style="font-size:11px;color:var(--muted3);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem;">Muskelgruppe</div>
-          <div id="routFilterChips" style="display:flex;gap:5px;flex-wrap:wrap;"></div>
+      <!-- Name + Haltezeit -->
+      <div style="display:flex;gap:8px;margin-bottom:.75rem;flex-shrink:0;">
+        <input class="add-input" id="routEditName" placeholder="Routinenname" style="flex:1;box-sizing:border-box;" />
+        <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
+          <input type="number" id="routEditHold" value="45" min="5" step="5" style="width:54px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--text2);background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:.35rem;" />
+          <span style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;">s</span>
         </div>
       </div>
-      <!-- Exercise list -->
-      <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;">Übungen auswählen</div>
-      <div id="routEditExList" style="flex:1;min-height:0;overflow-y:auto;margin-bottom:.6rem;border:1px solid var(--border);border-radius:7px;"></div>
-      <!-- Add new exercise (collapsible) -->
-      <div style="border:1px solid var(--border);border-radius:7px;margin-bottom:.85rem;overflow:hidden;">
-        <button onclick="toggleRoutAddForm()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:.6rem .85rem;background:none;border:none;cursor:pointer;min-height:40px;">
-          <span id="routAddIcon" style="color:var(--muted3);font-size:14px;">＋</span>
-          <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#4a5060;">Neue Übung hinzufügen</span>
-        </button>
-        <div id="routAddFormInner" style="display:none;padding:.6rem .85rem .85rem;border-top:1px solid var(--border);">
-          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:.7rem;">
-            <input class="add-input" id="routNewName" placeholder="Übungsname" style="width:100%;box-sizing:border-box;" />
-            <input class="add-input" id="routNewMuscle" placeholder="Muskelgruppe (z.B. Quadrizeps)" style="width:100%;box-sizing:border-box;" />
-            <select class="add-select" id="routNewGroup" style="width:100%;box-sizing:border-box;">
-              <option value="Beine">Beine</option>
-              <option value="Hüfte">Hüfte</option>
-              <option value="Rücken">Rücken</option>
-              <option value="Schulter">Schulter</option>
-              <option value="Arme">Arme</option>
-            </select>
-            <select class="add-select" id="routNewSides" style="width:100%;box-sizing:border-box;">
-              <option value="1">Beidseitig (Links + Rechts)</option>
-              <option value="0">Einseitig</option>
-            </select>
-          </div>
-          <button class="shuf-go" onclick="addRoutineStretchEx()" style="width:100%;">+ Zur Sammlung hinzufügen</button>
-        </div>
-      </div>
+      <!-- Exercise list — like plan day -->
+      <div id="routExRows" style="flex:1;overflow-y:auto;min-height:80px;margin-bottom:.75rem;"></div>
+      <!-- Add from library button -->
+      <button onclick="openStretchLibForRoutine()" style="width:100%;padding:.65rem;background:var(--bg3);border:1px dashed var(--border2);border-radius:8px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;min-height:42px;margin-bottom:.75rem;flex-shrink:0;">📖 Aus Bibliothek hinzufügen</button>
       <!-- Save/Cancel -->
-      <div style="display:flex;gap:8px;">
+      <div style="display:flex;gap:8px;flex-shrink:0;">
         <button class="shuf-cancel" onclick="closeRoutineEditor()">Abbrechen</button>
         <button class="shuf-go" onclick="saveRoutine()">✓ Speichern</button>
       </div>
     </div>
+  </div>
+
+  <!-- STRETCH LIB FOR ROUTINE PICKER -->
+  <div class="shuf-overlay hidden" id="stretchLibPickOverlay" onclick="stretchLibPickBgClose(event)">
+    <div class="shuf-box" style="max-height:85vh;display:flex;flex-direction:column;padding:1rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-shrink:0;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--text);">📖 Übung hinzufügen</div>
+        <button onclick="closeStretchLibPick()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;min-width:36px;min-height:36px;">✕</button>
+      </div>
+      <!-- Filters -->
+      <div style="flex-shrink:0;margin-bottom:.5rem;">
+        <button onclick="toggleStretchPickFilters()" style="width:100%;display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:.4rem .75rem;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);min-height:34px;">
+          <span id="stretchPickFilterSummary">Filter</span>
+          <span id="stretchPickFilterArrow">▼</span>
+        </button>
+        <div id="stretchPickFilterBody" style="display:none;padding:.6rem 0 0;">
+          <div style="font-size:10px;color:var(--muted3);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Position</div>
+          <div class="stretch-filter-row" id="stretchPickPosRow"></div>
+          <div style="font-size:10px;color:var(--muted3);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;margin-top:.5rem;">Muskelgruppe</div>
+          <div class="stretch-filter-row" id="stretchPickGrpRow"></div>
+        </div>
+      </div>
+      <div id="stretchPickExList" style="overflow-y:auto;flex:1;"></div>
+    </div>
+  </div>
+
   </div>
 
 </div>
@@ -2635,18 +2667,19 @@ function renderWeek(){
     var dotColor = entries.length > 0 ? getSplitColor(entries[0].sk) : (acts.length > 0 ? acts[0].color : '');
     var dotStyle = dotColor ? ' style="background:'+dotColor+';width:10px;height:10px;"' : '';
 
+
     var icons = '';
     entries.forEach(function(e){
       var col = getSplitColor(e.sk);
       icons += '<div style="font-size:10px;color:'+col+';font-family:\'Barlow Condensed\',sans-serif;font-weight:700;line-height:1.3;">'+e.splitName.slice(0,3).toUpperCase()+'</div>';
     });
     acts.forEach(function(a){
-      icons += '<div class="week-cell-icon">'+a.icon+'</div>';
+      icons += '<div style="font-size:13px;line-height:1.2;">'+a.icon+'</div>';
     });
-
+    var isSelected = _selectedDayStr === dateStr;
     var onclick = hasAny ? ' onclick="showDayLog(\''+d.getFullYear()+'\',\''+(d.getMonth()+1)+'\',\''+d.getDate()+'\')"' : '';
     var id = isToday ? ' id="weekToday"' : '';
-    cells += '<div class="week-cell'+(hasAny?' has-entry':'')+(isToday?' today-cell':'')+'"'+onclick+id+'>'
+    cells += '<div class="week-cell'+(hasAny?' has-entry':'')+(isToday?' today-cell':'')+(isSelected?' selected-cell':'')+'"'+onclick+id+'>'
       +'<div class="week-cell-lbl'+(isToday?' today':'')+'">'+dayLbl+'</div>'
       +'<div class="week-cell-dot'+(hasAny?' done':'')+(isToday&&!hasAny?' today-dot':'')+'"'+dotStyle+'></div>'
       +icons
@@ -2748,14 +2781,19 @@ function renderCal(){
     var style = '';
     if(isChangeDay){
       style = ' style="background:#c8a800;color:#0d0f12;font-weight:800;border:none;"';
-    } else if(hasTrain){
-      var sk = trainDates[day][0].sk;
-      var col = getSplitColor(sk);
-      style = ' style="background:'+col+'22;color:'+col+';border:1px solid '+col+'55;"';
-    } else if(hasAct){
-      var acol = actDates[day][0].color;
-      style = ' style="background:'+acol+'22;color:'+acol+';border:1px solid '+acol+'55;"';
+    } else if(hasTrain || hasAct){
+      var dayCols = [];
+      if(trainDates[day]) trainDates[day].forEach(function(e){ dayCols.push(getSplitColor(e.sk)); });
+      if(actDates[day])   actDates[day].forEach(function(e){ dayCols.push(e.color); });
+      if(dayCols.length === 1){
+        style = ' style="background:'+dayCols[0]+'22;color:'+dayCols[0]+';border:1px solid '+dayCols[0]+'55;"';
+      } else {
+        var pct = 100 / dayCols.length;
+        var stops = dayCols.map(function(c, i){ return c+'33 '+(i*pct)+'% '+((i+1)*pct)+'%'; }).join(', ');
+        style = ' style="background:linear-gradient(135deg, '+stops+');color:'+dayCols[0]+';border:1px solid '+dayCols[0]+'55;"';
+      }
     }
+
     var selDateStr = calYear+'-'+String(calMonth2+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
     var isSelected = _selectedDayStr === selDateStr;
     var cls = 'cal-day'+(isToday?' today':'')+((hasTrain||hasAct)?' has-training':'')+(isChangeDay?' change-day':'')+(isSelected?' cal-selected':'');
@@ -2785,7 +2823,8 @@ function showDayLog(y, m, d){
   document.getElementById('logSectionTitle').textContent = lbl;
   document.getElementById('logSection').style.display = 'block';
 
-  // Re-render calendar to show selected day highlight
+  // Re-render week and calendar to show selected highlight
+  renderWeek();
   renderCal();
   renderLog(dateStr);
 }
@@ -4593,95 +4632,97 @@ function doShuffle() {
 // Built-in stretch exercises (from handbook)
 var STRETCH_DB = [
   // ── Aus dem BioForce Handbuch ──
-  {id:'s1', icon:'🧘', name:'Oberschenkel-Dehnung', muscle:'Quadrizeps', group:'Beine', sides:true,
+  {id:'s1', icon:'🧘', name:'Oberschenkel-Dehnung', muscle:'Quadrizeps', group:'Beine', position:'stehend', sides:true,
    desc:'Aufrecht stehen, ein Bein anwinkeln und Fußknöchel mit gleichseitiger Hand greifen. Ferse zum Gesäß ziehen, Becken leicht nach vorne schieben. Knie des Standbeins leicht beugen. 20–30 Sek. halten.'},
-  {id:'s2', icon:'🧘', name:'Waden-Dehnung', muscle:'Wadenmuskulatur', group:'Beine', sides:true,
+  {id:'s2', icon:'🧘', name:'Waden-Dehnung', muscle:'Wadenmuskulatur', group:'Beine', position:'stehend', sides:true,
    desc:'Ca. eine Armlänge vor einer Wand stehen. Ein Bein nach hinten stellen, Ferse bleibt am Boden. Hände gegen Wand, Hüfte nach vorne lehnen bis Dehnung in Wade spürbar. Hinteres Knie gestreckt. 20–30 Sek.'},
-  {id:'s3', icon:'🧘', name:'Trizeps-Dehnen überkopf', muscle:'Trizeps', group:'Arme', sides:true,
+  {id:'s3', icon:'🧘', name:'Trizeps-Dehnen überkopf', muscle:'Trizeps', group:'Arme', position:'stehend', sides:true,
    desc:'Arm überkopf strecken, Ellbogen anwinkeln. Mit anderer Hand den Ellbogen sanft nach hinten-unten drücken. Rücken gerade halten. 20–30 Sek.'},
-  {id:'s4', icon:'🧘', name:'Rücken-Dehnen', muscle:'Rücken, Wirbelsäule', group:'Rücken', sides:false,
+  {id:'s4', icon:'🧘', name:'Rücken-Dehnen', muscle:'Rücken, Wirbelsäule', group:'Rücken', position:'stehend', sides:false,
    desc:'Schulterbreit stehen. Von der Hüfte nach vorne beugen, Hände locker hängen lassen. Oberkörper komplett entspannen. 20–30 Sek. halten, tief atmen.'},
-  {id:'s5', icon:'🧘', name:'Dehnen der Achillessehne', muscle:'Achillessehne, Wade', group:'Beine', sides:true,
+  {id:'s5', icon:'🧘', name:'Dehnen der Achillessehne', muscle:'Achillessehne, Wade', group:'Beine', position:'stehend', sides:true,
    desc:'Ein Bein nach vorne, hinteres Knie leicht anwinkeln. Hüfte nach vorne-unten schieben bis Dehnung an der Achillessehne spürbar. Ferse bleibt am Boden. 20–30 Sek.'},
-  {id:'s6', icon:'🧘', name:'Po-, Hüfte und Unterkörper-Dehnung', muscle:'Gesäß, Hüfte, unterer Rücken', group:'Hüfte', sides:true,
+  {id:'s6', icon:'🧘', name:'Po-, Hüfte und Unterkörper-Dehnung', muscle:'Gesäß, Hüfte, unterer Rücken', group:'Hüfte', position:'liegend', sides:true,
    desc:'Rücken auf Boden, Knie anwinkeln. Ein Bein mit beiden Händen zum Oberkörper ziehen. Schultern bleiben am Boden. 30 Sek. halten.'},
-  {id:'s7', icon:'🧘', name:'Dehnen der inneren Oberschenkel', muscle:'Adduktoren, innerer Oberschenkel', group:'Beine', sides:false,
+  {id:'s7', icon:'🧘', name:'Dehnen der inneren Oberschenkel', muscle:'Adduktoren, innerer Oberschenkel', group:'Beine', position:'liegend', sides:false,
    desc:'Auf dem Boden sitzen, Fußsohlen aneinander legen, Knie nach außen fallen lassen. Mit Ellbogen leicht auf Oberschenkel drücken und nach vorne neigen. 30 Sek.'},
-  {id:'s8', icon:'🧘', name:'Schulter-Dehnen', muscle:'Schulter, Brustbereich', group:'Schulter', sides:false,
+  {id:'s8', icon:'🧘', name:'Schulter-Dehnen', muscle:'Schulter, Brustbereich', group:'Schulter', position:'stehend', sides:false,
    desc:'Aufrecht stehen. Beide Hände hinter dem Rücken verschränken, Arme gestreckt. Brust nach vorne-oben schieben, Schulterblätter zusammenziehen. 20–30 Sek.'},
   // ── Neue Dehnübungen 9–42 ──
   {id:'s9',  icon:'🧘', name:'Fersenschub einseitig im Vierfüßler', muscle:'Wade', group:'Beine', sides:true,
    desc:'Im Parallelstand die Hände vor dem Körper auf dem Boden aufsetzen und einen Fuß vom Boden lösen. Anschließend die Ferse des gestreckten Standbeins zum Boden absenken. Zielstruktur gezielt dehnen, indem die Ferse aktiv nach unten gedrückt wird.'},
-  {id:'s10', icon:'🧘', name:'Fersenschub einseitig im Stand', muscle:'Wade', group:'Beine', sides:true,
+  {id:'s10', icon:'🧘', name:'Fersenschub einseitig im Stand', muscle:'Wade', group:'Beine', position:'stehend', sides:true,
    desc:'Im Parallelstand auf einer Treppenstufe das Körpergewicht auf ein Bein verlagern und den Fußballen des anderen Beines auf die Treppenkante setzen. Anschließend die Ferse nach unten schieben. Das Standbein leicht gebeugt lassen, um Gleichgewicht zu halten.'},
-  {id:'s11', icon:'🧘', name:'Anfersen im Stand', muscle:'vorderer Oberschenkel', group:'Beine', sides:true,
+  {id:'s11', icon:'🧘', name:'Anfersen im Stand', muscle:'vorderer Oberschenkel', group:'Beine', position:'stehend', sides:true,
    desc:'Im Parallelstand ein Bein am Sprunggelenk greifen. Anschließend die Ferse zum Gesäß anziehen, bis Oberschenkel und Oberkörper eine Linie bilden. Die Knie dabei eng zusammenhalten.'},
-  {id:'s12', icon:'🧘', name:'Rücklehnen im engen Kniesitz', muscle:'vordere Oberschenkel, Fußbeuger', group:'Beine', sides:false,
+  {id:'s12', icon:'🧘', name:'Rücklehnen im engen Kniesitz', muscle:'vordere Oberschenkel, Fußbeuger', group:'Beine', position:'kniend', sides:false,
    desc:'Im Kniestand bei gestreckten Füßen das Gesäß absenken. Die Knie dabei eng zusammenhalten. Anschließend den Oberkörper nach hinten absenken und dabei mit den Händen hinter dem Körper abstützen. Je tiefer der Oberkörper abgesenkt wird, desto intensiver die Dehnung.'},
-  {id:'s13', icon:'🧘', name:'Rücklehnen an der Wand', muscle:'vorderer Oberschenkel, Fußbeuger', group:'Beine', sides:true,
+  {id:'s13', icon:'🧘', name:'Rücklehnen an der Wand', muscle:'vorderer Oberschenkel, Fußbeuger', group:'Beine', position:'stehend', sides:true,
    desc:'Im einseitigen Kniestand so vor einer Wand platzieren, dass der hintere Fuß leicht erhöht an der Wand lehnt. Anschließend den Oberkörper zurücklehnen ohne die Hüfte zu rotieren. Die Hüfte aktiv nach vorne schieben für eine intensivere Dehnung.'},
-  {id:'s14', icon:'🧘', name:'Vorschub an der Wand', muscle:'Hüftbeuger, Fußbeuger', group:'Hüfte', sides:true,
+  {id:'s14', icon:'🧘', name:'Vorschub an der Wand', muscle:'Hüftbeuger, Fußbeuger', group:'Hüfte', position:'stehend', sides:true,
    desc:'Im einseitigen Kniestand so vor einer Wand platzieren, dass der hintere Fuß leicht erhöht an der Wand lehnt. Anschließend das Becken nach vorne schieben ohne die Hüfte zu rotieren. Den Oberkörper aufrecht halten und die Dehnung im vorderen Hüftbereich spüren.'},
-  {id:'s15', icon:'🧘', name:'Beckenschub aus dem Fersensitz', muscle:'Hüftbeuger, Fußbeuger', group:'Hüfte', sides:false,
+  {id:'s15', icon:'🧘', name:'Beckenschub aus dem Fersensitz', muscle:'Hüftbeuger, Fußbeuger', group:'Hüfte', position:'kniend', sides:false,
    desc:'Im Knien das Gesäß auf die gestreckten Füße absenken, den Oberkörper leicht nach hinten lehnen und abstützen. Anschließend das Becken nach vorne oben schieben. Die Hände hinter dem Körper auf dem Boden abstützen und die Hüfte aktiv anheben.'},
-  {id:'s16', icon:'🧘', name:'Hüftschub mit Aufdrehen', muscle:'Hüftbeuger, Rumpf', group:'Hüfte', sides:true,
+  {id:'s16', icon:'🧘', name:'Hüftschub mit Aufdrehen', muscle:'Hüftbeuger, Rumpf', group:'Hüfte', position:'stehend', sides:true,
    desc:'Im weiten Ausfallschritt Oberkörper vorneigen, das vordere Bein beugen und die Hüfte nach vorne unten schieben. Anschließend unter Beibehaltung der Beinposition den Arm durch Aufdrehen des Oberkörpers wechselseitig nach oben führen. Die Hüfte bleibt tief und stabil während des Aufdrehens.'},
-  {id:'s17', icon:'🧘', name:'Absenken im gewinkelten Ausfallschritt', muscle:'Gesäß', group:'Hüfte', sides:true,
+  {id:'s17', icon:'🧘', name:'Absenken im gewinkelten Ausfallschritt', muscle:'Gesäß', group:'Hüfte', position:'stehend', sides:true,
    desc:'Im Ausfallschritt das vordere Bein so winkeln, dass der Fuß zur Gegenseite zeigt. Knie und Hüfte zum Boden schieben. Anschließend den Oberkörper nach vorne absenken. Den Oberkörper so weit absenken, bis eine deutliche Dehnung im Gesäß spürbar ist.'},
-  {id:'s18', icon:'🧘', name:'Seitlicher Ausfallschritt vorgebeugt', muscle:'Adduktoren', group:'Beine', sides:true,
+  {id:'s18', icon:'🧘', name:'Seitlicher Ausfallschritt vorgebeugt', muscle:'Adduktoren', group:'Beine', position:'stehend', sides:true,
    desc:'Im weit gegrätschten Stand mit gestreckten Beinen den Oberkörper vorbeugen und mit den Händen auf dem Boden abstützen. Die Füße zeigen nach vorne. Anschließend ein Bein beugen und das Gesäß absenken. Das gestreckte Bein aktiv in den Boden drücken für eine intensivere Dehnung.'},
-  {id:'s19', icon:'🧘', name:'Vorschub im weiten Kniestand', muscle:'Adduktoren', group:'Beine', sides:false,
+  {id:'s19', icon:'🧘', name:'Vorschub im weiten Kniestand', muscle:'Adduktoren', group:'Beine', position:'kniend', sides:false,
    desc:'Im Vierfüßler die Beine weit grätschen und die Unterschenkel nach außen drehen. Anschließend den Oberkörper bei geradem Rücken weit nach vorne unten schieben und die Arme strecken. Den Oberkörper so tief wie möglich senken, um die Dehnung zu intensivieren.'},
-  {id:'s20', icon:'🧘', name:'Vorneigung in der weiten Grätsche', muscle:'hintere Kette, Adduktoren', group:'Beine', sides:true,
+  {id:'s20', icon:'🧘', name:'Vorneigung in der weiten Grätsche', muscle:'hintere Kette, Adduktoren', group:'Beine', position:'stehend', sides:true,
    desc:'Im weit gegrätschten Stand mit gestreckten Beinen den Oberkörper vorbeugen. Die Füße zeigen nach vorne. Anschließend einen Unterschenkel greifen und den Oberkörper zu diesem Bein ziehen. Den Rücken gerade halten und die Dehnung gleichmäßig auf beide Seiten anwenden.'},
-  {id:'s21', icon:'🧘', name:'Seitlicher Ausfallschritt rotiert', muscle:'Adduktoren, Rumpfmuskeln', group:'Beine', sides:true,
+  {id:'s21', icon:'🧘', name:'Seitlicher Ausfallschritt rotiert', muscle:'Adduktoren, Rumpfmuskeln', group:'Beine', position:'stehend', sides:true,
    desc:'Im Kniestand mit den Händen nach vorne abstützen und ein Bein weit zur Seite ausstellen. Der Fuß zeigt nach vorne. Anschließend den Arm der ausgestellten Seite durch Rumpfrotation zur Gegenseite schieben. Die Hüfte tief und stabil halten während der Rotation.'},
-  {id:'s22', icon:'🧘', name:'Rotation in weiter Schrittstellung', muscle:'hintere Beinmuskeln, Rumpfmuskeln', group:'Rücken', sides:true,
+  {id:'s22', icon:'🧘', name:'Rotation in weiter Schrittstellung', muscle:'hintere Beinmuskeln, Rumpfmuskeln', group:'Rücken', position:'stehend', sides:true,
    desc:'In weiter Schrittstellung den Oberkörper in der Hüfte nach vorne kippen, bis Hände oder Finger den Boden berühren. Anschließend bei gestreckten Beinen wechselseitig durch Rumpfrotation einen Arm nach oben führen. Den Blick dem nach oben zeigenden Arm folgen lassen.'},
-  {id:'s23', icon:'🧘', name:'Einrollen im Schneidersitz', muscle:'Rückenstrecker', group:'Rücken', sides:false,
+  {id:'s23', icon:'🧘', name:'Einrollen im Schneidersitz', muscle:'Rückenstrecker', group:'Rücken', position:'sitzend', sides:false,
    desc:'Im Schneidersitz den Oberkörper aufrecht halten. Anschließend den Kopf auf die Brust nehmen, den Rumpf nach vorne einrollen und dabei die Hände zum jeweiligen Knie der Gegenseite schieben. Wirbel für Wirbel einrollen und die Dehnung im gesamten Rücken spüren.'},
-  {id:'s24', icon:'🧘', name:'Einrollen aus der Kerze', muscle:'Rückenstrecker, Gesäß, hintere Oberschenkel', group:'Rücken', sides:false,
+  {id:'s24', icon:'🧘', name:'Einrollen aus der Kerze', muscle:'Rückenstrecker, Gesäß, hintere Oberschenkel', group:'Rücken', position:'liegend', sides:false,
    desc:'In Rückenlage die Hüfte auf den Händen abstützen und Beine und Körper zur Kerze nach oben strecken. Anschließend die gestreckten Beine absenken und den Rumpf Wirbel für Wirbel einrollen, wobei das Gewicht auf den Schultern ruht und nicht auf dem Nacken. Langsam und kontrolliert abrollen, um die Wirbelsäule zu mobilisieren.'},
-  {id:'s25', icon:'🧘', name:'Hüftdrehung in der Rückenlage', muscle:'Rumpfmuskeln', group:'Rücken', sides:true,
+  {id:'s25', icon:'🧘', name:'Hüftdrehung in der Rückenlage', muscle:'Rumpfmuskeln', group:'Rücken', position:'liegend', sides:true,
    desc:'In Rückenlage ein Bein aufstellen und die Arme seitlich ausstrecken. Anschließend mit der diagonalen Hand das aufgestellte Knie fassen und über das gestreckte Bein zum Boden ziehen, ohne dass sich der Schultergürtel vom Boden löst. Den Kopf in die entgegengesetzte Richtung drehen für eine verstärkte Rotationsdehnung.'},
-  {id:'s26', icon:'🧘', name:'Rumpfdrehung in der Seitlage', muscle:'Rumpfmuskeln', group:'Rücken', sides:true,
+  {id:'s26', icon:'🧘', name:'Rumpfdrehung in der Seitlage', muscle:'Rumpfmuskeln', group:'Rücken', position:'liegend', sides:true,
    desc:'In der Seitlage das obere Bein nach vorne winkeln und mit der unteren Hand am Boden halten. Anschließend den Schultergürtel durch Drehen des Rumpfes zum Boden führen. Dabei den oberen Arm über den Kopf führen und das obere Knie am Boden halten. Die Bewegung langsam und kontrolliert ausführen, bis eine deutliche Dehnung spürbar ist.'},
-  {id:'s27', icon:'🧘', name:'Seitliches Einrollen im Kniestand', muscle:'Rückenmuskeln', group:'Rücken', sides:true,
+  {id:'s27', icon:'🧘', name:'Seitliches Einrollen im Kniestand', muscle:'Rückenmuskeln', group:'Rücken', position:'kniend', sides:true,
    desc:'Im einseitigen Kniestand die Hände an den Kopf nehmen. Anschließend den Rumpf zur offenen Körperseite Wirbel für Wirbel diagonal einrollen und den unteren Ellbogen aktiv zum Boden schieben. Die Bewegung langsam ausführen und den Rücken dabei gezielt mobilisieren.'},
-  {id:'s28', icon:'🧘', name:'Körperöffnung im langen Sitz', muscle:'hintere Kette, Rumpf- und Halsmuskeln', group:'Rücken', sides:true,
+  {id:'s28', icon:'🧘', name:'Körperöffnung im langen Sitz', muscle:'hintere Kette, Rumpf- und Halsmuskeln', group:'Rücken', position:'sitzend', sides:true,
    desc:'Im Sitz die Beine strecken, den Oberkörper vorbeugen und die Schienbeine oder Füße greifen. Anschließend unter Beibehaltung von Vorneigung und Beinstreckung den Körper öffnen und einen Arm weit nach hinten oben führen. Den Blick dem nach oben gestreckten Arm folgen lassen.'},
-  {id:'s29', icon:'🧘', name:'Hohlkreuz aus dem Stütz', muscle:'vordere Körperkette', group:'Rücken', sides:false,
+  {id:'s29', icon:'🧘', name:'Hohlkreuz aus dem Stütz', muscle:'vordere Körperkette', group:'Rücken', position:'stehend', sides:false,
    desc:'Im Stütz das Becken so angehoben halten, dass Oberkörper und Beine eine Linie bilden. Anschließend den Kopf in den Nacken nehmen und die Hüfte nach vorne unten schieben. Dabei die Füße strecken. Den gesamten Vorderkörper von den Zehen bis zum Kinn dehnen.'},
-  {id:'s30', icon:'🧘', name:'Pyramide aus dem Stütz', muscle:'hintere Körperkette', group:'Rücken', sides:false,
+  {id:'s30', icon:'🧘', name:'Pyramide aus dem Stütz', muscle:'hintere Körperkette', group:'Rücken', position:'stehend', sides:false,
    desc:'Im Stütz das Becken so angehoben halten, dass Oberkörper und Beine eine Linie bilden. Anschließend das Gesäß bis zu etwa 90 Grad Hüftwinkel nach oben schieben. Die Beine sind gestreckt und die Hände so positioniert, dass Rumpf, Kopf und Arme eine Linie bilden. Die Fersen aktiv in den Boden drücken für eine intensivere Dehnung der hinteren Kette.'},
-  {id:'s31', icon:'🧘', name:'Seitneigen im Liegen', muscle:'seitliche Rumpfmuskeln', group:'Rücken', sides:true,
+  {id:'s31', icon:'🧘', name:'Seitneigen im Liegen', muscle:'seitliche Rumpfmuskeln', group:'Rücken', position:'liegend', sides:true,
    desc:'In Rückenlage die Arme über den Kopf heben und den gesamten Körper strecken. Anschließend mit Händen und Füßen in eine Richtung wandern, bis der Rumpf deutlich gewölbt ist. Dabei Schultergürtel und Hüfte am Boden halten. Die Dehnung auf beiden Seiten gleichmäßig durchführen.'},
-  {id:'s32', icon:'🧘', name:'Seitneigen im Schneidersitz', muscle:'seitliche Rumpfmuskeln', group:'Rücken', sides:true,
+  {id:'s32', icon:'🧘', name:'Seitneigen im Schneidersitz', muscle:'seitliche Rumpfmuskeln', group:'Rücken', position:'sitzend', sides:true,
    desc:'Im Sitz die Beine vor dem Körper zum Schneidersitz winkeln. Anschließend einen Arm über den Kopf strecken und den Oberkörper zur Gegenseite neigen. Den gestreckten Arm aktiv zur Seite schieben für eine intensivere Dehnung.'},
-  {id:'s33', icon:'🧘', name:'Seitneigen mit Kreuzschritt hinten', muscle:'seitliche Kette', group:'Rücken', sides:true,
+  {id:'s33', icon:'🧘', name:'Seitneigen mit Kreuzschritt hinten', muscle:'seitliche Kette', group:'Rücken', position:'stehend', sides:true,
    desc:'Im Parallelstand das Körpergewicht auf ein Bein verlagern und den anderen Fuß nach seitlich hinten schieben. Anschließend den Arm über den Kopf strecken und den Oberkörper zur Seite des Standbeines neigen. Die gesamte seitliche Körperkette von der Hand bis zum Fuß dehnen.'},
-  {id:'s34', icon:'🧘', name:'Tiefes Vorbeugen diagonal', muscle:'hintere Kette', group:'Rücken', sides:true,
+  {id:'s34', icon:'🧘', name:'Tiefes Vorbeugen diagonal', muscle:'hintere Kette', group:'Rücken', position:'stehend', sides:true,
    desc:'Im Parallelstand die Füße überkreuzen. Anschließend unter Beibehaltung der Beinstreckung den Rumpf Wirbel für Wirbel leicht rotierend einrollen und die Hände auf der Seite des vorderen Beines aufsetzen. Den Rücken vollständig einrollen und die gesamte hintere Kette dehnen.'},
-  {id:'s35', icon:'🧘', name:'Überstrecktes Aufrichten', muscle:'Bauch, Brust, Schulter, Hals', group:'Schulter', sides:false,
+  {id:'s35', icon:'🧘', name:'Überstrecktes Aufrichten', muscle:'Bauch, Brust, Schulter, Hals', group:'Schulter', position:'stehend', sides:false,
    desc:'Im Parallelstand Oberkörper und Arme locker nach vorne hängen lassen. Anschließend den Oberkörper Wirbel für Wirbel bis zur Überstreckung aufrichten, den Kopf in den Nacken nehmen und die gestreckten Arme weit nach hinten oben schieben. Die gesamte Vorderseite des Körpers maximal dehnen.'},
-  {id:'s36', icon:'🧘', name:'Armwandern im Vierfüßler', muscle:'Brustmuskeln', group:'Schulter', sides:true,
+  {id:'s36', icon:'🧘', name:'Armwandern im Vierfüßler', muscle:'Brustmuskeln', group:'Schulter', position:'kniend', sides:true,
    desc:'Im Vierfüßler eine Hand seitlich vor dem Körper aufsetzen, den Oberkörper von dieser Hand wegdrehen und die Schulter dabei zum Boden führen. Anschließend mit dem leicht gebeugten Arm unterschiedliche Positionen am Boden einnehmen. Die Dehnung durch verschiedene Armwinkel variieren.'},
-  {id:'s37', icon:'🧘', name:'Erhöhtes Durchhängen', muscle:'Brustmuskeln', group:'Schulter', sides:false,
+  {id:'s37', icon:'🧘', name:'Erhöhtes Durchhängen', muscle:'Brustmuskeln', group:'Schulter', position:'stehend', sides:false,
    desc:'In etwa Schrittlänge vor einem Kasten oder Stuhl knien und in Oberkörpervorbeugung die gestreckten Arme ablegen. Anschließend das Gesäß nach hinten und den Schultergürtel nach unten schieben. Den Kopf locker zwischen den Armen hängen lassen für eine maximale Dehnung.'},
-  {id:'s38', icon:'🧘', name:'Armdrehung im Vierfüßler', muscle:'Handbeuger', group:'Arme', sides:false,
+  {id:'s38', icon:'🧘', name:'Armdrehung im Vierfüßler', muscle:'Handbeuger', group:'Arme', position:'kniend', sides:false,
    desc:'Im Vierfüßler die Hände bei gestreckten Armen unter den Schultern platzieren. Anschließend die Hände nach außen drehen, bis die Finger in Richtung der Knie zeigen. Die Dehnung durch langsames Absenken des Körpergewichts intensivieren.'},
-  {id:'s39', icon:'🧘', name:'Armdurchschub und -vorschub', muscle:'Rumpf- und Schultermuskeln', group:'Schulter', sides:true,
+  {id:'s39', icon:'🧘', name:'Armdurchschub und -vorschub', muscle:'Rumpf- und Schultermuskeln', group:'Schulter', position:'stehend', sides:true,
    desc:'Im Vierfüßlerstand einen Arm nach oben strecken. Anschließend durch Körperdrehung den Arm unter dem Rumpf zur Gegenseite schieben und dort mit der Handfläche nach oben gestreckt auf den Boden pressen. Danach den anderen Arm nach vorne in die Streckung schieben.'},
-  {id:'s40', icon:'🧘', name:'Tiefes Vorbeugen mit Armschub', muscle:'hintere Kette, Schultermuskeln', group:'Schulter', sides:false,
+  {id:'s40', icon:'🧘', name:'Tiefes Vorbeugen mit Armschub', muscle:'hintere Kette, Schultermuskeln', group:'Schulter', position:'stehend', sides:false,
    desc:'Im Parallelstand die Hände hinter dem Körper ineinander legen. Anschließend den Oberkörper vorbeugen und dabei aktiv die Arme vom Körper wegschieben. Die Arme so weit wie möglich nach oben schieben für eine maximale Schulterdehnung.'},
-  {id:'s41', icon:'🧘', name:'Eindrehen in der Schulterbrücke', muscle:'Schultermuskeln', group:'Schulter', sides:false,
+  {id:'s41', icon:'🧘', name:'Eindrehen in der Schulterbrücke', muscle:'Schultermuskeln', group:'Schulter', position:'liegend', sides:false,
    desc:'In der Schulterbrücke die neben dem Körper abgelegten Arme eindrehen und die Hände unter den Körper schieben. Das Becken absenken und die Hände mit dem Körper nach unten auf den Boden pressen. Die Schultern aktiv nach hinten unten ziehen für eine intensivere Dehnung.'},
-  {id:'s42', icon:'🧘', name:'Kopfneigen mit Rotation', muscle:'Nackenmuskeln', group:'Schulter', sides:true,
+  {id:'s42', icon:'🧘', name:'Kopfneigen mit Rotation', muscle:'Nackenmuskeln', group:'Schulter', position:'stehend', sides:true,
    desc:'Im Parallelstand mit einer Hand von seitlich oben den Kopf greifen und den Gegenarm aktiv nach unten schieben. Anschließend den Kopf zur Seite ziehen und dabei leicht zur Gegenseite rotieren. Die Dehnung langsam aufbauen und nicht ruckartig ausführen.'}
 ];
 
+var STRETCH_POSITIONS = ['Alle', 'Stehend', 'Liegend', 'Sitzend', 'Kniend'];
 var STRETCH_GROUPS = ['Alle','Beine','Hüfte','Rücken','Schulter','Arme'];
-var STRETCH_GROUPS_LIST = STRETCH_GROUPS; // same list, used in routine editor
+var STRETCH_GROUPS_LIST = STRETCH_GROUPS;
+var stretchActivePos = 'Alle';
 var stretchActiveGroup = 'Alle';
 var stretchOpenId = null;
 
@@ -4706,20 +4747,76 @@ var QUICK_ROUTINES = {
     name: 'Morgens / Mobilität',
     exIds: ['s4','s6','s7','s8','s1','s5','s2','s3'],
     holdSec: 60
+  },
+  upper: {
+    name: 'Oberkörper',
+    exIds: ['s8','s3','s4','s37','s39','s42','s29','s30'],
+    holdSec: 45
+  },
+  lower: {
+    name: 'Unterkörper',
+    exIds: ['s1','s2','s5','s6','s7','s10','s17','s18'],
+    holdSec: 45
   }
 };
 
 function renderStretchPage() {
   if(typeof STRETCH_GROUPS === 'undefined') return;
-  renderStretchFilters();
-  renderStretchExList();
   renderStretchRoutines();
 }
 
+var _stretchLibFiltersOpen = false;
+
+function toggleStretchFilters(){
+  _stretchLibFiltersOpen = !_stretchLibFiltersOpen;
+  document.getElementById('stretchLibFilterBody').style.display = _stretchLibFiltersOpen ? 'block' : 'none';
+  document.getElementById('stretchLibFilterArrow').textContent = _stretchLibFiltersOpen ? '▲' : '▼';
+  updateStretchLibFilterSummary();
+}
+
+function updateStretchLibFilterSummary(){
+  var parts = [];
+  if(stretchActivePos !== 'Alle') parts.push(stretchActivePos);
+  if(stretchActiveGroup !== 'Alle') parts.push(stretchActiveGroup);
+  document.getElementById('stretchLibFilterSummary').textContent = parts.length ? parts.join(' · ') : 'Filter';
+}
+
+function openStretchLib(){
+  stretchActivePos = 'Alle';
+  stretchActiveGroup = 'Alle';
+  _stretchLibFiltersOpen = false;
+  document.getElementById('stretchLibFilterBody').style.display = 'none';
+  document.getElementById('stretchLibFilterArrow').textContent = '▼';
+  renderStretchFilters();
+  renderStretchExList();
+  updateStretchLibFilterSummary();
+  document.getElementById('stretchLibOverlay').classList.remove('hidden');
+}
+
+function closeStretchLib(){
+  document.getElementById('stretchLibOverlay').classList.add('hidden');
+}
+
+function stretchLibBgClose(e){
+  if(e.target === document.getElementById('stretchLibOverlay')) closeStretchLib();
+}
+
 function renderStretchFilters() {
+  var posRow = document.getElementById('stretchPosRow');
+  if(posRow) posRow.innerHTML = STRETCH_POSITIONS.map(function(p){
+    return '<button class="stretch-chip'+(p===stretchActivePos?' active':'')+'" onclick="setStretchPos(\''+p+'\')">'+p+'</button>';
+  }).join('');
   document.getElementById('stretchFilterRow').innerHTML = STRETCH_GROUPS.map(function(g){
     return '<button class="stretch-chip'+(g===stretchActiveGroup?' active':'')+'" onclick="setStretchGroup(\''+g+'\')">'+g+'</button>';
   }).join('');
+}
+
+function setStretchPos(p) {
+  stretchActivePos = p;
+  stretchOpenId = null;
+  renderStretchFilters();
+  renderStretchExList();
+  updateStretchLibFilterSummary();
 }
 
 function setStretchGroup(g) {
@@ -4727,17 +4824,26 @@ function setStretchGroup(g) {
   stretchOpenId = null;
   renderStretchFilters();
   renderStretchExList();
+  updateStretchLibFilterSummary();
 }
 
 function renderStretchExList() {
   var filtered = STRETCH_DB.filter(function(e){
-    return stretchActiveGroup === 'Alle' || e.group === stretchActiveGroup;
+    var posOk = stretchActivePos === 'Alle' || (e.position && e.position.toLowerCase() === stretchActivePos.toLowerCase());
+    var grpOk = stretchActiveGroup === 'Alle' || e.group === stretchActiveGroup;
+    return posOk && grpOk;
   });
   var html = filtered.map(function(e){
     var safeName = e.name.replace(/'/g,"\\'");
-    return '<div class="ex-row" style="cursor:pointer;" onclick="openStretchDesc(\''+safeName+'\')">'
-      +'<div class="ex-icon">'+e.icon+'</div>'
-      +'<div class="ex-info"><div class="ex-name">'+e.name+'</div><div class="ex-muscle">'+e.muscle+(e.sides?' · beidseitig':'')+'</div></div>'
+    var photoNum = STRETCH_PHOTO_MAP && STRETCH_PHOTO_MAP[e.name];
+    var thumb = '<div style="width:44px;height:44px;flex-shrink:0;border-radius:6px;overflow:hidden;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:20px;">'
+      + (photoNum
+        ? '<img src="'+getStretchPhotoSrc(photoNum)+'" onerror="this.style.display=\'none\'" style="width:44px;height:44px;object-fit:cover;display:block;" />'
+        : e.icon)
+      + '</div>';
+    return '<div class="ex-row" style="cursor:pointer;gap:10px;" onclick="openStretchDesc(\''+safeName+'\')">'
+      +thumb
+      +'<div class="ex-info"><div class="ex-name">'+e.name+'</div><div class="ex-muscle">'+e.muscle+(e.sides?' · beidseitig':'')+(e.position?' · '+e.position:'')+'</div></div>'
       +'<button class="ex-info-btn" onclick="event.stopPropagation();openStretchDesc(\''+safeName+'\')">ℹ</button>'
       +'</div>';
   }).join('');
@@ -4967,7 +5073,12 @@ function renderSeshStep() {
   var photoHtml = stretchNum
     ? '<div class="img-zoom-wrap"><img class="sesh-prep-photo" src="'+getStretchPhotoSrc(stretchNum)+'" onerror="this.parentElement.style.display=\'none\'" '+'onclick="openImgView(this.src,this.alt)" alt="'+ex.name+'" /></div>'
     : '';
-  var sideHtml = step.side ? '<div class="sesh-prep-side">'+step.side+'e Seite</div>' : '';
+  var sideHtml = step.side
+    ? '<div style="display:flex;justify-content:center;margin:.5rem 0;">'
+      +'<div style="background:'+(step.side==='Links'?'#1a3a6a':'#3a1a1a')+';border:2px solid '+(step.side==='Links'?'#5a90d0':'#d06060')+';border-radius:8px;padding:.4rem 1.2rem;font-family:\'Barlow Condensed\',sans-serif;font-size:18px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:'+(step.side==='Links'?'#5a90d0':'#d06060')+';">'
+      +(step.side==='Links'?'← ':'→ ')+step.side+'e Seite'+(step.side==='Links'?' →':' ←')
+      +'</div></div>'
+    : '';
 
   // Duration presets
   var presets = [20,30,45,60];
@@ -5063,91 +5174,19 @@ function setSeshDur(sec) {
 }
 
 // ── ROUTINE EDITOR ──
-var routActiveGroup = 'Alle';
-var routFilterOpen = false;
-var routAddFormOpen = false;
-
-function toggleRoutFilter(){
-  routFilterOpen = !routFilterOpen;
-  document.getElementById('routFilterBody').style.display = routFilterOpen ? 'block' : 'none';
-  document.getElementById('routFilterArrow').textContent = routFilterOpen ? '▲' : '▼';
-}
-
-function toggleRoutAddForm(){
-  routAddFormOpen = !routAddFormOpen;
-  document.getElementById('routAddFormInner').style.display = routAddFormOpen ? 'block' : 'none';
-  document.getElementById('routAddIcon').textContent = routAddFormOpen ? '✕' : '＋';
-  if(routAddFormOpen) setTimeout(function(){ document.getElementById('routNewName').focus(); }, 50);
-}
-
-function setRoutGroup(g){
-  routActiveGroup = g;
-  updateRoutFilterChips();
-  renderRoutEditExList();
-}
-
-function updateRoutFilterChips(){
-  document.getElementById('routFilterChips').innerHTML = STRETCH_GROUPS_LIST.map(function(g){
-    var active = g === routActiveGroup;
-    return '<button onclick="setRoutGroup(\''+g+'\')" style="padding:.3rem .75rem;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1px solid '+(active?'var(--accent)':'var(--border)')+';border-radius:20px;background:'+(active?'var(--accent2)':'transparent')+';cursor:pointer;color:'+(active?'var(--accent)':'var(--muted)')+';min-height:32px;">'+g+'</button>';
-  }).join('');
-  document.getElementById('routFilterSummary').textContent = 'Filter: ' + routActiveGroup;
-}
-
-function renderRoutEditExList(){
-  var r = editingRoutineIdx !== null ? stretchRoutines[editingRoutineIdx] : {exIds:[]};
-  var filtered = STRETCH_DB.filter(function(e){
-    return routActiveGroup === 'Alle' || e.group === routActiveGroup;
-  });
-  document.getElementById('routEditExList').innerHTML = filtered.map(function(e){
-    var checked = r.exIds.indexOf(e.id) !== -1;
-    return '<label style="display:flex;align-items:center;gap:10px;padding:.55rem .85rem;cursor:pointer;border-bottom:1px solid var(--border);">'
-      +'<input type="checkbox" value="'+e.id+'" '+(checked?'checked':'')+' style="accent-color:var(--accent);width:18px;height:18px;flex-shrink:0;" />'
-      +'<div style="flex:1;min-width:0;">'
-      +'<div style="font-size:13px;color:var(--text2);">'+e.icon+' '+e.name+'</div>'
-      +'<div style="font-size:11px;color:var(--muted2);">'+e.muscle+(e.sides?' · beidseitig':'')+'</div>'
-      +'</div>'
-      +'</label>';
-  }).join('');
-}
-
-function addRoutineStretchEx(){
-  var name = document.getElementById('routNewName').value.trim();
-  if(!name){ document.getElementById('routNewName').focus(); return; }
-  var muscle = document.getElementById('routNewMuscle').value.trim() || '—';
-  var group = document.getElementById('routNewGroup').value;
-  var sides = document.getElementById('routNewSides').value === '1';
-  // Generate unique id
-  var newId = 's_custom_' + Date.now();
-  STRETCH_DB.push({id:newId, icon:'🧘', name:name, muscle:muscle, group:group, sides:sides, desc:''});
-  // Reset form
-  document.getElementById('routNewName').value = '';
-  document.getElementById('routNewMuscle').value = '';
-  toggleRoutAddForm();
-  // Set filter to show the new exercise's group
-  routActiveGroup = group;
-  updateRoutFilterChips();
-  renderRoutEditExList();
-  // Auto-check the new exercise
-  var newCheck = document.querySelector('#routEditExList input[value="'+newId+'"]');
-  if(newCheck) newCheck.checked = true;
-  showToast(name+' hinzugefügt ✓');
-}
+var _routCurrentExIds = []; // working list of exercise IDs
+var _pickActivePos = 'Alle';
+var _pickActiveGrp = 'Alle';
+var _pickFiltersOpen = false;
 
 function openRoutineEditor(ri) {
   editingRoutineIdx = ri;
-  routActiveGroup = 'Alle';
-  routFilterOpen = false;
-  routAddFormOpen = false;
-  var r = ri !== null ? stretchRoutines[ri] : {name:'', exIds:[], holdSec:60};
+  var r = ri !== null ? stretchRoutines[ri] : {name:'', exIds:[], holdSec:45};
   document.getElementById('routEditTitle').textContent = ri !== null ? 'Routine bearbeiten' : 'Neue Routine';
   document.getElementById('routEditName').value = r.name;
-  document.getElementById('routFilterBody').style.display = 'none';
-  document.getElementById('routFilterArrow').textContent = '▼';
-  document.getElementById('routAddFormInner').style.display = 'none';
-  document.getElementById('routAddIcon').textContent = '＋';
-  updateRoutFilterChips();
-  renderRoutEditExList();
+  document.getElementById('routEditHold').value = r.holdSec || 45;
+  _routCurrentExIds = r.exIds.slice();
+  renderRoutExRows();
   document.getElementById('routEditOverlay').classList.remove('hidden');
 }
 
@@ -5155,28 +5194,44 @@ function closeRoutineEditor() {
   document.getElementById('routEditOverlay').classList.add('hidden');
 }
 
-function routEditBgClose(e) {
-  if(e.target === document.getElementById('routEditOverlay')) closeRoutineEditor();
+function renderRoutExRows(){
+  var el = document.getElementById('routExRows');
+  if(!_routCurrentExIds.length){
+    el.innerHTML = '<div style="color:var(--muted3);font-size:13px;padding:1rem;text-align:center;">Noch keine Übungen — aus Bibliothek hinzufügen</div>';
+    return;
+  }
+  el.innerHTML = _routCurrentExIds.map(function(id, idx){
+    var e = STRETCH_DB.find(function(x){ return x.id===id; });
+    if(!e) return '';
+    var photoNum = STRETCH_PHOTO_MAP && STRETCH_PHOTO_MAP[e.name];
+    var thumb = '<div style="width:40px;height:40px;flex-shrink:0;border-radius:5px;overflow:hidden;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:18px;">'
+      + (photoNum
+        ? '<img src="'+getStretchPhotoSrc(photoNum)+'" onerror="this.style.display=\'none\'" style="width:40px;height:40px;object-fit:cover;display:block;" />'
+        : e.icon)
+      + '</div>';
+    return '<div style="display:flex;align-items:center;gap:8px;padding:.5rem .4rem;border-bottom:1px solid var(--border);">'
+      +thumb
+      +'<div style="flex:1;min-width:0;">'
+      +'<div style="font-size:13px;font-weight:500;color:var(--text2);">'+e.name+'</div>'
+      +'<div style="font-size:11px;color:var(--muted2);">'+e.muscle+'</div>'
+      +'</div>'
+      +'<button onclick="removeRoutEx('+idx+')" style="background:none;border:none;color:var(--muted3);font-size:18px;cursor:pointer;min-width:32px;min-height:32px;padding:0;flex-shrink:0;">✕</button>'
+      +'</div>';
+  }).join('');
+}
+
+function removeRoutEx(idx){
+  _routCurrentExIds.splice(idx, 1);
+  renderRoutExRows();
 }
 
 function saveRoutine() {
   var name = document.getElementById('routEditName').value.trim();
   if(!name){ document.getElementById('routEditName').focus(); return; }
-  // Collect all checked IDs — need to check across all groups
-  // Store current checked state, switch to Alle, collect, restore
-  var currentChecked = Array.from(document.querySelectorAll('#routEditExList input:checked')).map(function(i){ return i.value; });
-  // Merge with previously checked from other groups (not currently visible)
-  var prevIds = editingRoutineIdx !== null ? stretchRoutines[editingRoutineIdx].exIds : [];
-  // Get IDs of currently visible exercises
-  var visibleIds = STRETCH_DB.filter(function(e){
-    return routActiveGroup === 'Alle' || e.group === routActiveGroup;
-  }).map(function(e){ return e.id; });
-  // Keep previously checked from invisible groups, add currently checked visible ones
-  var merged = prevIds.filter(function(id){ return visibleIds.indexOf(id) === -1; })
-    .concat(currentChecked);
-  if(merged.length === 0){ showToast('Bitte mindestens eine Übung auswählen'); return; }
-  var r = {name:name, exIds:merged, holdSec:60};
-  if(editingRoutineIdx !== null) {
+  if(!_routCurrentExIds.length){ showToast('Bitte mindestens eine Übung hinzufügen'); return; }
+  var holdSec = parseInt(document.getElementById('routEditHold').value) || 45;
+  var r = {name:name, exIds:_routCurrentExIds.slice(), holdSec:holdSec};
+  if(editingRoutineIdx !== null){
     stretchRoutines[editingRoutineIdx] = r;
   } else {
     stretchRoutines.push(r);
@@ -5192,6 +5247,92 @@ function deleteRoutine(ri) {
   saveState();
   renderStretchRoutines();
   showToast('Routine gelöscht');
+}
+
+// ── STRETCH LIBRARY PICKER (for routine editor) ──
+function openStretchLibForRoutine(){
+  _pickActivePos = 'Alle';
+  _pickActiveGrp = 'Alle';
+  _pickFiltersOpen = false;
+  document.getElementById('stretchPickFilterBody').style.display = 'none';
+  document.getElementById('stretchPickFilterArrow').textContent = '▼';
+  document.getElementById('stretchPickFilterSummary').textContent = 'Filter';
+  renderStretchPickFilters();
+  renderStretchPickList();
+  document.getElementById('stretchLibPickOverlay').classList.remove('hidden');
+}
+
+function closeStretchLibPick(){
+  document.getElementById('stretchLibPickOverlay').classList.add('hidden');
+}
+
+function stretchLibPickBgClose(e){
+  if(e.target === document.getElementById('stretchLibPickOverlay')) closeStretchLibPick();
+}
+
+function toggleStretchPickFilters(){
+  _pickFiltersOpen = !_pickFiltersOpen;
+  document.getElementById('stretchPickFilterBody').style.display = _pickFiltersOpen ? 'block' : 'none';
+  document.getElementById('stretchPickFilterArrow').textContent = _pickFiltersOpen ? '▲' : '▼';
+}
+
+function setPickPos(p){ _pickActivePos=p; renderStretchPickFilters(); renderStretchPickList(); updatePickFilterSummary(); }
+function setPickGrp(g){ _pickActiveGrp=g; renderStretchPickFilters(); renderStretchPickList(); updatePickFilterSummary(); }
+
+function updatePickFilterSummary(){
+  var parts=[];
+  if(_pickActivePos!=='Alle') parts.push(_pickActivePos);
+  if(_pickActiveGrp!=='Alle') parts.push(_pickActiveGrp);
+  document.getElementById('stretchPickFilterSummary').textContent = parts.length ? parts.join(' · ') : 'Filter';
+}
+
+function renderStretchPickFilters(){
+  var posRow = document.getElementById('stretchPickPosRow');
+  if(posRow) posRow.innerHTML = STRETCH_POSITIONS.map(function(p){
+    return '<button class="stretch-chip'+(_pickActivePos===p?' active':'')+'" onclick="setPickPos(\''+p+'\')">'+p+'</button>';
+  }).join('');
+  var grpRow = document.getElementById('stretchPickGrpRow');
+  if(grpRow) grpRow.innerHTML = STRETCH_GROUPS.map(function(g){
+    return '<button class="stretch-chip"+(_pickActiveGrp===g?" active":"")+" onclick="setPickGrp(\''+g+'\')">'+g+'</button>';
+  }).join('');
+}
+
+function renderStretchPickList(){
+  var filtered = STRETCH_DB.filter(function(e){
+    var posOk = _pickActivePos==='Alle' || (e.position && e.position.toLowerCase()===_pickActivePos.toLowerCase());
+    var grpOk = _pickActiveGrp==='Alle' || e.group===_pickActiveGrp;
+    return posOk && grpOk;
+  });
+  var el = document.getElementById('stretchPickExList');
+  el.innerHTML = filtered.map(function(e){
+    var alreadyAdded = _routCurrentExIds.indexOf(e.id) !== -1;
+    var photoNum = STRETCH_PHOTO_MAP && STRETCH_PHOTO_MAP[e.name];
+    var thumb = '<div style="width:44px;height:44px;flex-shrink:0;border-radius:6px;overflow:hidden;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:20px;">'
+      + (photoNum
+        ? '<img src="'+getStretchPhotoSrc(photoNum)+'" onerror="this.style.display=\'none\'" style="width:44px;height:44px;object-fit:cover;display:block;" />'
+        : e.icon)
+      + '</div>';
+    return '<div style="display:flex;align-items:center;gap:10px;padding:.55rem .4rem;border-bottom:1px solid var(--border);">'
+      +thumb
+      +'<div style="flex:1;min-width:0;">'
+      +'<div style="font-size:13px;font-weight:500;color:var(--text2);">'+e.name+'</div>'
+      +'<div style="font-size:11px;color:var(--muted2);">'+e.muscle+(e.sides?' · beidseitig':'')+'</div>'
+      +'</div>'
+      +'<button onclick="addToRoutine(\''+e.id+'\')" style="background:'+(alreadyAdded?'var(--accent2)':'var(--bg3)')+';border:1px solid '+(alreadyAdded?'var(--accent)':'var(--border2)')+';border-radius:6px;color:'+(alreadyAdded?'var(--accent)':'var(--muted)')+';font-size:16px;font-weight:700;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+(alreadyAdded?'✓':'＋')+'</button>'
+      +'</div>';
+  }).join('') || '<div style="color:var(--muted3);font-size:13px;padding:1rem;text-align:center;">Keine Übungen gefunden.</div>';
+}
+
+function addToRoutine(id){
+  if(_routCurrentExIds.indexOf(id) === -1){
+    _routCurrentExIds.push(id);
+    renderRoutExRows();
+  } else {
+    // Toggle off
+    _routCurrentExIds = _routCurrentExIds.filter(function(x){ return x!==id; });
+    renderRoutExRows();
+  }
+  renderStretchPickList(); // refresh ✓ state
 }
 
 // ── FULLSCREEN IMAGE VIEWER ──
