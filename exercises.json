@@ -15,31 +15,45 @@
       ]
     },
     {
-      "name": "BankdrÃ¼cken Kurzhanteln",
+      "name": "BankdrÃÂ¼cken Kurzhanteln",
       "cat": "push",
       "muscle": "Brust",
       "equipment": "kurzhantel",
       "bi": true,
       "imageNumber": 119,
-      "description": "Ãbung Kontrolliert und immer nacharbeiten. Anfangs wenig Gewicht bis der Bewegungsablauf verankert ist.",
+      "description": "ÃÂbung Kontrolliert und immer nacharbeiten. Anfangs wenig Gewicht bis der Bewegungsablauf verankert ist.",
       "steps": [
         "Arme im Rechten Winkel. Ellbogen leicht nach innen.",
-        "Arme nach oben drÃ¼cken",
+        "Arme nach oben drÃÂ¼cken",
         "Ellbogen kurz vor gesamten Streckung verharren."
       ]
     },
     {
-      "name": "Überzüge Kurzhanteln",
+      "name": "ÃberzÃ¼ge Kurzhanteln",
       "cat": "push",
       "muscle": "Brust",
       "equipment": "kurzhantel",
       "bi": true,
       "imageNumber": 120,
-      "description": "Für fortgeschrittene. Wichtig nicht verweilen beim strecken.",
+      "description": "FÃ¼r fortgeschrittene. Wichtig nicht verweilen beim strecken.",
       "steps": [
-        "Ausgangspunkt: arme gestreckt über den kopf",
-        "Bewegung bis die arme im 90° Winkel zum körper sind",
-        "Spannung während der gesamten übung."
+        "Ausgangspunkt: arme gestreckt Ã¼ber den kopf",
+        "Bewegung bis die arme im 90Â° Winkel zum kÃ¶rper sind",
+        "Spannung wÃ¤hrend der gesamten Ã¼bung."
+      ]
+    },
+    {
+      "name": "Butterfly's mit Kurzhanteln",
+      "cat": "push",
+      "muscle": "Brust",
+      "equipment": "kurzhantel",
+      "bi": false,
+      "imageNumber": 121,
+      "description": "",
+      "steps": [
+        "Startpunkt: arme halb gestreckt zum körper",
+        "Ausgangspunkt Gewichte Wagericht nach oben.",
+        "Ellbogen nie gestreckt ! Durchgehend kleine Beugung."
       ]
     }
   ]
