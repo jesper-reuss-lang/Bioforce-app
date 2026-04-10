@@ -1,4 +1,18 @@
 {
   "version": 1,
-  "exercises": []
+  "exercises": [
+    {
+      "name": "Kurzhantel Rudern",
+      "cat": "pull",
+      "muscle": "Latissimus, Schulter",
+      "equipment": "kurzhantel",
+      "bi": true,
+      "imageNumber": 118,
+      "description": "Ellbogen nicht tiefer als rechten Winkel ziehen.",
+      "steps": [
+        "Arm gestreckt",
+        "Hochziehen bis zum rechten Winkel"
+      ]
+    }
+  ]
 }
