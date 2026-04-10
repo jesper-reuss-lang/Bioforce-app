@@ -926,6 +926,18 @@ html,body{overflow-x:hidden;background:var(--bg);}
 
   <!-- SETTINGS PAGE -->
   <div class="stretch-page" id="settingsPage">
+    <!-- GitHub Upload -->
+    <div class="stretch-section-title">☁️ Übung hochladen</div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;margin-bottom:1rem;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;text-transform:uppercase;color:var(--text2);margin-bottom:.3rem;">GitHub Token</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:.6rem;">Einmalig eingeben — bleibt nur auf deinem Gerät.</div>
+      <div style="display:flex;gap:8px;">
+        <input type="password" id="ghTokenInput" placeholder="ghp_xxxxxxxxxxxx" style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text2);font-size:13px;padding:.5rem .75rem;font-family:inherit;box-sizing:border-box;" />
+        <button onclick="saveGhToken()" style="padding:.5rem .9rem;background:var(--accent3);border:1px solid #3a5020;border-radius:6px;color:var(--accent);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;min-height:40px;white-space:nowrap;">Speichern</button>
+      </div>
+      <div id="ghTokenStatus" style="font-size:11px;color:var(--muted3);margin-top:.4rem;"></div>
+    </div>
+    <button onclick="openUploadOverlay()" style="width:100%;padding:.85rem;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;color:var(--text2);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;min-height:52px;margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:8px;">📤 Neue Übung hochladen</button>
     <!-- Theme Toggle -->
     <div class="stretch-section-title">🎨 Darstellung</div>
     <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;margin-bottom:1rem;">
@@ -1402,7 +1414,7 @@ var SPLITS_DEFAULT={gk:{name:"Ganzkörper",desc:"3× pro Woche · ca. 90 min pro
     {icon:"💪",name:"Seitheben stehend (BF)",muscle:"Schultern, seitlicher Deltoideus",sets:3,reps:"12",bi:true},
     {icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Brachialis, Unterarm",sets:3,reps:"12",bi:true},
     {icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Langer Trizepskopf",sets:3,reps:"12",bi:false},
-    {icon:"🦵",name:"Adduktoren innen",muscle:"Adduktoren",sets:3,reps:"12",bi:true}
+    {icon:"🦵",name:"Adduktoren innen",muscle:"Abduktoren",sets:3,reps:"12",bi:true}
   ]},
   {name:"Tag C",tags:["full"],meta:"ca. 90 min",main:[
     {icon:"🏋",name:"Bankdrücken (BF)",muscle:"Brust, Schultern, Trizeps",sets:3,reps:"12",bi:true},
@@ -1438,7 +1450,7 @@ var SPLITS_DEFAULT={gk:{name:"Ganzkörper",desc:"3× pro Woche · ca. 90 min pro
     {icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps, Stabilisation",sets:3,reps:"12",bi:true},
     {icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12",bi:true},
     {icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:3,reps:"12",bi:true},
-    {icon:"🦵",name:"Adduktoren innen",muscle:"Adduktoren",sets:3,reps:"12",bi:true},
+    {icon:"🦵",name:"Adduktoren innen",muscle:"Abduktoren",sets:3,reps:"12",bi:true},
     {icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:3,reps:"12",bi:false}
   ]}
 ]},
@@ -1452,7 +1464,7 @@ var SPLITS_DEFAULT={gk:{name:"Ganzkörper",desc:"3× pro Woche · ca. 90 min pro
   {name:"Arme",tags:["arms"],meta:"ca. 60 min",
    main:[{icon:"🏋",name:"Bizeps-Curls stehend",muscle:"Bizeps brachii",sets:3,reps:"12",bi:true},{icon:"🏋",name:"Hammer-Curls (BF)",muscle:"Brachialis, Unterarm",sets:3,reps:"12",bi:true},{icon:"🏋",name:"Konzentrations-Curls sitzend",muscle:"Bizeps, Supination",sets:3,reps:"12",bi:true},{icon:"💪",name:"Trizepsdrücken (BF)",muscle:"Trizeps brachii",sets:3,reps:"12",bi:false},{icon:"💪",name:"Trizepsdrücken überkopf (BF)",muscle:"Langer Trizepskopf",sets:3,reps:"12",bi:false},{icon:"💪",name:"Trizeps Kickback (BF)",muscle:"Trizeps",sets:3,reps:"12",bi:false}]},
   {name:"Beine",tags:["legs","glutes"],meta:"ca. 60 min",
-   main:[{icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Adduktoren innen",muscle:"Adduktoren",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:3,reps:"12",bi:false}]}
+   main:[{icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäß",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäß, Quadrizeps",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps isoliert",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Adduktoren innen",muscle:"Abduktoren",sets:3,reps:"12",bi:true},{icon:"🦵",name:"Wadendrücken (BF)",muscle:"Wadenmuskulatur",sets:3,reps:"12",bi:false}]}
 ]}};
 
 var LIBRARY_DEFAULT=[{cat:"legs",icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäßmuskel, Waden",bi:true,bioforce:true,custom:false},
@@ -1460,7 +1472,7 @@ var LIBRARY_DEFAULT=[{cat:"legs",icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quad
   {cat:"legs",icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Quadrizeps, Gesäßmuskel, Waden",bi:false,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps",bi:true,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Beinstrecken einseitig",muscle:"Quadrizeps",bi:false,bioforce:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Kreuzheben gestreckte Beine",muscle:"Hamstrings, Gesäßmuskel, Rücken",bi:true,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Kreuzheben gestreckte Beine",muscle:"Rücken, Hamstrings, Gesäßmuskel",bi:true,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Kreuzheben (BF)",muscle:"Rücken, Gesäßmuskel, Oberschenkel",bi:true,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",bi:false,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Wadendrücken (BF)",muscle:"Waden",bi:true,bioforce:true,custom:false},
@@ -1468,7 +1480,7 @@ var LIBRARY_DEFAULT=[{cat:"legs",icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quad
   {cat:"legs",icon:"🦵",name:"Wadendrücken innen",muscle:"Waden",bi:true,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Kickbacks einbeinig",muscle:"Gesäßmuskel",bi:false,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Abduktoren außen",muscle:"Abduktoren, Gesäßmuskel",bi:false,bioforce:true,custom:false},
-  {cat:"legs",icon:"🦵",name:"Adduktoren innen",muscle:"Adduktoren",bi:false,bioforce:true,custom:false},
+  {cat:"legs",icon:"🦵",name:"Adduktoren innen",muscle:"Abduktoren",bi:false,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Abduktorenübung liegend",muscle:"Abduktoren, Gesäßmuskel",bi:true,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Abduktorenübung liegend einbeinig",muscle:"Abduktoren, Gesäßmuskel",bi:false,bioforce:true,custom:false},
   {cat:"legs",icon:"🦵",name:"Sprunggelenk laterale Rotation",muscle:"Wadenbeinmuskel, laterale Wadenmuskulatur",bi:false,bioforce:true,custom:false},
@@ -2321,7 +2333,7 @@ function showPage(page){
   if(page==='hist'){ _selectedDayStr=null; renderWeek(); renderCal(); renderVolChart(); hideLog(); }
   if(page==='stat'){ renderStatPage(); }
   if(page==='stretch'){ renderStretchPage(); }
-  if(page==='settings'){ renderSettingsInfo(); }
+  if(page==='settings'){ renderSettingsInfo(); loadGhTokenStatus(); }
 }
 
 // ── PERSONAL RECORDS ──
@@ -3581,7 +3593,7 @@ var EX_DB = {
       +'<text x="80" y="150" text-anchor="middle" font-size="11" fill="var(--muted3)" font-family="Barlow Condensed">Nur Kniegelenk bewegt</text>',
       '', 200, 158)
   },
-  'Adduktoren': {
+  'Abduktoren': {
     primary:['Adduktoren (Innenoberschenkel)'],secondary:['Gracilis'],
     steps:['Fußschlaufe anlegen, Kabelzug seitlich. Seitlich zum Gerät stehen.','Bein nach innen und leicht nach vorne führen — kontrolliert.','Kurz halten, Adduktoren spannen sich an.','Langsam zurück in die Ausgangsposition.'],
     svg: makeSVG(
@@ -4144,8 +4156,7 @@ var LIBOV_MGS = [
   {id:'Hamstrings',   label:'Hamstrings'},
   {id:'Gesäßmuskel',  label:'Gesäß'},
   {id:'Waden',        label:'Wade'},
-  {id:'Abduktoren',   label:'Abduktoren'},
-  {id:'Adduktoren',   label:'Adduktoren'},
+  {id:'Abduktoren',   label:'Abd-/Adduktoren'},
   {id:'Bauch',        label:'Bauch'},
 ];
 
@@ -4720,9 +4731,9 @@ var STRETCH_DB = [
    desc:'Im weiten Ausfallschritt Oberkörper vorneigen, das vordere Bein beugen und die Hüfte nach vorne unten schieben. Anschließend unter Beibehaltung der Beinposition den Arm durch Aufdrehen des Oberkörpers wechselseitig nach oben führen. Die Hüfte bleibt tief und stabil während des Aufdrehens.'},
   {id:'s17', icon:'🧘', name:'Absenken im gewinkelten Ausfallschritt', muscle:'Gesäß', group:'Hüfte', position:'stehend', sides:true,
    desc:'Im Ausfallschritt das vordere Bein so winkeln, dass der Fuß zur Gegenseite zeigt. Knie und Hüfte zum Boden schieben. Anschließend den Oberkörper nach vorne absenken. Den Oberkörper so weit absenken, bis eine deutliche Dehnung im Gesäß spürbar ist.'},
-  {id:'s18', icon:'🧘', name:'Seitlicher Ausfallschritt vorgebeugt', muscle:'Adduktoren', group:'Beine', position:'stehend', sides:true,
+  {id:'s18', icon:'🧘', name:'Seitlicher Ausfallschritt vorgebeugt', muscle:'Abduktoren', group:'Beine', position:'stehend', sides:true,
    desc:'Im weit gegrätschten Stand mit gestreckten Beinen den Oberkörper vorbeugen und mit den Händen auf dem Boden abstützen. Die Füße zeigen nach vorne. Anschließend ein Bein beugen und das Gesäß absenken. Das gestreckte Bein aktiv in den Boden drücken für eine intensivere Dehnung.'},
-  {id:'s19', icon:'🧘', name:'Vorschub im weiten Kniestand', muscle:'Adduktoren', group:'Beine', position:'kniend', sides:false,
+  {id:'s19', icon:'🧘', name:'Vorschub im weiten Kniestand', muscle:'Abduktoren', group:'Beine', position:'kniend', sides:false,
    desc:'Im Vierfüßler die Beine weit grätschen und die Unterschenkel nach außen drehen. Anschließend den Oberkörper bei geradem Rücken weit nach vorne unten schieben und die Arme strecken. Den Oberkörper so tief wie möglich senken, um die Dehnung zu intensivieren.'},
   {id:'s20', icon:'🧘', name:'Vorneigung in der weiten Grätsche', muscle:'hintere Kette, Adduktoren', group:'Beine', position:'stehend', sides:true,
    desc:'Im weit gegrätschten Stand mit gestreckten Beinen den Oberkörper vorbeugen. Die Füße zeigen nach vorne. Anschließend einen Unterschenkel greifen und den Oberkörper zu diesem Bein ziehen. Den Rücken gerade halten und die Dehnung gleichmäßig auf beide Seiten anwenden.'},
@@ -6235,11 +6246,36 @@ function loadState(){
         if(renames[e.name]) e.name = renames[e.name];
         return true;
       });
-      // Merge any new non-custom exercises from LIBRARY_DEFAULT
+      // Force-fix specific muscle fields that were renamed
+      var muscleForce = {
+        'Abduktoren außen':                  'Abduktoren, Gesäßmuskel',
+        'Adduktoren innen':                  'Abduktoren',
+        'Abduktorenübung liegend':           'Abduktoren, Gesäßmuskel',
+        'Abduktorenübung liegend einbeinig': 'Abduktoren, Gesäßmuskel',
+        'Kreuzheben gestreckte Beine':       'Rücken, Hamstrings, Gesäßmuskel',
+        'Kreuzheben (BF)':                   'Rücken, Gesäßmuskel, Oberschenkel',
+        'Bein-Curls stehend (BF)':           'Hamstrings',
+        'Bankdrücken (BF)':                  'Brust, Schultern, Trizeps',
+        'Schrägbankdrücken (BF)':            'Brust, Schultern, Trizeps',
+        'Rudern stehend (BF)':               'Rücken, Schultern, Bizeps',
+        'Rudern sitzend enger Griff':        'Latissimus, Rhomboiden, Bizeps',
+        'Rudern sitzend breiter Griff':      'Rücken, Rhomboiden, Schultern',
+        'Rudern mit Kurzhanteln':            'Rücken, Rhomboiden, Bizeps',
+      };
+      library.forEach(function(e){
+        if(muscleForce[e.name]) e.muscle = muscleForce[e.name];
+      });
       LIBRARY_DEFAULT.forEach(function(def){
         if(def.custom) return;
         var exists = library.find(function(e){ return e.name === def.name; });
-        if(!exists) library.push(def);
+        if(!exists){
+          library.push(def);
+        } else {
+          // Always sync muscle, cat and equipment from default (fixes old cached data)
+          exists.muscle = def.muscle;
+          exists.cat    = def.cat;
+          if(def.equipment) exists.equipment = def.equipment;
+        }
       });
     }
     if(data.weights) weights=data.weights;
@@ -6386,9 +6422,318 @@ if(!trainingLog.length){
   prs['Bizeps-Curls stehend']    = {icon:'🏋', bi:true,  wL:14, wR:14, w:14, orm:18, reps:12, date:_daysAgo(14)};
 }
 
+// ── GITHUB CONFIG ──
+var GH_OWNER = 'jesper-reuss-lang';
+var GH_REPO  = 'Bioforce-app';
+var GH_BRANCH = 'main';
+
+function getGhToken(){ return localStorage.getItem('bioforce_gh_token') || ''; }
+
+function saveGhToken(){
+  var t = document.getElementById('ghTokenInput').value.trim();
+  if(!t){ showToast('Bitte Token eingeben'); return; }
+  localStorage.setItem('bioforce_gh_token', t);
+  document.getElementById('ghTokenInput').value = '';
+  document.getElementById('ghTokenStatus').textContent = '✓ Token gespeichert';
+  showToast('✓ Token gespeichert');
+}
+
+function loadGhTokenStatus(){
+  var el = document.getElementById('ghTokenStatus');
+  if(!el) return;
+  el.textContent = getGhToken() ? '✓ Token vorhanden' : 'Noch kein Token gespeichert';
+}
+
+// ── UPLOAD OVERLAY ──
+var _upCat = 'push';
+var _upEq  = 'kurzhantel';
+var _upBi  = true;
+var _upPhotoData = null; // base64
+
+var UP_CATS = [{id:'pull',label:'🏋 Pull'},{id:'push',label:'💪 Push'},{id:'legs',label:'🦵 Legs'},{id:'core',label:'🎯 Core'}];
+var UP_EQS  = [{id:'bioforce',label:'🏋 BioForce'},{id:'langhantel',label:'Langhantel'},{id:'kurzhantel',label:'Kurzhantel'}];
+var UP_BIS  = [{id:'bi',label:'Bilateral (L+R)'},{id:'single',label:'Einseitig'}];
+
+function openUploadOverlay(){
+  if(!getGhToken()){ showToast('Bitte zuerst GitHub Token speichern'); return; }
+  _upCat = 'push'; _upEq = 'kurzhantel'; _upBi = true; _upPhotoData = null;
+  ['upName','upMuscle','upDesc','upStep1','upStep2','upStep3'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.value = '';
+  });
+  document.getElementById('upPhotoName').textContent = 'Kein Foto gewählt';
+  document.getElementById('upPhotoPreview').style.display = 'none';
+  document.getElementById('upStatus').textContent = '';
+  renderUpRows();
+  document.getElementById('uploadOverlay').classList.remove('hidden');
+}
+
+function closeUploadOverlay(){ document.getElementById('uploadOverlay').classList.add('hidden'); }
+function uploadBgClose(e){ if(e.target===document.getElementById('uploadOverlay')) closeUploadOverlay(); }
+
+function renderUpRows(){
+  document.getElementById('upCatRow').innerHTML = UP_CATS.map(function(c){
+    var a = c.id===_upCat;
+    return '<button onclick="setUpCat(\''+c.id+'\')" style="padding:.4rem .85rem;font-family:\'Barlow Condensed\',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:6px;cursor:pointer;min-height:36px;border:1px solid '+(a?'var(--accent)':'var(--border2)')+';background:'+(a?'var(--accent2)':'transparent')+';color:'+(a?'var(--accent)':'var(--muted)')+';">'+c.label+'</button>';
+  }).join('');
+  document.getElementById('upEqRow').innerHTML = UP_EQS.map(function(c){
+    var a = c.id===_upEq;
+    return '<button onclick="setUpEq(\''+c.id+'\')" style="padding:.4rem .85rem;font-family:\'Barlow Condensed\',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:6px;cursor:pointer;min-height:36px;border:1px solid '+(a?'var(--accent)':'var(--border2)')+';background:'+(a?'var(--accent2)':'transparent')+';color:'+(a?'var(--accent)':'var(--muted)')+';">'+c.label+'</button>';
+  }).join('');
+  document.getElementById('upBiRow').innerHTML = UP_BIS.map(function(c){
+    var a = (c.id==='bi')===_upBi;
+    return '<button onclick="setUpBi(\''+c.id+'\')" style="padding:.4rem .85rem;font-family:\'Barlow Condensed\',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:6px;cursor:pointer;min-height:36px;border:1px solid '+(a?'var(--accent)':'var(--border2)')+';background:'+(a?'var(--accent2)':'transparent')+';color:'+(a?'var(--accent)':'var(--muted)')+';">'+c.label+'</button>';
+  }).join('');
+}
+
+function setUpCat(v){ _upCat=v; renderUpRows(); }
+function setUpEq(v){  _upEq=v;  renderUpRows(); }
+function setUpBi(v){  _upBi=(v==='bi'); renderUpRows(); }
+
+function upPhotoSelected(input){
+  var file = input.files[0];
+  if(!file) return;
+  document.getElementById('upPhotoName').textContent = file.name;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    _upPhotoData = e.target.result.split(',')[1]; // base64 only
+    document.getElementById('upPhotoImg').src = e.target.result;
+    document.getElementById('upPhotoPreview').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function setUpStatus(msg, color){
+  var el = document.getElementById('upStatus');
+  el.textContent = msg;
+  el.style.color = color || 'var(--muted)';
+}
+
+async function ghApi(path, method, body){
+  var token = getGhToken();
+  var res = await fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/'+path, {
+    method: method || 'GET',
+    headers: {
+      'Authorization': 'token '+token,
+      'Content-Type': 'application/json',
+      'Accept': 'application/vnd.github.v3+json'
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if(!res.ok) throw new Error('GitHub API Fehler: '+res.status);
+  return res.json();
+}
+
+async function getNextImageNumber(){
+  // Get all files in Bilder/Kräftigung
+  try {
+    var files = await ghApi('contents/Bilder/Kr%C3%A4ftigung');
+    var nums = files.map(function(f){
+      var m = f.name.match(/^(\d+)\.jpg$/i);
+      return m ? parseInt(m[1]) : 0;
+    });
+    return Math.max.apply(null, nums) + 1;
+  } catch(e) { return 118; }
+}
+
+async function getExercisesJson(){
+  try {
+    var res = await ghApi('contents/exercises.json');
+    var content = atob(res.content.replace(/\n/g,''));
+    return {data: JSON.parse(content), sha: res.sha};
+  } catch(e) {
+    return {data: {version:1, exercises:[]}, sha: null};
+  }
+}
+
+async function doUpload(){
+  var name   = document.getElementById('upName').value.trim();
+  var muscle = document.getElementById('upMuscle').value.trim();
+  var desc   = document.getElementById('upDesc').value.trim();
+  var step1  = document.getElementById('upStep1').value.trim();
+  var step2  = document.getElementById('upStep2').value.trim();
+  var step3  = document.getElementById('upStep3').value.trim();
+
+  if(!name)   { showToast('Bitte Übungsname eingeben'); return; }
+  if(!muscle) { showToast('Bitte Muskelgruppe eingeben'); return; }
+  if(!step1)  { showToast('Bitte mindestens Schritt 1 eingeben'); return; }
+  if(!_upPhotoData) { showToast('Bitte Foto auswählen'); return; }
+
+  var btn = document.getElementById('upBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Wird hochgeladen...';
+
+  try {
+    // 1. Get next image number
+    setUpStatus('📸 Bildnummer wird ermittelt...');
+    var imgNum = await getNextImageNumber();
+
+    // 2. Upload image
+    setUpStatus('📸 Bild wird hochgeladen ('+ imgNum +'.jpg)...');
+    await ghApi('contents/Bilder/Kr%C3%A4ftigung/'+imgNum+'.jpg', 'PUT', {
+      message: 'Add exercise image: '+name+' ('+imgNum+'.jpg)',
+      content: _upPhotoData,
+      branch: GH_BRANCH
+    });
+
+    // 3. Get existing exercises.json
+    setUpStatus('📋 exercises.json wird aktualisiert...');
+    var jsonFile = await getExercisesJson();
+    var steps = [step1];
+    if(step2) steps.push(step2);
+    if(step3) steps.push(step3);
+
+    var newEx = {
+      name: name,
+      cat: _upCat,
+      muscle: muscle,
+      equipment: _upEq,
+      bi: _upBi,
+      imageNumber: imgNum,
+      description: desc,
+      steps: steps
+    };
+    jsonFile.data.exercises.push(newEx);
+
+    // 4. Update exercises.json
+    var jsonBody = {
+      message: 'Add exercise: '+name,
+      content: btoa(unescape(encodeURIComponent(JSON.stringify(jsonFile.data, null, 2)))),
+      branch: GH_BRANCH
+    };
+    if(jsonFile.sha) jsonBody.sha = jsonFile.sha;
+    await ghApi('contents/exercises.json', 'PUT', jsonBody);
+
+    // 5. Add locally immediately
+    addExerciseFromJson(newEx);
+
+    setUpStatus('✅ Erfolgreich hochgeladen!', 'var(--accent)');
+    showToast('✓ '+name+' hochgeladen!', 4000);
+    setTimeout(function(){ closeUploadOverlay(); }, 1500);
+
+  } catch(err) {
+    setUpStatus('❌ Fehler: '+err.message, '#e05050');
+    btn.disabled = false;
+    btn.textContent = '📤 Hochladen';
+  }
+}
+
+function addExerciseFromJson(ex){
+  // Add to library if not exists
+  var exists = library.find(function(e){ return e.name===ex.name; });
+  if(!exists){
+    library.push({
+      cat: ex.cat,
+      icon: '💪',
+      name: ex.name,
+      muscle: ex.muscle,
+      bi: ex.bi,
+      bioforce: ex.equipment==='bioforce',
+      equipment: ex.equipment,
+      custom: false
+    });
+  }
+  // Add to EX_PHOTO_MAP
+  if(!EX_PHOTO_MAP) EX_PHOTO_MAP = {};
+  EX_PHOTO_MAP[ex.name] = ex.imageNumber;
+  // Add to EX_DB for description
+  if(ex.steps && ex.steps.length){
+    EX_DB[ex.name] = {
+      primary: [ex.muscle.split(',')[0].trim()],
+      secondary: [],
+      steps: ex.steps
+    };
+  }
+  saveState();
+}
+
+async function loadExercisesFromGitHub(){
+  try {
+    var res = await fetch('https://raw.githubusercontent.com/'+GH_OWNER+'/'+GH_REPO+'/'+GH_BRANCH+'/exercises.json?t='+Date.now());
+    if(!res.ok) return;
+    var data = await res.json();
+    if(data.exercises && data.exercises.length){
+      data.exercises.forEach(function(ex){ addExerciseFromJson(ex); });
+    }
+  } catch(e){ /* exercises.json not yet created */ }
+}
+
 renderNav();renderDays();
 checkPlanChangeReminder();
+loadExercisesFromGitHub();
 </script>
+
+<!-- UPLOAD OVERLAY -->
+<div class="shuf-overlay hidden" id="uploadOverlay" onclick="uploadBgClose(event)">
+  <div class="rout-edit-box" style="max-height:92vh;overflow-y:auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;flex-shrink:0;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--text);">📤 Neue Übung</div>
+      <button onclick="closeUploadOverlay()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;min-width:36px;min-height:36px;">✕</button>
+    </div>
+    <!-- Name -->
+    <div style="margin-bottom:.75rem;">
+      <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Übungsname</div>
+      <input class="add-input" id="upName" placeholder="z.B. Kurzhantel Fliegende" style="width:100%;box-sizing:border-box;" />
+    </div>
+    <!-- Kategorie -->
+    <div style="margin-bottom:.75rem;">
+      <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Kategorie</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;" id="upCatRow"></div>
+    </div>
+    <!-- Art -->
+    <div style="margin-bottom:.75rem;">
+      <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Art</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;" id="upEqRow"></div>
+    </div>
+    <!-- Muskelgruppe -->
+    <div style="margin-bottom:.75rem;">
+      <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Primäre Muskelgruppe</div>
+      <input class="add-input" id="upMuscle" placeholder="z.B. Brust" style="width:100%;box-sizing:border-box;" />
+    </div>
+    <!-- Bilateral -->
+    <div style="margin-bottom:.75rem;">
+      <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Gewicht</div>
+      <div style="display:flex;gap:6px;" id="upBiRow"></div>
+    </div>
+    <!-- Kurzbeschreibung -->
+    <div style="margin-bottom:.75rem;">
+      <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Kurzbeschreibung</div>
+      <textarea id="upDesc" placeholder="Ein bis zwei Sätze zur Übung..." style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border2);border-radius:7px;color:var(--text2);font-size:13px;padding:.5rem .75rem;font-family:inherit;min-height:60px;resize:vertical;"></textarea>
+    </div>
+    <!-- 3 Schritte -->
+    <div style="margin-bottom:.75rem;">
+      <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Ausführung (3 Schritte)</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <input class="add-input" id="upStep1" placeholder="Schritt 1" style="width:100%;box-sizing:border-box;" />
+        <input class="add-input" id="upStep2" placeholder="Schritt 2" style="width:100%;box-sizing:border-box;" />
+        <input class="add-input" id="upStep3" placeholder="Schritt 3" style="width:100%;box-sizing:border-box;" />
+      </div>
+    </div>
+    <!-- Foto -->
+    <div style="margin-bottom:1rem;">
+      <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Foto aus Galerie</div>
+      <label style="display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px dashed var(--border2);border-radius:8px;padding:.75rem;cursor:pointer;">
+        <span style="font-size:24px;">🖼</span>
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--muted);">Foto auswählen</div>
+          <div id="upPhotoName" style="font-size:11px;color:var(--muted3);">Kein Foto gewählt</div>
+        </div>
+        <input type="file" id="upPhotoInput" accept="image/*" style="display:none;" onchange="upPhotoSelected(this)" />
+      </label>
+      <div id="upPhotoPreview" style="margin-top:.5rem;display:none;">
+        <img id="upPhotoImg" style="width:100%;max-height:200px;object-fit:contain;border-radius:8px;background:var(--bg3);" />
+      </div>
+    </div>
+    <!-- Status -->
+    <div id="upStatus" style="font-size:12px;color:var(--muted);margin-bottom:.75rem;min-height:18px;text-align:center;"></div>
+    <!-- Buttons -->
+    <div style="display:flex;gap:8px;">
+      <button class="shuf-cancel" onclick="closeUploadOverlay()">Abbrechen</button>
+      <button class="shuf-go" onclick="doUpload()" id="upBtn">📤 Hochladen</button>
+    </div>
+  </div>
+</div>
+
+
 
 <script>
 if('serviceWorker' in navigator){
