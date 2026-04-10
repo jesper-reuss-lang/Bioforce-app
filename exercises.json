@@ -13,6 +13,20 @@
         "Arm gestreckt",
         "Hochziehen bis zum rechten Winkel"
       ]
+    },
+    {
+      "name": "Bankdrücken Kurzhanteln",
+      "cat": "push",
+      "muscle": "Brust",
+      "equipment": "kurzhantel",
+      "bi": true,
+      "imageNumber": 119,
+      "description": "Übung Kontrolliert und immer nacharbeiten. Anfangs wenig Gewicht bis der Bewegungsablauf verankert ist.",
+      "steps": [
+        "Arme im Rechten Winkel. Ellbogen leicht nach innen.",
+        "Arme nach oben drücken",
+        "Ellbogen kurz vor gesamten Streckung verharren."
+      ]
     }
   ]
 }
