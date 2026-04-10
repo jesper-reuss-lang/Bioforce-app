@@ -15,31 +15,31 @@
       ]
     },
     {
-      "name": "BankdrÃÂ¼cken Kurzhanteln",
+      "name": "BankdrÃÂÃÂ¼cken Kurzhanteln",
       "cat": "push",
       "muscle": "Brust",
       "equipment": "kurzhantel",
       "bi": true,
       "imageNumber": 119,
-      "description": "ÃÂbung Kontrolliert und immer nacharbeiten. Anfangs wenig Gewicht bis der Bewegungsablauf verankert ist.",
+      "description": "ÃÂÃÂbung Kontrolliert und immer nacharbeiten. Anfangs wenig Gewicht bis der Bewegungsablauf verankert ist.",
       "steps": [
         "Arme im Rechten Winkel. Ellbogen leicht nach innen.",
-        "Arme nach oben drÃÂ¼cken",
+        "Arme nach oben drÃÂÃÂ¼cken",
         "Ellbogen kurz vor gesamten Streckung verharren."
       ]
     },
     {
-      "name": "ÃberzÃ¼ge Kurzhanteln",
+      "name": "ÃÂberzÃÂ¼ge Kurzhanteln",
       "cat": "push",
       "muscle": "Brust",
       "equipment": "kurzhantel",
       "bi": true,
       "imageNumber": 120,
-      "description": "FÃ¼r fortgeschrittene. Wichtig nicht verweilen beim strecken.",
+      "description": "FÃÂ¼r fortgeschrittene. Wichtig nicht verweilen beim strecken.",
       "steps": [
-        "Ausgangspunkt: arme gestreckt Ã¼ber den kopf",
-        "Bewegung bis die arme im 90Â° Winkel zum kÃ¶rper sind",
-        "Spannung wÃ¤hrend der gesamten Ã¼bung."
+        "Ausgangspunkt: arme gestreckt ÃÂ¼ber den kopf",
+        "Bewegung bis die arme im 90ÃÂ° Winkel zum kÃÂ¶rper sind",
+        "Spannung wÃÂ¤hrend der gesamten ÃÂ¼bung."
       ]
     },
     {
@@ -51,9 +51,23 @@
       "imageNumber": 121,
       "description": "",
       "steps": [
-        "Startpunkt: arme halb gestreckt zum körper",
+        "Startpunkt: arme halb gestreckt zum kÃ¶rper",
         "Ausgangspunkt Gewichte Wagericht nach oben.",
         "Ellbogen nie gestreckt ! Durchgehend kleine Beugung."
+      ]
+    },
+    {
+      "name": "Trizeps Kickback's",
+      "cat": "push",
+      "muscle": "Trizeps",
+      "equipment": "kurzhantel",
+      "bi": true,
+      "imageNumber": 122,
+      "description": "Am besten im knien auf einer Bank auch möglich im stehen.",
+      "steps": [
+        "Startpunkt: Arm angewinkelt am Körper",
+        "Endposition: Arm gestreckt hinter den körper.",
+        "Bewegung nach hinten weg drücken."
       ]
     }
   ]
