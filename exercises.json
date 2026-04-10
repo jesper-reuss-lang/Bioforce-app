@@ -15,17 +15,31 @@
       ]
     },
     {
-      "name": "Bankdrücken Kurzhanteln",
+      "name": "BankdrÃ¼cken Kurzhanteln",
       "cat": "push",
       "muscle": "Brust",
       "equipment": "kurzhantel",
       "bi": true,
       "imageNumber": 119,
-      "description": "Übung Kontrolliert und immer nacharbeiten. Anfangs wenig Gewicht bis der Bewegungsablauf verankert ist.",
+      "description": "Ãbung Kontrolliert und immer nacharbeiten. Anfangs wenig Gewicht bis der Bewegungsablauf verankert ist.",
       "steps": [
         "Arme im Rechten Winkel. Ellbogen leicht nach innen.",
-        "Arme nach oben drücken",
+        "Arme nach oben drÃ¼cken",
         "Ellbogen kurz vor gesamten Streckung verharren."
+      ]
+    },
+    {
+      "name": "Überzüge Kurzhanteln",
+      "cat": "push",
+      "muscle": "Brust",
+      "equipment": "kurzhantel",
+      "bi": true,
+      "imageNumber": 120,
+      "description": "Für fortgeschrittene. Wichtig nicht verweilen beim strecken.",
+      "steps": [
+        "Ausgangspunkt: arme gestreckt über den kopf",
+        "Bewegung bis die arme im 90° Winkel zum körper sind",
+        "Spannung während der gesamten übung."
       ]
     }
   ]
