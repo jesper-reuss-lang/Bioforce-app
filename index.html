@@ -684,7 +684,7 @@ html,body{overflow-x:hidden;background:var(--bg);}
 .libov-filter-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted3);font-family:'Barlow Condensed',sans-serif;margin-bottom:.3rem;}
 .libov-chip{padding:.3rem .75rem;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--border);border-radius:20px;background:transparent;cursor:pointer;min-height:32px;transition:all .15s;}
 .libov-chip.cat-all{color:#6a7080;}.libov-chip.cat-all.active{background:var(--border2);border-color:var(--muted);color:var(--text);}
-.libov-chip.cat-bioforce{color:var(--accent);}.libov-chip.cat-bioforce.active{background:var(--accent2);border-color:var(--accent);}
+.libov-chip.cat-bioforce{color:var(--accent);}.libov-chip.cat-bioforce.active{background:var(--accent2);border-color:var(--accent);}.libov-chip.cat-calisthenics{color:#e08040;}.libov-chip.cat-calisthenics.active{background:#3a2010;border-color:#e08040;}
 .libov-chip.cat-pull{color:#5a90d0;}.libov-chip.cat-pull.active{background:#1a2235;border-color:#5a90d0;}
 .libov-chip.cat-push{color:#d06060;}.libov-chip.cat-push.active{background:#2a1a1a;border-color:#d06060;}
 .libov-chip.cat-legs{color:#60c060;}.libov-chip.cat-legs.active{background:#1a2a1a;border-color:#60c060;}
@@ -2708,7 +2708,9 @@ function renderWeek(preserveScroll){
       icons += '<div style="font-size:13px;line-height:1.2;">'+a.icon+'</div>';
     });
     var isSelected = _selectedDayStr === dateStr;
-    var onclick = hasAny ? ' onclick="showDayLog(\''+d.getFullYear()+'\',\''+(d.getMonth()+1)+'\',\''+d.getDate()+'\')"' : '';
+    var onclick = hasAny
+      ? ' onclick="showDayLog(\''+d.getFullYear()+'\',\''+(d.getMonth()+1)+'\',\''+d.getDate()+'\')"'
+      : ' onclick="openDayAdd(\''+dateStr+'\')"';
     var id = isToday ? ' id="weekToday"' : '';
     cells += '<div class="week-cell'+(hasAny?' has-entry':'')+(isToday?' today-cell':'')+(isSelected?' selected-cell':'')+'"'+onclick+id+'>'
       +'<div class="week-cell-lbl'+(isToday?' today':'')+'">'+dayLbl+'</div>'
@@ -2812,7 +2814,9 @@ function renderCal(){
     var hasTrain = !!trainDates[day];
     var hasAct   = !!actDates[day];
     var isChangeDay = changeDate && changeDate.getFullYear()===calYear && changeDate.getMonth()===calMonth2 && changeDate.getDate()===day;
-    var onclick = (hasTrain||hasAct) ? ' onclick="showDayLog('+calYear+','+(calMonth2+1)+','+day+')"' : '';
+    var onclick = (hasTrain||hasAct)
+      ? ' onclick="showDayLog('+calYear+','+(calMonth2+1)+','+day+')"'
+      : ' onclick="openDayAdd(\''+calYear+'-'+String(calMonth2+1).padStart(2,'0')+'-'+String(day).padStart(2,'0')+'\')" style="cursor:pointer;"';
 
     var style = '';
     if(isChangeDay){
@@ -4142,6 +4146,7 @@ var LIBOV_EQS = [
   {id:'bioforce',   label:'🏋 BioForce'},
   {id:'langhantel', label:'Langhantel'},
   {id:'kurzhantel', label:'Kurzhantel'},
+  {id:'calisthenics', label:'🤸 Calisthenics'},
 ];
 var LIBOV_MGS = [
   {id:'all',          label:'Alle'},
@@ -4238,7 +4243,7 @@ function renderLibovFilters(){
   if(eqRow) eqRow.innerHTML = LIBOV_EQS.filter(function(eq){
     return eq.id==='all' || activeEqs[eq.id];
   }).map(function(eq){
-    var cls = eq.id==='bioforce' ? 'cat-bioforce' : eq.id==='langhantel' ? 'cat-pull' : eq.id==='kurzhantel' ? 'cat-legs' : 'cat-all';
+    var cls = eq.id==='bioforce' ? 'cat-bioforce' : eq.id==='langhantel' ? 'cat-pull' : eq.id==='kurzhantel' ? 'cat-legs' : eq.id==='calisthenics' ? 'cat-calisthenics' : 'cat-all';
     return '<button class="libov-chip '+cls+(libovActiveEq===eq.id?' active':'')+'" onclick="setLibovEq(\''+eq.id+'\')">'+eq.label+'</button>';
   }).join('');
 
@@ -6422,7 +6427,107 @@ if(!trainingLog.length){
   prs['Bizeps-Curls stehend']    = {icon:'🏋', bi:true,  wL:14, wR:14, w:14, orm:18, reps:12, date:_daysAgo(14)};
 }
 
-// ── GITHUB CONFIG ──
+// ── DAY ADD (Nachtragen) ──
+var _dayAddDate = null;
+var _dayAddActType = 'handball';
+
+function openDayAdd(dateStr){
+  _dayAddDate = dateStr;
+  _dayAddActType = 'handball';
+  var dt = new Date(dateStr);
+  var dayNames = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+  document.getElementById('dayAddTitle').textContent = dayNames[dt.getDay()]+'. '+dt.getDate()+'.'+(dt.getMonth()+1)+'.'+dt.getFullYear();
+  document.getElementById('dayAddActDur').value = 60;
+  document.getElementById('dayAddActNote').value = '';
+
+  // Render split+day list
+  var splitHtml = '';
+  Object.keys(SPLITS).forEach(function(sk){
+    var sp = SPLITS[sk];
+    var col = getSplitColor(sk);
+    sp.days.forEach(function(day, di){
+      if(day.tags && day.tags.indexOf('rest')!==-1) return;
+      splitHtml += '<button onclick="saveDayAddTraining(\''+sk+'\','+di+')" style="'
+        +'width:100%;text-align:left;padding:.5rem .75rem;margin-bottom:4px;'
+        +'background:'+col+'11;border:1px solid '+col+'44;border-radius:7px;'
+        +'color:'+col+';font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;'
+        +'cursor:pointer;display:flex;align-items:center;justify-content:space-between;">'
+        +'<span>'+sp.name+' — '+day.name+'</span>'
+        +'<span style="font-size:11px;color:var(--muted3);">'+day.main.length+' Übungen</span>'
+        +'</button>';
+    });
+  });
+  document.getElementById('dayAddSplitList').innerHTML = splitHtml;
+
+  // Render activity types
+  document.getElementById('dayAddActRow').innerHTML = ACTIVITY_TYPES.map(function(t){
+    var active = t.id === _dayAddActType;
+    return '<button onclick="setDayAddAct(\''+t.id+'\')" style="padding:.4rem .75rem;font-family:\'Barlow Condensed\',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:6px;cursor:pointer;min-height:34px;border:1px solid '+(active?t.color:'var(--border2)')+';background:'+(active?t.color+'22':'transparent')+';color:'+(active?t.color:'var(--muted)')+';">'+t.icon+' '+t.label+'</button>';
+  }).join('');
+
+  document.getElementById('dayAddOverlay').classList.remove('hidden');
+}
+
+function closeDayAdd(){ document.getElementById('dayAddOverlay').classList.add('hidden'); }
+function dayAddBgClose(e){ if(e.target===document.getElementById('dayAddOverlay')) closeDayAdd(); }
+
+function setDayAddAct(id){
+  _dayAddActType = id;
+  document.getElementById('dayAddActRow').innerHTML = ACTIVITY_TYPES.map(function(t){
+    var active = t.id === _dayAddActType;
+    return '<button onclick="setDayAddAct(\''+t.id+'\')" style="padding:.4rem .75rem;font-family:\'Barlow Condensed\',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:6px;cursor:pointer;min-height:34px;border:1px solid '+(active?t.color:'var(--border2)')+';background:'+(active?t.color+'22':'transparent')+';color:'+(active?t.color:'var(--muted)')+';">'+t.icon+' '+t.label+'</button>';
+  }).join('');
+}
+
+function saveDayAddTraining(sk, di){
+  var day = SPLITS[sk].days[di];
+  var dt = new Date(_dayAddDate+'T12:00:00');
+  var entry = {
+    date: dt.toISOString(),
+    sk: sk,
+    di: di,
+    dayName: day.name,
+    splitName: SPLITS[sk].name,
+    duration: 0,
+    note: '',
+    exs: day.main.map(function(ex){
+      var isBi = ex.bi !== false;
+      return {
+        name: ex.name,
+        icon: ex.icon || '💪',
+        bi: isBi,
+        wL: isBi ? getW(sk,di,day.main.indexOf(ex),'L') : 0,
+        wR: isBi ? getW(sk,di,day.main.indexOf(ex),'R') : 0,
+        wS: !isBi ? getW(sk,di,day.main.indexOf(ex),'S') : 0,
+        muscle: ex.muscle || ''
+      };
+    })
+  };
+  trainingLog.push(entry);
+  saveState();
+  closeDayAdd();
+  renderWeek();
+  renderCal();
+  showToast('✓ Training für '+_dayAddDate+' eingetragen!');
+}
+
+function saveDayAddAct(){
+  var type = ACTIVITY_TYPES.find(function(t){ return t.id===_dayAddActType; });
+  var dur  = parseInt(document.getElementById('dayAddActDur').value)||60;
+  var note = document.getElementById('dayAddActNote').value.trim();
+  activityLog.push({
+    date: new Date(_dayAddDate+'T12:00:00').toISOString(),
+    type: type.id, icon: type.icon, label: type.label,
+    color: type.color, duration: dur, note: note
+  });
+  saveState();
+  closeDayAdd();
+  renderWeek();
+  renderCal();
+  showToast(type.icon+' '+type.label+' eingetragen ✓');
+}
+
+
 var GH_OWNER = 'jesper-reuss-lang';
 var GH_REPO  = 'Bioforce-app';
 var GH_BRANCH = 'main';
@@ -6451,7 +6556,7 @@ var _upBi  = true;
 var _upPhotoData = null; // base64
 
 var UP_CATS = [{id:'pull',label:'🏋 Pull'},{id:'push',label:'💪 Push'},{id:'legs',label:'🦵 Legs'},{id:'core',label:'🎯 Core'}];
-var UP_EQS  = [{id:'bioforce',label:'🏋 BioForce'},{id:'langhantel',label:'Langhantel'},{id:'kurzhantel',label:'Kurzhantel'}];
+var UP_EQS  = [{id:'bioforce',label:'🏋 BioForce'},{id:'langhantel',label:'Langhantel'},{id:'kurzhantel',label:'Kurzhantel'},{id:'calisthenics',label:'🤸 Calisthenics'}];
 var UP_BIS  = [{id:'bi',label:'Bilateral (L+R)'},{id:'single',label:'Einseitig'}];
 
 function openUploadOverlay(){
@@ -6662,7 +6767,34 @@ checkPlanChangeReminder();
 loadExercisesFromGitHub();
 </script>
 
-<!-- UPLOAD OVERLAY -->
+<!-- DAY ADD OVERLAY -->
+<div class="shuf-overlay hidden" id="dayAddOverlay" onclick="dayAddBgClose(event)">
+  <div class="shuf-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--text);" id="dayAddTitle">Eintrag hinzufügen</div>
+      <button onclick="closeDayAdd()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;min-width:36px;min-height:36px;">✕</button>
+    </div>
+    <!-- Training nachtragen -->
+    <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;">Training nachtragen</div>
+    <div id="dayAddSplitList" style="margin-bottom:1rem;"></div>
+    <!-- Aktivität -->
+    <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;">Aktivität eintragen</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.5rem;" id="dayAddActRow"></div>
+    <div style="display:flex;gap:8px;margin-bottom:1rem;">
+      <div style="flex:1;">
+        <div style="font-size:10px;color:var(--muted3);margin-bottom:.2rem;font-family:'Barlow Condensed',sans-serif;">Dauer (min)</div>
+        <input type="number" id="dayAddActDur" value="60" min="1" style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text2);font-size:16px;font-weight:700;padding:.4rem .6rem;text-align:center;" />
+      </div>
+      <div style="flex:2;">
+        <div style="font-size:10px;color:var(--muted3);margin-bottom:.2rem;font-family:'Barlow Condensed',sans-serif;">Notiz (optional)</div>
+        <input type="text" id="dayAddActNote" placeholder="z.B. Heimspiel" style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text2);font-size:13px;padding:.4rem .6rem;" />
+      </div>
+    </div>
+    <button class="shuf-go" onclick="saveDayAddAct()" style="width:100%;">✓ Aktivität eintragen</button>
+  </div>
+</div>
+
+
 <div class="shuf-overlay hidden" id="uploadOverlay" onclick="uploadBgClose(event)">
   <div class="rout-edit-box" style="max-height:92vh;overflow-y:auto;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;flex-shrink:0;">
