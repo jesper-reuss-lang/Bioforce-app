@@ -2057,11 +2057,61 @@ function renderStep(){
     var presetsHtml=['30','60','90','120'].map(function(s){
       return '<button class="pause-preset'+(currentPauseSec===parseInt(s)?' active':'')+'" onclick="setPauseTime('+s+')">'+s+'s</button>';
     }).join('');
+
+    // Next exercise preview — show image + steps when it's a new exercise
+    var nextPreview = '';
+    if(step.lastOfEx && step.nextEx){
+      var nex = step.nextEx;
+      var photoNum = EX_PHOTO_MAP && EX_PHOTO_MAP[nex.name];
+      var photoHtml = photoNum
+        ? '<img src="'+getExPhotoSrc(photoNum)+'" onerror="this.style.display=\'none\'" style="width:100%;max-height:140px;object-fit:contain;border-radius:8px;background:var(--bg3);margin:.5rem 0;" />'
+        : '';
+      var desc = getExDesc(nex.name);
+      var stepsHtml = '';
+      if(desc && desc.steps && desc.steps.length){
+        stepsHtml = '<div style="text-align:left;margin-top:.4rem;">'
+          +desc.steps.slice(0,2).map(function(s,i){
+            return '<div style="display:flex;gap:6px;margin-bottom:.3rem;font-size:11px;color:var(--muted2);">'
+              +'<span style="flex-shrink:0;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;color:var(--muted3);">'+(i+1)+'.</span>'
+              +'<span>'+s+'</span></div>';
+          }).join('')
+          +'</div>';
+      }
+      nextPreview = '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.6rem .75rem;margin:.5rem 0;text-align:center;">'
+        +'<div style="font-size:10px;color:var(--muted3);font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem;">Nächste Übung</div>'
+        +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:15px;font-weight:800;text-transform:uppercase;color:var(--text);">'+nex.icon+' '+nex.name+'</div>'
+        +photoHtml
+        +stepsHtml
+        +'</div>';
+    } else {
+      var nex2 = step.nextEx;
+      var photoNum2 = EX_PHOTO_MAP && EX_PHOTO_MAP[nex2.name];
+      var photoHtml2 = photoNum2
+        ? '<img src="'+getExPhotoSrc(photoNum2)+'" onerror="this.style.display=\'none\'" style="width:100%;max-height:120px;object-fit:contain;border-radius:8px;background:var(--bg3);margin:.4rem 0;" />'
+        : '';
+      var desc2 = getExDesc(nex2.name);
+      var stepsHtml2 = '';
+      if(desc2 && desc2.steps && desc2.steps.length){
+        stepsHtml2 = '<div style="text-align:left;margin-top:.3rem;">'
+          +desc2.steps.slice(0,2).map(function(s,i){
+            return '<div style="display:flex;gap:6px;margin-bottom:.25rem;font-size:11px;color:var(--muted2);">'
+              +'<span style="flex-shrink:0;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;color:var(--muted3);">'+(i+1)+'.</span>'
+              +'<span>'+s+'</span></div>';
+          }).join('')
+          +'</div>';
+      }
+      nextPreview = '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.6rem .75rem;margin:.5rem 0;text-align:center;">'
+        +'<div style="font-size:10px;color:var(--muted3);font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem;">'+(step.lastOfEx?'Nächste Übung':'Nächster Satz')+'</div>'
+        +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:15px;font-weight:800;text-transform:uppercase;color:var(--text);">'+nex2.icon+' '+nex2.name+'</div>'
+        +photoHtml2
+        +stepsHtml2
+        +'</div>';
+    }
+
     body.innerHTML='<div class="t-pause-card">'
       +'<div class="pause-lbl">Pause</div>'
       +'<div class="pause-num" id="pCount">'+pauseSec+'</div>'
-      +'<div class="pause-next-lbl">'+(step.lastOfEx?'Nächste Übung':'Nächster Satz')+'</div>'
-      +'<div class="pause-next-name">'+step.nextEx.icon+' '+step.nextEx.name+'</div>'
+      +nextPreview
       +'<div class="pause-settings-row">'+presetsHtml+'</div>'
       +'<button class="btn-skip-p" style="margin-top:.75rem;" onclick="nextStep()">Überspringen →</button>'
       +'</div>';
@@ -5126,11 +5176,29 @@ function renderSeshStep() {
   if(step.type === 'rest'){
     var nex = step.nextEx;
     seshSec = step.restSec;
+    var restPhotoNum = STRETCH_PHOTO_MAP && nex && STRETCH_PHOTO_MAP[nex.name];
+    var restPhotoHtml = restPhotoNum
+      ? '<img src="'+getStretchPhotoSrc(restPhotoNum)+'" onerror="this.style.display=\'none\'" style="width:100%;max-height:120px;object-fit:contain;border-radius:8px;background:var(--bg3);margin:.4rem 0;" />'
+      : '';
+    var restDesc = nex ? STRETCH_DB.find(function(x){ return x.name===nex.name; }) : null;
+    var restSteps = '';
+    if(restDesc && restDesc.desc){
+      var steps = restDesc.desc.split(/(?<=\.) /).filter(function(s){ return s.trim().length>0; });
+      restSteps = '<div style="text-align:left;margin-top:.3rem;">'
+        + steps.slice(0,2).map(function(s,i){
+          return '<div style="display:flex;gap:6px;margin-bottom:.25rem;font-size:11px;color:var(--muted2);">'
+            +'<span style="flex-shrink:0;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;color:var(--muted3);">'+(i+1)+'.</span>'
+            +'<span>'+s.trim()+'</span></div>';
+        }).join('')
+        +'</div>';
+    }
     body.innerHTML = '<div class="sesh-rest-card">'
       +'<div class="sesh-rest-lbl">Kurze Pause</div>'
       +'<div class="sesh-rest-num" id="seshRestNum">'+step.restSec+'</div>'
-      +'<div class="sesh-rest-next">Nächste Übung</div>'
-      +'<div class="sesh-rest-next-name">'+nex.icon+' '+nex.name+'</div>'
+      +(nex ? '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.6rem .75rem;margin:.5rem 0;text-align:center;">'
+        +'<div style="font-size:10px;color:var(--muted3);font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem;">Nächste Übung</div>'
+        +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:15px;font-weight:800;text-transform:uppercase;color:var(--text);">'+nex.icon+' '+nex.name+'</div>'
+        +restPhotoHtml+restSteps+'</div>' : '')
       +'<button class="sesh-rest-skip" onclick="seshNext()">Überspringen →</button>'
       +'</div>';
     startRestTimer(step.restSec);
