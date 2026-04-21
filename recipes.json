@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "recipes": [
+    {
+      "name": "Bratkartoffeln mit Zwiebeln und Schinken",
+      "servings": 2,
+      "prepTime": 30,
+      "tags": ["schnell", "deftig", "klassiker"],
+      "imageNumber": null,
+      "ingredients": [
+        { "amount": 800, "unit": "g", "name": "Kartoffeln (festkochend)" },
+        { "amount": 2, "unit": "Stück", "name": "Zwiebeln" },
+        { "amount": 150, "unit": "g", "name": "gewürfelter Schinken" },
+        { "amount": 3, "unit": "EL", "name": "Öl" },
+        { "amount": 1, "unit": "TL", "name": "Salz" },
+        { "amount": 0.5, "unit": "TL", "name": "Pfeffer" },
+        { "amount": 1, "unit": "TL", "name": "Paprikapulver" },
+        { "amount": 1, "unit": "Bund", "name": "Petersilie" }
+      ],
+      "steps": [
+        "Kartoffeln waschen, mit Schale in Salzwasser ca. 20 Min. kochen bis sie weich sind. Abgießen und abkühlen lassen.",
+        "Abgekühlte Kartoffeln pellen und in dicke Scheiben schneiden.",
+        "Zwiebeln schälen und in feine Ringe oder Würfel schneiden.",
+        "Öl in einer großen Pfanne erhitzen. Kartoffelscheiben hineingeben und bei mittlerer Hitze goldbraun braten (ca. 10 Min.), dabei gelegentlich wenden.",
+        "Zwiebeln und Schinkenwürfel dazugeben und weitere 5–7 Min. mitbraten bis alles knusprig ist.",
+        "Mit Salz, Pfeffer und Paprika abschmecken. Mit frisch gehackter Petersilie bestreuen und servieren."
+      ]
+    },
+    {
+      "name": "Nudeln mit Tomatensauce",
+      "servings": 2,
+      "prepTime": 20,
+      "tags": ["schnell", "vegetarisch", "klassiker"],
+      "imageNumber": null,
+      "ingredients": [
+        { "amount": 250, "unit": "g", "name": "Nudeln (z.B. Spaghetti)" },
+        { "amount": 1, "unit": "Dose", "name": "passierte Tomaten (400g)" },
+        { "amount": 1, "unit": "Stück", "name": "Zwiebel" },
+        { "amount": 2, "unit": "Zehen", "name": "Knoblauch" },
+        { "amount": 2, "unit": "EL", "name": "Olivenöl" },
+        { "amount": 1, "unit": "TL", "name": "Salz" },
+        { "amount": 0.5, "unit": "TL", "name": "Pfeffer" },
+        { "amount": 1, "unit": "TL", "name": "Zucker" },
+        { "amount": 1, "unit": "TL", "name": "getrockneter Oregano" },
+        { "amount": 1, "unit": "Bund", "name": "Basilikum" },
+        { "amount": 50, "unit": "g", "name": "Parmesan" }
+      ],
+      "steps": [
+        "Zwiebel und Knoblauch schälen und fein würfeln.",
+        "Olivenöl in einem Topf erhitzen. Zwiebeln bei mittlerer Hitze glasig dünsten (ca. 3 Min.), dann Knoblauch kurz mitbraten.",
+        "Passierte Tomaten dazugeben, mit Salz, Pfeffer, Zucker und Oregano würzen. 10–15 Min. bei niedriger Hitze köcheln lassen.",
+        "Parallel reichlich Salzwasser aufkochen und Nudeln nach Packungsangabe al dente kochen.",
+        "Nudeln abgießen, dabei etwas Nudelwasser auffangen. Falls die Sauce zu dick ist, etwas Nudelwasser unterrühren.",
+        "Nudeln mit der Sauce vermengen. Mit gehacktem Basilikum und frisch geriebenem Parmesan servieren."
+      ]
+    }
+  ]
+}
