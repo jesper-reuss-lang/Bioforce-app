@@ -680,6 +680,9 @@ html,body{overflow-x:hidden;background:var(--bg);}
 .home-tile-hist::after{background:#4A90D9;}
 .home-tile-stat::after{background:#9B7FD4;}
 .home-tile-stretch::after{background:#5BAD7A;}
+.home-tile-food::after{background:#D88A4A;}
+.home-tile-food .home-tile-icon{background:rgba(216,138,74,.1);border:1px solid rgba(216,138,74,.25);}
+.home-tile-food .home-tile-name{color:#D88A4A;}
 .home-tile-settings::after{background:#6A6760;}
 .home-tile-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .home-tile-plan .home-tile-icon{background:rgba(139,176,41,.1);border:1px solid rgba(139,176,41,.25);}
@@ -829,6 +832,10 @@ html,body{overflow-x:hidden;background:var(--bg);}
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9" stroke-width="2.5" stroke-linecap="round"/><line x1="15" y1="9" x2="15.01" y2="9" stroke-width="2.5" stroke-linecap="round"/></svg>
         <span>Dehnen</span>
       </button>
+      <button class="sidebar-item" onclick="sidebarGo('food')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+        <span>Ernährung</span>
+      </button>
       <div style="height:1px;background:var(--border);margin:.5rem 0;"></div>
       <button class="sidebar-item" onclick="sidebarGo('settings')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -880,6 +887,15 @@ html,body{overflow-x:hidden;background:var(--bg);}
         <div style="margin-top:auto;">
           <div class="home-tile-name">Dehnen</div>
           <div class="home-tile-sub">Routinen</div>
+        </div>
+      </div>
+      <div class="home-tile home-tile-food" onclick="showPage('food')">
+        <div class="home-tile-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D88A4A" stroke-width="1.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+        </div>
+        <div style="margin-top:auto;">
+          <div class="home-tile-name">Ernährung</div>
+          <div class="home-tile-sub">Rezepte &amp; Einkauf</div>
         </div>
       </div>
       <div class="home-tile home-tile-settings" onclick="showPage('settings')" style="grid-column:1 / -1;min-height:90px;flex-direction:row;align-items:center;gap:14px;padding:1.1rem 1.3rem;">
@@ -1066,6 +1082,112 @@ html,body{overflow-x:hidden;background:var(--bg);}
         </div>
       </div>
       <div id="stretchExList" style="overflow-y:auto;flex:1;"></div>
+    </div>
+  </div>
+
+  <!-- ERNÄHRUNG PAGE -->
+  <div class="stretch-page" id="foodPage">
+    <!-- Tabs: Rezepte / Wochenplan / Einkaufsliste -->
+    <div style="display:flex;gap:4px;margin-bottom:1rem;border-bottom:1px solid var(--border);">
+      <button class="food-tab active" id="foodTabRecipes" onclick="setFoodTab('recipes')" style="flex:1;padding:.7rem .5rem;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted2);cursor:pointer;min-height:42px;">📖 Rezepte</button>
+      <button class="food-tab" id="foodTabPlan" onclick="setFoodTab('plan')" style="flex:1;padding:.7rem .5rem;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted2);cursor:pointer;min-height:42px;">📅 Plan</button>
+      <button class="food-tab" id="foodTabShop" onclick="setFoodTab('shop')" style="flex:1;padding:.7rem .5rem;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted2);cursor:pointer;min-height:42px;">🛒 Einkauf</button>
+    </div>
+
+    <!-- Rezepte View -->
+    <div id="foodRecipesView">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--text);">Rezepte</div>
+        <button onclick="openRecipeUpload()" style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:18px;cursor:pointer;width:36px;height:36px;">＋</button>
+      </div>
+      <!-- Tag filter -->
+      <div style="margin-bottom:.75rem;" id="foodTagFilterRow"></div>
+      <!-- Recipe list -->
+      <div id="foodRecipeList"></div>
+    </div>
+
+    <!-- Wochenplan View -->
+    <div id="foodPlanView" style="display:none;">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--text);margin-bottom:.75rem;">Wochenplan</div>
+      <div id="foodWeekPlan"></div>
+    </div>
+
+    <!-- Einkaufsliste View -->
+    <div id="foodShopView" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--text);">Einkaufsliste</div>
+        <button onclick="clearShopChecks()" style="background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:11px;padding:.4rem .7rem;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;">Zurücksetzen</button>
+      </div>
+      <div id="foodShopList"></div>
+    </div>
+  </div>
+
+  <!-- RECIPE DETAIL OVERLAY -->
+  <div class="shuf-overlay hidden" id="recipeDetailOverlay" onclick="recipeDetailBgClose(event)">
+    <div class="rout-edit-box" style="max-height:92vh;overflow-y:auto;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--text);" id="recipeDetailTitle">Rezept</div>
+        <button onclick="closeRecipeDetail()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;min-width:36px;min-height:36px;">✕</button>
+      </div>
+      <div id="recipeDetailBody"></div>
+    </div>
+  </div>
+
+  <!-- RECIPE UPLOAD OVERLAY -->
+  <div class="shuf-overlay hidden" id="recipeUploadOverlay" onclick="recipeUploadBgClose(event)">
+    <div class="rout-edit-box" style="max-height:92vh;overflow-y:auto;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--text);">📤 Neues Rezept</div>
+        <button onclick="closeRecipeUpload()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;min-width:36px;min-height:36px;">✕</button>
+      </div>
+      <!-- Name -->
+      <div style="margin-bottom:.75rem;">
+        <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Name</div>
+        <input class="add-input" id="rupName" placeholder="z.B. Hähnchen-Reis-Pfanne" style="width:100%;box-sizing:border-box;" />
+      </div>
+      <!-- Portionen + Zeit -->
+      <div style="display:flex;gap:8px;margin-bottom:.75rem;">
+        <div style="flex:1;">
+          <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Portionen</div>
+          <input type="number" id="rupServings" value="2" min="1" class="add-input" style="width:100%;box-sizing:border-box;text-align:center;" />
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Min.</div>
+          <input type="number" id="rupTime" value="30" min="1" class="add-input" style="width:100%;box-sizing:border-box;text-align:center;" />
+        </div>
+      </div>
+      <!-- Tags -->
+      <div style="margin-bottom:.75rem;">
+        <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Tags (kommagetrennt)</div>
+        <input class="add-input" id="rupTags" placeholder="z.B. schnell, vegetarisch, meal-prep" style="width:100%;box-sizing:border-box;" />
+      </div>
+      <!-- Zutaten -->
+      <div style="margin-bottom:.75rem;">
+        <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Zutaten (eine pro Zeile: Menge Einheit Name)</div>
+        <textarea id="rupIngredients" placeholder="300 g Hähnchenbrust&#10;150 g Reis&#10;2 Stück Paprika&#10;1 TL Salz" style="width:100%;min-height:120px;background:var(--bg2);border:1px solid var(--border2);border-radius:7px;color:var(--text2);font-size:13px;padding:.5rem .75rem;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
+      </div>
+      <!-- Schritte -->
+      <div style="margin-bottom:.75rem;">
+        <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Zubereitung (eine pro Zeile)</div>
+        <textarea id="rupSteps" placeholder="Reis nach Packungsanleitung kochen&#10;Hähnchen in Würfel schneiden&#10;In der Pfanne anbraten..." style="width:100%;min-height:100px;background:var(--bg2);border:1px solid var(--border2);border-radius:7px;color:var(--text2);font-size:13px;padding:.5rem .75rem;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
+      </div>
+      <!-- Foto -->
+      <div style="margin-bottom:1rem;">
+        <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Foto (optional)</div>
+        <label style="display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px dashed var(--border2);border-radius:8px;padding:.75rem;cursor:pointer;">
+          <span style="font-size:24px;">🖼</span>
+          <div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--muted);">Foto auswählen</div>
+            <div id="rupPhotoName" style="font-size:11px;color:var(--muted3);">Kein Foto gewählt</div>
+          </div>
+          <input type="file" id="rupPhotoInput" accept="image/*" style="display:none;" onchange="rupPhotoSelected(this)" />
+        </label>
+      </div>
+      <div id="rupStatus" style="font-size:12px;color:var(--muted);margin-bottom:.75rem;min-height:18px;text-align:center;"></div>
+      <div style="display:flex;gap:8px;">
+        <button class="shuf-cancel" onclick="closeRecipeUpload()">Abbrechen</button>
+        <button class="shuf-go" onclick="doRecipeUpload()" id="rupBtn">📤 Hochladen</button>
+      </div>
     </div>
   </div>
 
@@ -2535,6 +2657,11 @@ function showPage(page){
   var xp = document.getElementById('stretchPage');
   xp.style.display = page==='stretch' ? 'block' : 'none';
   xp.classList.toggle('active', page==='stretch');
+  var fp = document.getElementById('foodPage');
+  if(fp){
+    fp.style.display = page==='food' ? 'block' : 'none';
+    fp.classList.toggle('active', page==='food');
+  }
   var gp = document.getElementById('settingsPage');
   gp.style.display = page==='settings' ? 'block' : 'none';
   gp.classList.toggle('active', page==='settings');
@@ -2542,7 +2669,7 @@ function showPage(page){
   document.getElementById('appHeader').style.display = page==='home' ? 'none' : 'flex';
   // Update sidebar active state
   document.querySelectorAll('.sidebar-item').forEach(function(el, i){
-    var pages = ['home','plan','hist','stat','stretch','settings'];
+    var pages = ['home','plan','hist','stat','stretch','food','settings'];
     el.classList.toggle('active', pages[i] === page);
   });
   document.getElementById('navPlan').classList.toggle('active', page==='plan');
@@ -2553,6 +2680,7 @@ function showPage(page){
   if(page==='hist'){ _selectedDayStr=null; renderWeek(); renderCal(); renderVolChart(); hideLog(); }
   if(page==='stat'){ renderStatPage(); }
   if(page==='stretch'){ renderStretchPage(); }
+  if(page==='food'){ renderFoodPage(); loadRecipesFromGitHub(); }
   if(page==='settings'){ renderSettingsInfo(); loadGhTokenStatus(); }
 }
 
@@ -6766,6 +6894,455 @@ function saveDayAddAct(){
 }
 
 
+// ── ERNÄHRUNG / FOOD ──
+var recipes = [
+  {
+    name: "Bratkartoffeln mit Zwiebeln und Schinken",
+    servings: 2, prepTime: 30,
+    tags: ["schnell","deftig","klassiker"],
+    imageNumber: null,
+    ingredients: [
+      { amount: 800, unit: "g", name: "Kartoffeln (festkochend)" },
+      { amount: 2, unit: "Stück", name: "Zwiebeln" },
+      { amount: 150, unit: "g", name: "gewürfelter Schinken" },
+      { amount: 3, unit: "EL", name: "Öl" },
+      { amount: 1, unit: "TL", name: "Salz" },
+      { amount: 0.5, unit: "TL", name: "Pfeffer" },
+      { amount: 1, unit: "TL", name: "Paprikapulver" },
+      { amount: 1, unit: "Bund", name: "Petersilie" }
+    ],
+    steps: [
+      "Kartoffeln waschen, mit Schale in Salzwasser ca. 20 Min. kochen. Abgießen und abkühlen lassen.",
+      "Abgekühlte Kartoffeln pellen und in dicke Scheiben schneiden.",
+      "Zwiebeln schälen und in feine Ringe oder Würfel schneiden.",
+      "Öl in einer großen Pfanne erhitzen. Kartoffelscheiben goldbraun braten (ca. 10 Min.).",
+      "Zwiebeln und Schinkenwürfel dazugeben, weitere 5–7 Min. mitbraten bis alles knusprig ist.",
+      "Mit Salz, Pfeffer und Paprika abschmecken. Mit gehackter Petersilie servieren."
+    ]
+  },
+  {
+    name: "Nudeln mit Tomatensauce",
+    servings: 2, prepTime: 20,
+    tags: ["schnell","vegetarisch","klassiker"],
+    imageNumber: null,
+    ingredients: [
+      { amount: 250, unit: "g", name: "Nudeln (z.B. Spaghetti)" },
+      { amount: 1, unit: "Dose", name: "passierte Tomaten (400g)" },
+      { amount: 1, unit: "Stück", name: "Zwiebel" },
+      { amount: 2, unit: "Zehen", name: "Knoblauch" },
+      { amount: 2, unit: "EL", name: "Olivenöl" },
+      { amount: 1, unit: "TL", name: "Salz" },
+      { amount: 0.5, unit: "TL", name: "Pfeffer" },
+      { amount: 1, unit: "TL", name: "Zucker" },
+      { amount: 1, unit: "TL", name: "getrockneter Oregano" },
+      { amount: 1, unit: "Bund", name: "Basilikum" },
+      { amount: 50, unit: "g", name: "Parmesan" }
+    ],
+    steps: [
+      "Zwiebel und Knoblauch schälen und fein würfeln.",
+      "Olivenöl erhitzen, Zwiebeln glasig dünsten, dann Knoblauch kurz mitbraten.",
+      "Passierte Tomaten dazugeben, mit Gewürzen abschmecken. 10–15 Min. köcheln lassen.",
+      "Parallel Salzwasser aufkochen und Nudeln al dente kochen.",
+      "Nudeln abgießen, mit Sauce vermengen.",
+      "Mit Basilikum und Parmesan servieren."
+    ]
+  },
+  {
+    name: "Hähnchen-Reis-Pfanne",
+    servings: 2, prepTime: 25,
+    tags: ["schnell","meal-prep","eiweißreich"],
+    imageNumber: null,
+    ingredients: [
+      { amount: 300, unit: "g", name: "Hähnchenbrust" },
+      { amount: 150, unit: "g", name: "Reis" },
+      { amount: 2, unit: "Stück", name: "Paprika" },
+      { amount: 1, unit: "Stück", name: "Zwiebel" },
+      { amount: 2, unit: "Zehen", name: "Knoblauch" },
+      { amount: 2, unit: "EL", name: "Olivenöl" },
+      { amount: 2, unit: "EL", name: "Sojasauce" },
+      { amount: 1, unit: "TL", name: "Paprikapulver" },
+      { amount: 1, unit: "TL", name: "Salz" }
+    ],
+    steps: [
+      "Reis nach Packungsanleitung kochen.",
+      "Hähnchen in Würfel schneiden, mit Salz und Paprika würzen.",
+      "Paprika und Zwiebel in Streifen schneiden, Knoblauch hacken.",
+      "Öl in großer Pfanne erhitzen, Hähnchen anbraten bis goldbraun.",
+      "Gemüse dazugeben, 5 Min. mitbraten.",
+      "Reis unterheben, mit Sojasauce abschmecken."
+    ]
+  }
+];
+var weekPlan = { "mon":[0], "wed":[1], "fri":[2] };
+var shopChecks = {};
+var _foodTab = 'recipes';
+var _foodActiveTag = 'all';
+var _rupPhotoData = null;
+
+var DAYS_DE = [
+  {id:'mon', label:'Montag'},
+  {id:'tue', label:'Dienstag'},
+  {id:'wed', label:'Mittwoch'},
+  {id:'thu', label:'Donnerstag'},
+  {id:'fri', label:'Freitag'},
+  {id:'sat', label:'Samstag'},
+  {id:'sun', label:'Sonntag'}
+];
+
+var SHOP_CATEGORIES = [
+  {name:'🥬 Gemüse & Obst', keywords:['gemüse','salat','tomate','paprika','zwiebel','knoblauch','karotte','möhre','kartoffel','gurke','zucchini','aubergine','brokkoli','blumenkohl','spinat','rucola','pilz','champignon','apfel','banane','zitrone','avocado','beere','erdbeer','kräuter','petersilie','basilikum','schnittlauch','ingwer','lauch','porree','kohl','sellerie','rettich','radieschen','spargel','bohne','erbse','mais']},
+  {name:'🥩 Fleisch & Fisch', keywords:['hähnchen','hühnchen','huhn','pute','rind','schwein','lamm','hack','hackfleisch','würst','schinken','speck','bacon','fisch','lachs','thunfisch','forelle','garnele','scampi']},
+  {name:'🧀 Molkerei & Eier', keywords:['milch','joghurt','quark','käse','parmesan','mozzarella','feta','gouda','frischkäse','butter','sahne','ei','eier']},
+  {name:'🍞 Brot & Backwaren', keywords:['brot','brötchen','baguette','toast','tortilla','wrap','fladenbrot']},
+  {name:'🍝 Trockenwaren', keywords:['reis','nudeln','pasta','spaghetti','linsen','bohnen','kichererbsen','quinoa','couscous','haferflocken','müsli','mehl','zucker','salz','pfeffer','gewürz','öl','essig','soja','brühe']},
+  {name:'🥫 Konserven', keywords:['dose','konserve','passierte','oliven','pesto']},
+  {name:'❄️ Tiefkühl', keywords:['tiefkühl','tk ','gefroren']},
+  {name:'🥤 Getränke', keywords:['wasser','saft','cola','bier','wein']},
+  {name:'📦 Sonstiges', keywords:[]}
+];
+
+function categorizeIngredient(name){
+  var lower = name.toLowerCase();
+  for(var i=0; i<SHOP_CATEGORIES.length-1; i++){
+    var cat = SHOP_CATEGORIES[i];
+    for(var j=0; j<cat.keywords.length; j++){
+      if(lower.indexOf(cat.keywords[j]) !== -1) return cat.name;
+    }
+  }
+  return SHOP_CATEGORIES[SHOP_CATEGORIES.length-1].name;
+}
+
+function renderFoodPage(){ setFoodTab(_foodTab); }
+
+function setFoodTab(tab){
+  _foodTab = tab;
+  ['recipes','plan','shop'].forEach(function(t){
+    var btnId = 'foodTab'+t.charAt(0).toUpperCase()+t.slice(1);
+    var viewId = 'food'+t.charAt(0).toUpperCase()+t.slice(1)+'View';
+    var btn = document.getElementById(btnId);
+    var view = document.getElementById(viewId);
+    if(btn){
+      btn.classList.toggle('active', t===tab);
+      btn.style.color = t===tab ? 'var(--accent)' : 'var(--muted2)';
+      btn.style.borderBottomColor = t===tab ? 'var(--accent)' : 'transparent';
+    }
+    if(view) view.style.display = t===tab ? 'block' : 'none';
+  });
+  if(tab==='recipes') renderRecipeList();
+  if(tab==='plan') renderWeekPlan();
+  if(tab==='shop') renderShopList();
+}
+
+function getAllTags(){
+  var tags = {};
+  recipes.forEach(function(r){ (r.tags||[]).forEach(function(t){ tags[t]=true; }); });
+  return Object.keys(tags).sort();
+}
+
+function renderRecipeList(){
+  var tags = getAllTags();
+  var filterHtml = '<button onclick="setFoodTag(\'all\')" style="padding:.35rem .75rem;margin-right:5px;margin-bottom:5px;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:20px;cursor:pointer;min-height:32px;border:1px solid '+(_foodActiveTag==='all'?'var(--accent)':'var(--border)')+';background:'+(_foodActiveTag==='all'?'var(--accent2)':'transparent')+';color:'+(_foodActiveTag==='all'?'var(--accent)':'var(--muted)')+';">Alle</button>';
+  tags.forEach(function(t){
+    var a = _foodActiveTag===t;
+    filterHtml += '<button onclick="setFoodTag(\''+t+'\')" style="padding:.35rem .75rem;margin-right:5px;margin-bottom:5px;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:20px;cursor:pointer;min-height:32px;border:1px solid '+(a?'var(--accent)':'var(--border)')+';background:'+(a?'var(--accent2)':'transparent')+';color:'+(a?'var(--accent)':'var(--muted)')+';">'+t+'</button>';
+  });
+  document.getElementById('foodTagFilterRow').innerHTML = filterHtml;
+
+  var filtered = _foodActiveTag==='all' ? recipes : recipes.filter(function(r){ return (r.tags||[]).indexOf(_foodActiveTag)!==-1; });
+  if(!filtered.length){
+    document.getElementById('foodRecipeList').innerHTML = '<div style="text-align:center;color:var(--muted3);padding:2rem 1rem;font-size:13px;">Noch keine Rezepte — oben auf ＋ tippen</div>';
+    return;
+  }
+  var html = filtered.map(function(r){
+    var realIdx = recipes.indexOf(r);
+    var photoNum = r.imageNumber;
+    var thumb = photoNum
+      ? '<img src="Bilder/Rezepte/'+photoNum+'.jpg" onerror="this.style.display=\'none\'" style="width:64px;height:64px;object-fit:cover;border-radius:8px;flex-shrink:0;" />'
+      : '<div style="width:64px;height:64px;background:var(--bg3);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px;">🍽</div>';
+    var tagsHtml = (r.tags||[]).slice(0,3).map(function(t){
+      return '<span style="font-size:10px;color:var(--muted2);background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:2px 7px;">'+t+'</span>';
+    }).join(' ');
+    return '<div onclick="openRecipeDetail('+realIdx+')" style="display:flex;align-items:center;gap:12px;padding:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;cursor:pointer;">'
+      +thumb
+      +'<div style="flex:1;min-width:0;">'
+      +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:17px;font-weight:600;color:var(--text);margin-bottom:2px;">'+r.name+'</div>'
+      +'<div style="font-size:11px;color:var(--muted2);margin-bottom:4px;">🍽 '+(r.servings||2)+' P · ⏱ '+(r.prepTime||30)+' min</div>'
+      +'<div style="display:flex;gap:4px;flex-wrap:wrap;">'+tagsHtml+'</div>'
+      +'</div></div>';
+  }).join('');
+  document.getElementById('foodRecipeList').innerHTML = html;
+}
+
+function setFoodTag(tag){ _foodActiveTag=tag; renderRecipeList(); }
+
+function openRecipeDetail(idx){
+  var r = recipes[idx];
+  if(!r) return;
+  document.getElementById('recipeDetailTitle').textContent = r.name;
+  var photoNum = r.imageNumber;
+  var photoHtml = photoNum
+    ? '<img src="Bilder/Rezepte/'+photoNum+'.jpg" onerror="this.style.display=\'none\'" style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-bottom:.75rem;" />'
+    : '';
+  var tagsHtml = (r.tags||[]).map(function(t){
+    return '<span style="font-size:11px;color:var(--muted2);background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:3px 9px;margin-right:4px;">'+t+'</span>';
+  }).join('');
+  var ingHtml = (r.ingredients||[]).map(function(ing){
+    var amtStr = (ing.amount ? ing.amount : '') + (ing.unit ? ' '+ing.unit : '');
+    return '<div style="display:flex;justify-content:space-between;padding:.4rem .5rem;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text2);">'+ing.name+'</span><span style="color:var(--muted);font-family:\'Barlow Condensed\',sans-serif;">'+amtStr+'</span></div>';
+  }).join('');
+  var stepsHtml = (r.steps||[]).map(function(s,i){
+    return '<div style="display:flex;gap:10px;margin-bottom:.6rem;"><span style="flex-shrink:0;width:24px;height:24px;background:var(--accent2);border:1px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:\'Barlow Condensed\',sans-serif;font-size:12px;font-weight:700;color:var(--accent);">'+(i+1)+'</span><span style="font-size:13px;color:var(--text2);line-height:1.5;">'+s+'</span></div>';
+  }).join('');
+  document.getElementById('recipeDetailBody').innerHTML = photoHtml
+    +'<div style="display:flex;gap:12px;margin-bottom:.75rem;font-size:12px;color:var(--muted);"><span>🍽 '+(r.servings||2)+' Portionen</span><span>⏱ '+(r.prepTime||30)+' min</span></div>'
+    +(tagsHtml ? '<div style="margin-bottom:.85rem;">'+tagsHtml+'</div>' : '')
+    +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:16px;font-weight:600;color:var(--text);margin-bottom:.5rem;margin-top:.5rem;">Zutaten</div>'
+    +'<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;margin-bottom:1rem;">'+ingHtml+'</div>'
+    +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:16px;font-weight:600;color:var(--text);margin-bottom:.6rem;">Zubereitung</div>'
+    +stepsHtml;
+  document.getElementById('recipeDetailOverlay').classList.remove('hidden');
+}
+
+function closeRecipeDetail(){ document.getElementById('recipeDetailOverlay').classList.add('hidden'); }
+function recipeDetailBgClose(e){ if(e.target===document.getElementById('recipeDetailOverlay')) closeRecipeDetail(); }
+
+function renderWeekPlan(){
+  var html = DAYS_DE.map(function(d){
+    var assigned = (weekPlan[d.id] || []).map(function(idx){
+      var r = recipes[idx];
+      if(!r) return '';
+      return '<div style="display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.4rem .6rem;margin-bottom:4px;">'
+        +'<span style="flex:1;font-size:13px;color:var(--text2);">'+r.name+'</span>'
+        +'<button onclick="removeFromDay(\''+d.id+'\','+idx+')" style="background:none;border:none;color:var(--muted3);font-size:16px;cursor:pointer;min-width:28px;">✕</button>'
+        +'</div>';
+    }).join('');
+    return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.75rem;margin-bottom:8px;">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;">'
+      +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:16px;font-weight:600;color:var(--text);">'+d.label+'</div>'
+      +'<button onclick="addToDay(\''+d.id+'\')" style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--muted);font-size:16px;cursor:pointer;width:32px;height:32px;">＋</button>'
+      +'</div>'
+      +(assigned || '<div style="font-size:12px;color:var(--muted3);font-style:italic;padding:.3rem 0;">Noch kein Gericht</div>')
+      +'</div>';
+  }).join('');
+  document.getElementById('foodWeekPlan').innerHTML = html;
+}
+
+function addToDay(dayId){
+  if(!recipes.length){ showToast('Noch keine Rezepte vorhanden'); return; }
+  var html = recipes.map(function(r,i){
+    return '<div onclick="assignRecipe(\''+dayId+'\','+i+')" style="padding:.6rem .75rem;border-bottom:1px solid var(--border);cursor:pointer;"><div style="font-size:14px;color:var(--text2);">'+r.name+'</div><div style="font-size:11px;color:var(--muted2);">🍽 '+(r.servings||2)+' P</div></div>';
+  }).join('');
+  var ov = document.createElement('div');
+  ov.className = 'shuf-overlay';
+  ov.style.zIndex = 5000;
+  ov.innerHTML = '<div class="shuf-box" style="max-height:80vh;overflow-y:auto;padding:1rem;">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">'
+    +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:18px;font-weight:600;color:var(--text);">Rezept wählen</div>'
+    +'<button onclick="this.closest(\'.shuf-overlay\').remove()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;">✕</button>'
+    +'</div>'+html+'</div>';
+  document.body.appendChild(ov);
+}
+
+function assignRecipe(dayId, recipeIdx){
+  if(!weekPlan[dayId]) weekPlan[dayId] = [];
+  weekPlan[dayId].push(recipeIdx);
+  saveFoodState();
+  document.querySelectorAll('.shuf-overlay').forEach(function(o){
+    if(parseInt(o.style.zIndex)===5000) o.remove();
+  });
+  renderWeekPlan();
+  showToast('✓ Rezept zugewiesen');
+}
+
+function removeFromDay(dayId, recipeIdx){
+  if(!weekPlan[dayId]) return;
+  var i = weekPlan[dayId].indexOf(recipeIdx);
+  if(i !== -1) weekPlan[dayId].splice(i, 1);
+  saveFoodState();
+  renderWeekPlan();
+}
+
+function renderShopList(){
+  var agg = {};
+  DAYS_DE.forEach(function(d){
+    (weekPlan[d.id] || []).forEach(function(idx){
+      var r = recipes[idx];
+      if(!r) return;
+      (r.ingredients||[]).forEach(function(ing){
+        var key = ing.name.toLowerCase().trim() + '|' + (ing.unit||'');
+        if(!agg[key]){
+          agg[key] = { name: ing.name, amount: ing.amount || 0, unit: ing.unit || '', category: categorizeIngredient(ing.name) };
+        } else {
+          agg[key].amount += (ing.amount || 0);
+        }
+      });
+    });
+  });
+  var items = Object.keys(agg).map(function(k){ return agg[k]; });
+  if(!items.length){
+    document.getElementById('foodShopList').innerHTML = '<div style="text-align:center;color:var(--muted3);padding:2rem 1rem;font-size:13px;">Füge Rezepte zum Wochenplan hinzu</div>';
+    return;
+  }
+  var byCat = {};
+  items.forEach(function(it){ if(!byCat[it.category]) byCat[it.category] = []; byCat[it.category].push(it); });
+  var html = '';
+  SHOP_CATEGORIES.forEach(function(cat){
+    if(!byCat[cat.name]) return;
+    html += '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:.85rem 0 .35rem;">'+cat.name+'</div>';
+    html += '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:.5rem;">';
+    byCat[cat.name].forEach(function(it){
+      var keyName = it.name.toLowerCase();
+      var checked = !!shopChecks[keyName];
+      var amtStr = (it.amount ? (Math.round(it.amount*100)/100) : '') + (it.unit ? ' '+it.unit : '');
+      var escName = keyName.replace(/'/g, "\\'");
+      html += '<label style="display:flex;align-items:center;gap:10px;padding:.55rem .75rem;border-bottom:1px solid var(--border);cursor:pointer;'+(checked?'opacity:.5;':'')+'">'
+        +'<input type="checkbox" '+(checked?'checked':'')+' onchange="toggleShopCheck(\''+escName+'\')" style="accent-color:var(--accent);width:18px;height:18px;flex-shrink:0;" />'
+        +'<span style="flex:1;font-size:13px;color:var(--text2);'+(checked?'text-decoration:line-through;':'')+'">'+it.name+'</span>'
+        +'<span style="font-size:12px;color:var(--muted);font-family:\'Barlow Condensed\',sans-serif;">'+amtStr+'</span>'
+        +'</label>';
+    });
+    html += '</div>';
+  });
+  document.getElementById('foodShopList').innerHTML = html;
+}
+
+function toggleShopCheck(name){
+  shopChecks[name] = !shopChecks[name];
+  saveFoodState();
+  renderShopList();
+}
+function clearShopChecks(){ shopChecks = {}; saveFoodState(); renderShopList(); }
+
+function openRecipeUpload(){
+  if(!getGhToken()){ showToast('Bitte erst GitHub Token in Einstellungen speichern'); return; }
+  ['rupName','rupIngredients','rupSteps','rupTags'].forEach(function(id){ document.getElementById(id).value = ''; });
+  document.getElementById('rupServings').value = 2;
+  document.getElementById('rupTime').value = 30;
+  document.getElementById('rupPhotoName').textContent = 'Kein Foto gewählt';
+  document.getElementById('rupStatus').textContent = '';
+  _rupPhotoData = null;
+  document.getElementById('recipeUploadOverlay').classList.remove('hidden');
+}
+function closeRecipeUpload(){ document.getElementById('recipeUploadOverlay').classList.add('hidden'); }
+function recipeUploadBgClose(e){ if(e.target===document.getElementById('recipeUploadOverlay')) closeRecipeUpload(); }
+
+function rupPhotoSelected(input){
+  var file = input.files[0];
+  if(!file) return;
+  document.getElementById('rupPhotoName').textContent = file.name;
+  var reader = new FileReader();
+  reader.onload = function(e){ _rupPhotoData = e.target.result.split(',')[1]; };
+  reader.readAsDataURL(file);
+}
+
+function parseIngredientLine(line){
+  line = line.trim();
+  if(!line) return null;
+  var m = line.match(/^(\d+(?:[.,]\d+)?)\s*([a-zA-ZäöüÄÖÜ]+)\s+(.+)$/);
+  if(m){ return { amount: parseFloat(m[1].replace(',','.')), unit: m[2], name: m[3].trim() }; }
+  var m2 = line.match(/^(\d+(?:[.,]\d+)?)\s+(.+)$/);
+  if(m2){ return { amount: parseFloat(m2[1].replace(',','.')), unit: '', name: m2[2].trim() }; }
+  return { amount: 0, unit: '', name: line };
+}
+
+async function getNextRecipeImageNumber(){
+  try {
+    var files = await ghApi('contents/Bilder/Rezepte');
+    var nums = files.map(function(f){ var m = f.name.match(/^(\d+)\.jpg$/i); return m ? parseInt(m[1]) : 0; });
+    return nums.length ? Math.max.apply(null, nums) + 1 : 1;
+  } catch(e) { return 1; }
+}
+
+async function getRecipesJson(){
+  try {
+    var res = await ghApi('contents/recipes.json');
+    var binary = atob(res.content.replace(/\n/g,''));
+    var bytes = new Uint8Array(binary.length);
+    for(var i=0; i<binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    var content = new TextDecoder('utf-8').decode(bytes);
+    return {data: JSON.parse(content), sha: res.sha};
+  } catch(e) { return {data: {version:1, recipes:[]}, sha: null}; }
+}
+
+async function doRecipeUpload(){
+  var name = document.getElementById('rupName').value.trim();
+  var servings = parseInt(document.getElementById('rupServings').value) || 2;
+  var prepTime = parseInt(document.getElementById('rupTime').value) || 30;
+  var tagsStr = document.getElementById('rupTags').value.trim();
+  var ingStr = document.getElementById('rupIngredients').value.trim();
+  var stepsStr = document.getElementById('rupSteps').value.trim();
+
+  if(!name){ showToast('Bitte Name eingeben'); return; }
+  if(!ingStr){ showToast('Bitte mindestens eine Zutat angeben'); return; }
+
+  var tags = tagsStr ? tagsStr.split(',').map(function(t){ return t.trim(); }).filter(function(t){ return t; }) : [];
+  var ingredients = ingStr.split('\n').map(parseIngredientLine).filter(function(i){ return i; });
+  var steps = stepsStr ? stepsStr.split('\n').map(function(s){ return s.trim(); }).filter(function(s){ return s; }) : [];
+
+  var btn = document.getElementById('rupBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Wird hochgeladen...';
+
+  try {
+    var imgNum = null;
+    if(_rupPhotoData){
+      document.getElementById('rupStatus').textContent = '📸 Bild wird hochgeladen...';
+      imgNum = await getNextRecipeImageNumber();
+      await ghApi('contents/Bilder/Rezepte/'+imgNum+'.jpg', 'PUT', {
+        message: 'Add recipe image: '+name,
+        content: _rupPhotoData,
+        branch: GH_BRANCH
+      });
+    }
+    document.getElementById('rupStatus').textContent = '📋 recipes.json wird aktualisiert...';
+    var jsonFile = await getRecipesJson();
+    var newRecipe = { name: name, servings: servings, prepTime: prepTime, tags: tags, imageNumber: imgNum, ingredients: ingredients, steps: steps };
+    jsonFile.data.recipes.push(newRecipe);
+
+    var jsonStr = JSON.stringify(jsonFile.data, null, 2);
+    var utf8Bytes = new TextEncoder().encode(jsonStr);
+    var binStr = '';
+    for(var i=0; i<utf8Bytes.length; i++) binStr += String.fromCharCode(utf8Bytes[i]);
+    var jsonBody = { message: 'Add recipe: '+name, content: btoa(binStr), branch: GH_BRANCH };
+    if(jsonFile.sha) jsonBody.sha = jsonFile.sha;
+    await ghApi('contents/recipes.json', 'PUT', jsonBody);
+
+    recipes.push(newRecipe);
+    document.getElementById('rupStatus').textContent = '✅ Erfolgreich!';
+    showToast('✓ '+name+' hochgeladen!');
+    setTimeout(function(){ closeRecipeUpload(); renderRecipeList(); }, 1200);
+  } catch(err){
+    document.getElementById('rupStatus').textContent = '❌ '+err.message;
+    document.getElementById('rupStatus').style.color = '#e05050';
+    btn.disabled = false;
+    btn.textContent = '📤 Hochladen';
+  }
+}
+
+async function loadRecipesFromGitHub(){
+  try {
+    var res = await fetch('https://raw.githubusercontent.com/'+GH_OWNER+'/'+GH_REPO+'/'+GH_BRANCH+'/recipes.json?t='+Date.now());
+    if(!res.ok) return;
+    var data = await res.json();
+    if(data.recipes && data.recipes.length) recipes = data.recipes;
+    if(_foodTab==='recipes' && document.getElementById('foodRecipeList')) renderRecipeList();
+  } catch(e){}
+}
+
+function saveFoodState(){
+  try {
+    localStorage.setItem('bioforce_food_plan', JSON.stringify(weekPlan));
+    localStorage.setItem('bioforce_food_checks', JSON.stringify(shopChecks));
+  } catch(e){}
+}
+
+function loadFoodState(){
+  try {
+    var p = localStorage.getItem('bioforce_food_plan'); if(p) weekPlan = JSON.parse(p);
+    var c = localStorage.getItem('bioforce_food_checks'); if(c) shopChecks = JSON.parse(c);
+  } catch(e){}
+}
+
 var GH_OWNER = 'jesper-reuss-lang';
 var GH_REPO  = 'Bioforce-app';
 var GH_BRANCH = 'main';
@@ -6857,7 +7434,7 @@ async function ghApi(path, method, body){
     method: method || 'GET',
     headers: {
       'Authorization': 'token '+token,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json; charset=utf-8',
       'Accept': 'application/vnd.github.v3+json'
     },
     body: body ? JSON.stringify(body) : undefined
@@ -6881,7 +7458,11 @@ async function getNextImageNumber(){
 async function getExercisesJson(){
   try {
     var res = await ghApi('contents/exercises.json');
-    var content = atob(res.content.replace(/\n/g,''));
+    // Decode base64 properly as UTF-8 (handles umlauts)
+    var binary = atob(res.content.replace(/\n/g,''));
+    var bytes = new Uint8Array(binary.length);
+    for(var i=0; i<binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    var content = new TextDecoder('utf-8').decode(bytes);
     return {data: JSON.parse(content), sha: res.sha};
   } catch(e) {
     return {data: {version:1, exercises:[]}, sha: null};
@@ -6938,9 +7519,14 @@ async function doUpload(){
     jsonFile.data.exercises.push(newEx);
 
     // 4. Update exercises.json
+    // Encode JSON as UTF-8 then base64 (handles umlauts like ü, ä, ö correctly)
+    var jsonStr = JSON.stringify(jsonFile.data, null, 2);
+    var utf8Bytes = new TextEncoder().encode(jsonStr);
+    var binStr = '';
+    for(var i=0; i<utf8Bytes.length; i++) binStr += String.fromCharCode(utf8Bytes[i]);
     var jsonBody = {
       message: 'Add exercise: '+name,
-      content: btoa(unescape(encodeURIComponent(JSON.stringify(jsonFile.data, null, 2)))),
+      content: btoa(binStr),
       branch: GH_BRANCH
     };
     if(jsonFile.sha) jsonBody.sha = jsonFile.sha;
@@ -7003,6 +7589,8 @@ async function loadExercisesFromGitHub(){
 renderNav();renderDays();
 checkPlanChangeReminder();
 loadExercisesFromGitHub();
+loadFoodState();
+loadRecipesFromGitHub();
 // Start on home page
 document.getElementById('planPage').style.display = 'none';
 document.getElementById('appHeader').style.display = 'none';
