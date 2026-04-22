@@ -683,7 +683,12 @@ html,body{overflow-x:hidden;background:var(--bg);}
 .home-tile-food::after{background:#D88A4A;}
 .home-tile-food .home-tile-icon{background:rgba(216,138,74,.1);border:1px solid rgba(216,138,74,.25);}
 .home-tile-food .home-tile-name{color:#D88A4A;}
-.home-tile-settings::after{background:#6A6760;}
+.home-tile-settings::after{background:#8A8478;}
+.home-tile-settings .home-tile-icon{background:rgba(138,132,120,.1);border:1px solid rgba(138,132,120,.25);}
+.home-tile-settings .home-tile-name{color:#8A8478;}
+
+/* Page accent colors */
+#foodPage .food-tab.active{color:#D88A4A !important;border-bottom-color:#D88A4A !important;}
 .home-tile-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .home-tile-plan .home-tile-icon{background:rgba(139,176,41,.1);border:1px solid rgba(139,176,41,.25);}
 .home-tile-hist .home-tile-icon{background:rgba(74,144,217,.1);border:1px solid rgba(74,144,217,.25);}
@@ -898,13 +903,13 @@ html,body{overflow-x:hidden;background:var(--bg);}
           <div class="home-tile-sub">Rezepte &amp; Einkauf</div>
         </div>
       </div>
-      <div class="home-tile home-tile-settings" onclick="showPage('settings')" style="grid-column:1 / -1;min-height:90px;flex-direction:row;align-items:center;gap:14px;padding:1.1rem 1.3rem;">
-        <div class="home-tile-icon" style="background:rgba(200,180,160,.06);border:1px solid rgba(200,180,160,.2);">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B8B4AA" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <div class="home-tile home-tile-settings" onclick="showPage('settings')">
+        <div class="home-tile-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A8478" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         </div>
-        <div style="flex:1;">
-          <div class="home-tile-name" style="font-size:18px;color:var(--text2);margin-top:0;">Einstellungen</div>
-          <div class="home-tile-sub">Token, Upload, Darstellung</div>
+        <div style="margin-top:auto;">
+          <div class="home-tile-name">Einstellungen</div>
+          <div class="home-tile-sub">Token &amp; Upload</div>
         </div>
       </div>
     </div>
@@ -1145,6 +1150,18 @@ html,body{overflow-x:hidden;background:var(--bg);}
         <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Name</div>
         <input class="add-input" id="rupName" placeholder="z.B. Hähnchen-Reis-Pfanne" style="width:100%;box-sizing:border-box;" />
       </div>
+      <!-- Quelle (Source) -->
+      <div style="margin-bottom:.75rem;">
+        <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Quelle (Hashtag)</div>
+        <select class="add-select" id="rupSource" style="width:100%;box-sizing:border-box;">
+          <option value="">— Keine Quelle —</option>
+          <option value="Yazio">#Yazio</option>
+          <option value="Captain Cook">#Captain Cook</option>
+          <option value="Bring">#Bring</option>
+          <option value="Chefkoch">#Chefkoch</option>
+          <option value="Cookidoo">#Cookidoo</option>
+        </select>
+      </div>
       <!-- Portionen + Zeit -->
       <div style="display:flex;gap:8px;margin-bottom:.75rem;">
         <div style="flex:1;">
@@ -1152,24 +1169,34 @@ html,body{overflow-x:hidden;background:var(--bg);}
           <input type="number" id="rupServings" value="2" min="1" class="add-input" style="width:100%;box-sizing:border-box;text-align:center;" />
         </div>
         <div style="flex:1;">
-          <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Min.</div>
+          <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Zeit (Min.)</div>
           <input type="number" id="rupTime" value="30" min="1" class="add-input" style="width:100%;box-sizing:border-box;text-align:center;" />
         </div>
       </div>
+      <!-- Beschreibung -->
+      <div style="margin-bottom:.75rem;">
+        <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Kurzbeschreibung (max. 2 Sätze)</div>
+        <textarea id="rupDesc" placeholder="Kurzer Text zum Gericht..." style="width:100%;min-height:60px;background:var(--bg2);border:1px solid var(--border2);border-radius:7px;color:var(--text2);font-size:13px;padding:.5rem .75rem;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
+      </div>
       <!-- Tags -->
       <div style="margin-bottom:.75rem;">
-        <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Tags (kommagetrennt)</div>
-        <input class="add-input" id="rupTags" placeholder="z.B. schnell, vegetarisch, meal-prep" style="width:100%;box-sizing:border-box;" />
+        <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Zusätzliche Tags (kommagetrennt)</div>
+        <input class="add-input" id="rupTags" placeholder="z.B. high-protein, meal-prep, vegetarisch" style="width:100%;box-sizing:border-box;" />
+      </div>
+      <!-- Nährwerte (optional) -->
+      <div style="margin-bottom:.75rem;">
+        <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Nährwerte pro Portion (optional)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <input type="number" id="rupKcal" placeholder="Kalorien (kcal)" class="add-input" style="box-sizing:border-box;" />
+          <input type="number" id="rupProtein" placeholder="Protein (g)" class="add-input" style="box-sizing:border-box;" />
+          <input type="number" id="rupCarbs" placeholder="Kohlenhydrate (g)" class="add-input" style="box-sizing:border-box;" />
+          <input type="number" id="rupFat" placeholder="Fett (g)" class="add-input" style="box-sizing:border-box;" />
+        </div>
       </div>
       <!-- Zutaten -->
       <div style="margin-bottom:.75rem;">
         <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Zutaten (eine pro Zeile: Menge Einheit Name)</div>
         <textarea id="rupIngredients" placeholder="300 g Hähnchenbrust&#10;150 g Reis&#10;2 Stück Paprika&#10;1 TL Salz" style="width:100%;min-height:120px;background:var(--bg2);border:1px solid var(--border2);border-radius:7px;color:var(--text2);font-size:13px;padding:.5rem .75rem;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
-      </div>
-      <!-- Schritte -->
-      <div style="margin-bottom:.75rem;">
-        <div style="font-size:11px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;">Zubereitung (eine pro Zeile)</div>
-        <textarea id="rupSteps" placeholder="Reis nach Packungsanleitung kochen&#10;Hähnchen in Würfel schneiden&#10;In der Pfanne anbraten..." style="width:100%;min-height:100px;background:var(--bg2);border:1px solid var(--border2);border-radius:7px;color:var(--text2);font-size:13px;padding:.5rem .75rem;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
       </div>
       <!-- Foto -->
       <div style="margin-bottom:1rem;">
@@ -1820,8 +1847,70 @@ var currentSk='',currentDi=0;
 var editSk='gk',editDi=0,editDraft={};
 var currentEditTab='plan',currentLibCat='pull';
 
-function wKey(sk,di,ei,side){return sk+'_'+di+'_'+ei+'_'+side;}
-function getW(sk,di,ei,side){var v=weights[wKey(sk,di,ei,side)];return v!==undefined?v:10;}
+function wKey(sk,di,ei,side){
+  // Use exercise name as key (position-independent)
+  var exName = null;
+  try { exName = SPLITS[sk].days[di].main[ei].name; } catch(e){}
+  if(exName) return 'w_'+exName+'_'+side;
+  // Fallback to positional key
+  return sk+'_'+di+'_'+ei+'_'+side;
+}
+
+// Get best weight from trainingLog for an exercise by name and side
+function getBestLogWeight(exName, side){
+  var best = 0;
+  trainingLog.forEach(function(entry){
+    var ex = entry.exs.find(function(e){ return e.name===exName; });
+    if(ex){
+      var w = 0;
+      if(side==='L') w = ex.wL || 0;
+      else if(side==='R') w = ex.wR || 0;
+      else w = ex.wS || 0;
+      if(w > best) best = w;
+    }
+  });
+  return best;
+}
+
+// One-time migration: convert old positional keys to name-based keys
+function migrateWeightKeys(){
+  var migrated = false;
+  Object.keys(SPLITS).forEach(function(sk){
+    var days = SPLITS[sk].days;
+    days.forEach(function(day, di){
+      (day.main || []).forEach(function(ex, ei){
+        ['L','R','S'].forEach(function(side){
+          var oldKey = sk+'_'+di+'_'+ei+'_'+side;
+          var newKey = 'w_'+ex.name+'_'+side;
+          if(weights[oldKey] !== undefined && weights[newKey] === undefined){
+            weights[newKey] = weights[oldKey];
+            migrated = true;
+          }
+          // Remove old key
+          if(weights[oldKey] !== undefined){
+            delete weights[oldKey];
+            migrated = true;
+          }
+        });
+      });
+    });
+  });
+  if(migrated) saveState();
+}
+
+function getW(sk,di,ei,side){
+  var key = wKey(sk,di,ei,side);
+  var v = weights[key];
+  if(v !== undefined) return v;
+  // No saved weight → look up best from training log
+  var exName = null;
+  try { exName = SPLITS[sk].days[di].main[ei].name; } catch(e){}
+  if(exName){
+    var best = getBestLogWeight(exName, side);
+    if(best > 0) return best;
+  }
+  return 10;
+}
 function setW(sk,di,ei,side,val){weights[wKey(sk,di,ei,side)]=Math.max(0,Math.round(val/2.5)*2.5);}
 
 function openEditor(sk,di){
@@ -1839,7 +1928,10 @@ function openEditor(sk,di){
   document.getElementById('editOverlay').scrollTop=0;
 }
 function closeEditor(){document.getElementById('editOverlay').classList.add('hidden');}
-function saveAndClose(){SPLITS=deepClone(editDraft);closeEditor();renderNav();renderDays();saveState();showToast('Plan gespeichert ✓');}
+function saveAndClose(){
+  SPLITS=deepClone(editDraft);
+  closeEditor();renderNav();renderDays();saveState();showToast('Plan gespeichert ✓');
+}
 function showToast(msg, duration){var t=document.createElement('div');t.className='saved-toast';t.textContent=msg;document.body.appendChild(t);setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);},duration||2000);}
 function switchEditTab(tab){
   currentEditTab=tab;
@@ -2146,7 +2238,65 @@ function startWarmupTimer(totalSec){
 function closeTraining(){
   if(pauseTimer){clearInterval(pauseTimer);pauseTimer=null;}
   if(wupTimer){clearInterval(wupTimer);wupTimer=null;}
+  // Save session state for resume (only if not at finish)
+  var step = trainSteps[trainIdx];
+  if(trainSteps.length > 0 && step && step.type !== 'finish'){
+    try {
+      localStorage.setItem('bioforce_train_session', JSON.stringify({
+        sk: currentSk, di: currentDi, idx: trainIdx, time: trainStartTime,
+        steps: trainSteps
+      }));
+    } catch(e){}
+  } else {
+    localStorage.removeItem('bioforce_train_session');
+  }
   document.getElementById('trainOverlay').classList.add('hidden');
+}
+
+function clearTrainSession(){
+  localStorage.removeItem('bioforce_train_session');
+  var b = document.getElementById('resumeBanner');
+  if(b) b.remove();
+}
+
+function resumeTrainSession(){
+  try {
+    var data = JSON.parse(localStorage.getItem('bioforce_train_session'));
+    if(!data || !data.steps) return;
+    currentSk = data.sk;
+    currentDi = data.di;
+    trainSteps = data.steps;
+    trainIdx = data.idx || 0;
+    trainStartTime = data.time;
+    localStorage.removeItem('bioforce_train_session');
+    var b = document.getElementById('resumeBanner');
+    if(b) b.remove();
+    document.getElementById('trainOverlay').classList.remove('hidden');
+    renderStep();
+  } catch(e){ localStorage.removeItem('bioforce_train_session'); }
+}
+
+function checkTrainResume(){
+  try {
+    var data = JSON.parse(localStorage.getItem('bioforce_train_session'));
+    if(!data || !data.steps || !data.sk) return;
+    var split = SPLITS[data.sk];
+    if(!split) { localStorage.removeItem('bioforce_train_session'); return; }
+    var dayName = split.days[data.di] ? split.days[data.di].name : 'Training';
+    var elapsed = data.time ? Math.round((Date.now() - data.time) / 60000) : 0;
+    // Don't resume if more than 4 hours old
+    if(elapsed > 240){ localStorage.removeItem('bioforce_train_session'); return; }
+    var banner = document.createElement('div');
+    banner.id = 'resumeBanner';
+    banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:3000;padding:1rem 1.25rem;background:var(--bg2);border-top:2px solid var(--accent);display:flex;align-items:center;gap:12px;';
+    banner.innerHTML = '<div style="flex:1;">'
+      +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--accent);">⏸ Training pausiert</div>'
+      +'<div style="font-size:12px;color:var(--muted2);">'+dayName+' · '+elapsed+' min</div>'
+      +'</div>'
+      +'<button onclick="resumeTrainSession()" style="padding:.5rem 1rem;background:var(--accent);color:#000;border:none;border-radius:6px;font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;min-height:40px;">Weiter</button>'
+      +'<button onclick="clearTrainSession()" style="background:none;border:none;color:var(--muted3);font-size:18px;cursor:pointer;min-width:36px;min-height:36px;">✕</button>';
+    document.body.appendChild(banner);
+  } catch(e){}
 }
 function getCurrentEi(){var s=trainSteps[trainIdx];return(s&&s.ei!==undefined)?s.ei:-1;}
 function findNewExStep(ei){for(var i=0;i<trainSteps.length;i++){if(trainSteps[i].type==='newex'&&trainSteps[i].ei===ei)return i;}return -1;}
@@ -2515,6 +2665,7 @@ function onSetResult(sk,di,ei,completed){
 
 function finishAndCheckProg(){
   saveTrainingToLog(currentSk, currentDi);
+  try { localStorage.removeItem('bioforce_train_session'); } catch(e){}
   var sugg=checkProgressionAfterTraining(currentSk,currentDi);
   document.getElementById('trainOverlay').classList.add('hidden');
   saveState();
@@ -5152,6 +5303,8 @@ var seshIdx = 0;
 var seshTimer = null;
 var seshSec = 0;
 var seshHoldSec = 60;
+var _seshTitle = '';
+var _seshExIds = [];
 var editingRoutineIdx = null;
 
 // Quick routine presets
@@ -5407,6 +5560,8 @@ function startRoutineSesh(ri) {
 
 function startSeshFromExs(exs, holdSec, title) {
   seshSteps = [];
+  _seshTitle = title || '';
+  _seshExIds = exs.map(function(e){ return e.id; });
   var def = holdSec || 60; // default 60s
   exs.forEach(function(e, idx){
     if(e.sides) {
@@ -5434,7 +5589,60 @@ function startSeshFromExs(exs, holdSec, title) {
 
 function closeSesh() {
   if(seshTimer){ clearInterval(seshTimer); seshTimer=null; }
+  // Save session for resume if not finished
+  var step = seshSteps[seshIdx];
+  if(seshSteps.length > 0 && step && step.type !== 'finish'){
+    try {
+      localStorage.setItem('bioforce_stretch_session', JSON.stringify({
+        steps: seshSteps, idx: seshIdx, holdSec: seshHoldSec
+      }));
+    } catch(e){}
+  } else {
+    localStorage.removeItem('bioforce_stretch_session');
+  }
   document.getElementById('seshOverlay').classList.add('hidden');
+}
+
+function clearStretchSession(){
+  localStorage.removeItem('bioforce_stretch_session');
+  var b = document.getElementById('resumeStretchBanner');
+  if(b) b.remove();
+}
+
+function resumeStretchSession(){
+  try {
+    var data = JSON.parse(localStorage.getItem('bioforce_stretch_session'));
+    if(!data || !data.steps) return;
+    seshSteps = data.steps;
+    seshIdx = data.idx || 0;
+    seshHoldSec = data.holdSec || 60;
+    localStorage.removeItem('bioforce_stretch_session');
+    var b = document.getElementById('resumeStretchBanner');
+    if(b) b.remove();
+    document.getElementById('seshOverlay').classList.remove('hidden');
+    renderSeshStep();
+  } catch(e){ localStorage.removeItem('bioforce_stretch_session'); }
+}
+
+function checkStretchResume(){
+  try {
+    var data = JSON.parse(localStorage.getItem('bioforce_stretch_session'));
+    if(!data || !data.steps) return;
+    var step = data.steps[data.idx];
+    var exName = step && step.ex ? step.ex.name : 'Dehnen';
+    var totalHolds = data.steps.filter(function(s){ return s.type==='hold'; }).length;
+    var doneHolds = data.steps.slice(0, data.idx).filter(function(s){ return s.type==='hold'; }).length;
+    var banner = document.createElement('div');
+    banner.id = 'resumeStretchBanner';
+    banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:3000;padding:1rem 1.25rem;background:var(--bg2);border-top:2px solid #5BAD7A;display:flex;align-items:center;gap:12px;';
+    banner.innerHTML = '<div style="flex:1;">'
+      +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#5BAD7A;">⏸ Dehnen pausiert</div>'
+      +'<div style="font-size:12px;color:var(--muted2);">'+exName+' · '+doneHolds+'/'+totalHolds+'</div>'
+      +'</div>'
+      +'<button onclick="resumeStretchSession()" style="padding:.5rem 1rem;background:#5BAD7A;color:#000;border:none;border-radius:6px;font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;min-height:40px;">Weiter</button>'
+      +'<button onclick="clearStretchSession()" style="background:none;border:none;color:var(--muted3);font-size:18px;cursor:pointer;min-width:36px;min-height:36px;">✕</button>';
+    document.body.appendChild(banner);
+  } catch(e){}
 }
 
 function seshPrev() {
@@ -5461,6 +5669,7 @@ function renderSeshStep() {
 
   // ── FINISH ──
   if(step.type === 'finish'){
+    try { localStorage.removeItem('bioforce_sesh_session'); } catch(e){}
     body.innerHTML = '<div class="sesh-finish-card">'
       +'<div class="sesh-finish-icon">🧘</div>'
       +'<div class="sesh-finish-title">Fertig!</div>'
@@ -6736,6 +6945,7 @@ function getStretchPhotoSrc(num) {
 loadTheme();
 initCal();
 loadState();
+migrateWeightKeys();
 
 // ── DEMO DATA (nur wenn noch keine echten Daten vorhanden) ──
 if(!trainingLog.length){
@@ -6898,82 +7108,94 @@ function saveDayAddAct(){
 var recipes = [
   {
     name: "Bratkartoffeln mit Zwiebeln und Schinken",
-    servings: 2, prepTime: 30,
-    tags: ["schnell","deftig","klassiker"],
+    source: "Chefkoch",
+    description: "Klassischer deftiger Pfannengericht mit knusprigen Kartoffeln und würzigem Schinken. Perfekt für schnelle Abendessen.",
+    prepTime: 30,
+    servings: 2,
+    tags: ["deftig"],
     imageNumber: null,
+    nutrition: { kcal: 520, protein: 22, carbs: 55, fat: 22 },
     ingredients: [
       { amount: 800, unit: "g", name: "Kartoffeln (festkochend)" },
       { amount: 2, unit: "Stück", name: "Zwiebeln" },
       { amount: 150, unit: "g", name: "gewürfelter Schinken" },
       { amount: 3, unit: "EL", name: "Öl" },
-      { amount: 1, unit: "TL", name: "Salz" },
-      { amount: 0.5, unit: "TL", name: "Pfeffer" },
-      { amount: 1, unit: "TL", name: "Paprikapulver" },
       { amount: 1, unit: "Bund", name: "Petersilie" }
-    ],
-    steps: [
-      "Kartoffeln waschen, mit Schale in Salzwasser ca. 20 Min. kochen. Abgießen und abkühlen lassen.",
-      "Abgekühlte Kartoffeln pellen und in dicke Scheiben schneiden.",
-      "Zwiebeln schälen und in feine Ringe oder Würfel schneiden.",
-      "Öl in einer großen Pfanne erhitzen. Kartoffelscheiben goldbraun braten (ca. 10 Min.).",
-      "Zwiebeln und Schinkenwürfel dazugeben, weitere 5–7 Min. mitbraten bis alles knusprig ist.",
-      "Mit Salz, Pfeffer und Paprika abschmecken. Mit gehackter Petersilie servieren."
     ]
   },
   {
-    name: "Nudeln mit Tomatensauce",
-    servings: 2, prepTime: 20,
-    tags: ["schnell","vegetarisch","klassiker"],
+    name: "Chicken Bowl mit Reis",
+    source: "Yazio",
+    description: "Proteinreiche Bowl mit gegrilltem Hähnchen, Reis und frischem Gemüse. Ideal zum Muskelaufbau.",
+    prepTime: 25,
+    servings: 2,
+    tags: ["high-protein","meal-prep"],
     imageNumber: null,
-    ingredients: [
-      { amount: 250, unit: "g", name: "Nudeln (z.B. Spaghetti)" },
-      { amount: 1, unit: "Dose", name: "passierte Tomaten (400g)" },
-      { amount: 1, unit: "Stück", name: "Zwiebel" },
-      { amount: 2, unit: "Zehen", name: "Knoblauch" },
-      { amount: 2, unit: "EL", name: "Olivenöl" },
-      { amount: 1, unit: "TL", name: "Salz" },
-      { amount: 0.5, unit: "TL", name: "Pfeffer" },
-      { amount: 1, unit: "TL", name: "Zucker" },
-      { amount: 1, unit: "TL", name: "getrockneter Oregano" },
-      { amount: 1, unit: "Bund", name: "Basilikum" },
-      { amount: 50, unit: "g", name: "Parmesan" }
-    ],
-    steps: [
-      "Zwiebel und Knoblauch schälen und fein würfeln.",
-      "Olivenöl erhitzen, Zwiebeln glasig dünsten, dann Knoblauch kurz mitbraten.",
-      "Passierte Tomaten dazugeben, mit Gewürzen abschmecken. 10–15 Min. köcheln lassen.",
-      "Parallel Salzwasser aufkochen und Nudeln al dente kochen.",
-      "Nudeln abgießen, mit Sauce vermengen.",
-      "Mit Basilikum und Parmesan servieren."
-    ]
-  },
-  {
-    name: "Hähnchen-Reis-Pfanne",
-    servings: 2, prepTime: 25,
-    tags: ["schnell","meal-prep","eiweißreich"],
-    imageNumber: null,
+    nutrition: { kcal: 485, protein: 42, carbs: 48, fat: 12 },
     ingredients: [
       { amount: 300, unit: "g", name: "Hähnchenbrust" },
       { amount: 150, unit: "g", name: "Reis" },
       { amount: 2, unit: "Stück", name: "Paprika" },
       { amount: 1, unit: "Stück", name: "Zwiebel" },
+      { amount: 2, unit: "EL", name: "Sojasauce" }
+    ]
+  },
+  {
+    name: "Nudeln mit Tomatensauce",
+    source: "Chefkoch",
+    description: "Einfache italienische Pasta mit hausgemachter Tomatensauce. In 20 Minuten auf dem Tisch.",
+    prepTime: 20,
+    servings: 2,
+    tags: ["vegetarisch"],
+    imageNumber: null,
+    nutrition: { kcal: 420, protein: 14, carbs: 72, fat: 9 },
+    ingredients: [
+      { amount: 250, unit: "g", name: "Nudeln" },
+      { amount: 1, unit: "Dose", name: "passierte Tomaten" },
+      { amount: 1, unit: "Stück", name: "Zwiebel" },
       { amount: 2, unit: "Zehen", name: "Knoblauch" },
-      { amount: 2, unit: "EL", name: "Olivenöl" },
-      { amount: 2, unit: "EL", name: "Sojasauce" },
-      { amount: 1, unit: "TL", name: "Paprikapulver" },
-      { amount: 1, unit: "TL", name: "Salz" }
-    ],
-    steps: [
-      "Reis nach Packungsanleitung kochen.",
-      "Hähnchen in Würfel schneiden, mit Salz und Paprika würzen.",
-      "Paprika und Zwiebel in Streifen schneiden, Knoblauch hacken.",
-      "Öl in großer Pfanne erhitzen, Hähnchen anbraten bis goldbraun.",
-      "Gemüse dazugeben, 5 Min. mitbraten.",
-      "Reis unterheben, mit Sojasauce abschmecken."
+      { amount: 50, unit: "g", name: "Parmesan" }
+    ]
+  },
+  {
+    name: "Rinderschmorbraten",
+    source: "Cookidoo",
+    description: "Zarter Schmorbraten in dunkler Sauce mit Wurzelgemüse. Braucht Zeit — lohnt sich aber.",
+    prepTime: 180,
+    servings: 4,
+    tags: ["deftig","sonntagsessen"],
+    imageNumber: null,
+    nutrition: { kcal: 610, protein: 52, carbs: 18, fat: 34 },
+    ingredients: [
+      { amount: 1000, unit: "g", name: "Rinderbraten" },
+      { amount: 2, unit: "Stück", name: "Karotten" },
+      { amount: 1, unit: "Stück", name: "Sellerie" },
+      { amount: 2, unit: "Stück", name: "Zwiebeln" },
+      { amount: 500, unit: "ml", name: "Rotwein" }
+    ]
+  },
+  {
+    name: "Nudelauflauf mit Coquillettes und Schinken",
+    source: "Yazio",
+    description: "Dieser Auflauf bereitet sich fast von allein zu und ist ein super unkompliziertes Familienessen. Falls du keine Coquillettes bekommst, verwende einfach kurze Makkaroni oder Farfalle.",
+    prepTime: 30,
+    servings: 4,
+    tags: ["auflauf","einfach"],
+    imageNumber: 5,
+    nutrition: { kcal: 715, protein: 33.2, carbs: 77.3, fat: 28.5 },
+    ingredients: [
+      { amount: 400, unit: "g", name: "Coquillettes" },
+      { amount: 3, unit: "Stück", name: "Eier" },
+      { amount: 400, unit: "g", name: "Crème fraîche" },
+      { amount: 150, unit: "ml", name: "Milch, 3,5% Fett" },
+      { amount: 100, unit: "g", name: "Kochschinken" },
+      { amount: 70, unit: "g", name: "Gruyère, gerieben" },
+      { amount: 0.5, unit: "TL", name: "Muskatnuss, gemahlen" },
+      { amount: 1, unit: "Bund", name: "Schnittlauch, frisch" }
     ]
   }
 ];
-var weekPlan = { "mon":[0], "wed":[1], "fri":[2] };
+var weekPlan = { "mon":[0], "tue":[1], "wed":[2], "sat":[3] };
 var shopChecks = {};
 var _foodTab = 'recipes';
 var _foodActiveTag = 'all';
@@ -7023,8 +7245,8 @@ function setFoodTab(tab){
     var view = document.getElementById(viewId);
     if(btn){
       btn.classList.toggle('active', t===tab);
-      btn.style.color = t===tab ? 'var(--accent)' : 'var(--muted2)';
-      btn.style.borderBottomColor = t===tab ? 'var(--accent)' : 'transparent';
+      btn.style.color = t===tab ? '#D88A4A' : 'var(--muted2)';
+      btn.style.borderBottomColor = t===tab ? '#D88A4A' : 'transparent';
     }
     if(view) view.style.display = t===tab ? 'block' : 'none';
   });
@@ -7033,46 +7255,136 @@ function setFoodTab(tab){
   if(tab==='shop') renderShopList();
 }
 
+// Recipe sources (apps)
+var RECIPE_SOURCES = ['Yazio','Captain Cook','Bring','Chefkoch','Cookidoo'];
+// Active filters
+var _foodActiveSource = 'all';
+var _foodActiveDuration = 'all';
+
+function getDurationLabel(mins){
+  if(!mins) return null;
+  if(mins < 20) return 'kurz';
+  if(mins <= 45) return 'mittel';
+  return 'lang';
+}
+function getDurationIcon(mins){
+  if(!mins) return '';
+  if(mins < 20) return '⚡';
+  if(mins <= 45) return '🕐';
+  return '🕑';
+}
+
 function getAllTags(){
   var tags = {};
   recipes.forEach(function(r){ (r.tags||[]).forEach(function(t){ tags[t]=true; }); });
   return Object.keys(tags).sort();
 }
 
+function getUsedSources(){
+  var src = {};
+  recipes.forEach(function(r){ if(r.source) src[r.source]=true; });
+  return Object.keys(src).sort();
+}
+
 function renderRecipeList(){
+  var sources = getUsedSources();
   var tags = getAllTags();
-  var filterHtml = '<button onclick="setFoodTag(\'all\')" style="padding:.35rem .75rem;margin-right:5px;margin-bottom:5px;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:20px;cursor:pointer;min-height:32px;border:1px solid '+(_foodActiveTag==='all'?'var(--accent)':'var(--border)')+';background:'+(_foodActiveTag==='all'?'var(--accent2)':'transparent')+';color:'+(_foodActiveTag==='all'?'var(--accent)':'var(--muted)')+';">Alle</button>';
+
+  // Collapsible filter sections
+  var filterHtml = '<div id="foodFilters" style="margin-bottom:1rem;">';
+  
+  // Source filter section
+  filterHtml += '<div style="margin-bottom:.5rem;">';
+  filterHtml += '<button onclick="toggleFoodFilter(\'src\')" style="width:100%;display:flex;align-items:center;gap:8px;background:none;border:none;padding:.5rem 0;cursor:pointer;color:var(--text2);font-family:\'Barlow Condensed\',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;">';
+  filterHtml += '<span id="srcToggle" style="font-size:14px;">▼</span>';
+  filterHtml += '<span>Quelle</span>';
+  filterHtml += '</button>';
+  filterHtml += '<div id="srcFilter" style="display:flex;gap:4px;flex-wrap:wrap;padding:.3rem .5rem;margin-bottom:.3rem;">';
+  filterHtml += '<button onclick="setFoodSource(\'all\')" style="padding:.3rem .7rem;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:20px;cursor:pointer;min-height:30px;border:1px solid '+(_foodActiveSource==='all'?'#D88A4A':'var(--border)')+';background:'+(_foodActiveSource==='all'?'rgba(216,138,74,.12)':'transparent')+';color:'+(_foodActiveSource==='all'?'#D88A4A':'var(--muted)')+';">Alle</button>';
+  sources.forEach(function(s){
+    var a = _foodActiveSource===s;
+    filterHtml += '<button onclick="setFoodSource(\''+s+'\')" style="padding:.3rem .7rem;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:20px;cursor:pointer;min-height:30px;border:1px solid '+(a?'#D88A4A':'var(--border)')+';background:'+(a?'rgba(216,138,74,.12)':'transparent')+';color:'+(a?'#D88A4A':'var(--muted)')+';">#'+s+'</button>';
+  });
+  filterHtml += '</div></div>';
+  
+  // Duration filter section
+  var durOpts = [{id:'all',label:'Alle'},{id:'kurz',label:'⚡ Kurz (<20)'},{id:'mittel',label:'🕐 Mittel'},{id:'lang',label:'🕑 Lang (>45)'}];
+  filterHtml += '<div style="margin-bottom:.5rem;">';
+  filterHtml += '<button onclick="toggleFoodFilter(\'dur\')" style="width:100%;display:flex;align-items:center;gap:8px;background:none;border:none;padding:.5rem 0;cursor:pointer;color:var(--text2);font-family:\'Barlow Condensed\',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;">';
+  filterHtml += '<span id="durToggle" style="font-size:14px;">▼</span>';
+  filterHtml += '<span>Arbeitszeit</span>';
+  filterHtml += '</button>';
+  filterHtml += '<div id="durFilter" style="display:flex;gap:4px;flex-wrap:wrap;padding:.3rem .5rem;margin-bottom:.3rem;">';
+  durOpts.forEach(function(d){
+    var a = _foodActiveDuration===d.id;
+    filterHtml += '<button onclick="setFoodDuration(\''+d.id+'\')" style="padding:.3rem .7rem;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:20px;cursor:pointer;min-height:30px;border:1px solid '+(a?'#D88A4A':'var(--border)')+';background:'+(a?'rgba(216,138,74,.12)':'transparent')+';color:'+(a?'#D88A4A':'var(--muted)')+';">'+d.label+'</button>';
+  });
+  filterHtml += '</div></div>';
+
+  // Tag filter section
+  filterHtml += '<div>';
+  filterHtml += '<button onclick="toggleFoodFilter(\'tag\')" style="width:100%;display:flex;align-items:center;gap:8px;background:none;border:none;padding:.5rem 0;cursor:pointer;color:var(--text2);font-family:\'Barlow Condensed\',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;">';
+  filterHtml += '<span id="tagToggle" style="font-size:14px;">▼</span>';
+  filterHtml += '<span>Tags</span>';
+  filterHtml += '</button>';
+  filterHtml += '<div id="tagFilter" style="display:flex;gap:4px;flex-wrap:wrap;padding:.3rem .5rem;">';
+  filterHtml += '<button onclick="setFoodTag(\'all\')" style="padding:.3rem .7rem;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:20px;cursor:pointer;min-height:30px;border:1px solid '+(_foodActiveTag==='all'?'#D88A4A':'var(--border)')+';background:'+(_foodActiveTag==='all'?'rgba(216,138,74,.12)':'transparent')+';color:'+(_foodActiveTag==='all'?'#D88A4A':'var(--muted)')+';">Alle</button>';
   tags.forEach(function(t){
     var a = _foodActiveTag===t;
-    filterHtml += '<button onclick="setFoodTag(\''+t+'\')" style="padding:.35rem .75rem;margin-right:5px;margin-bottom:5px;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:20px;cursor:pointer;min-height:32px;border:1px solid '+(a?'var(--accent)':'var(--border)')+';background:'+(a?'var(--accent2)':'transparent')+';color:'+(a?'var(--accent)':'var(--muted)')+';">'+t+'</button>';
+    filterHtml += '<button onclick="setFoodTag(\''+t+'\')" style="padding:.3rem .7rem;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:20px;cursor:pointer;min-height:30px;border:1px solid '+(a?'#D88A4A':'var(--border)')+';background:'+(a?'rgba(216,138,74,.12)':'transparent')+';color:'+(a?'#D88A4A':'var(--muted)')+';">'+t+'</button>';
   });
+  filterHtml += '</div></div>';
+  filterHtml += '</div>';
+
   document.getElementById('foodTagFilterRow').innerHTML = filterHtml;
 
-  var filtered = _foodActiveTag==='all' ? recipes : recipes.filter(function(r){ return (r.tags||[]).indexOf(_foodActiveTag)!==-1; });
+  // Filter recipes
+  var filtered = recipes.filter(function(r){
+    if(_foodActiveSource!=='all' && r.source!==_foodActiveSource) return false;
+    if(_foodActiveDuration!=='all' && getDurationLabel(r.prepTime)!==_foodActiveDuration) return false;
+    if(_foodActiveTag!=='all' && (r.tags||[]).indexOf(_foodActiveTag)===-1) return false;
+    return true;
+  });
   if(!filtered.length){
-    document.getElementById('foodRecipeList').innerHTML = '<div style="text-align:center;color:var(--muted3);padding:2rem 1rem;font-size:13px;">Noch keine Rezepte — oben auf ＋ tippen</div>';
+    document.getElementById('foodRecipeList').innerHTML = '<div style="text-align:center;color:var(--muted3);padding:2rem 1rem;font-size:13px;">Keine Rezepte gefunden</div>';
     return;
   }
   var html = filtered.map(function(r){
     var realIdx = recipes.indexOf(r);
     var photoNum = r.imageNumber;
     var thumb = photoNum
-      ? '<img src="Bilder/Rezepte/'+photoNum+'.jpg" onerror="this.style.display=\'none\'" style="width:64px;height:64px;object-fit:cover;border-radius:8px;flex-shrink:0;" />'
-      : '<div style="width:64px;height:64px;background:var(--bg3);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px;">🍽</div>';
-    var tagsHtml = (r.tags||[]).slice(0,3).map(function(t){
-      return '<span style="font-size:10px;color:var(--muted2);background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:2px 7px;">'+t+'</span>';
-    }).join(' ');
-    return '<div onclick="openRecipeDetail('+realIdx+')" style="display:flex;align-items:center;gap:12px;padding:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;cursor:pointer;">'
+      ? '<img src="Bilder/Rezepte/'+photoNum+'.jpg" onerror="this.style.display=\'none\'" style="width:72px;height:72px;object-fit:cover;border-radius:8px;flex-shrink:0;" />'
+      : '<div style="width:72px;height:72px;background:var(--bg3);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px;">🍽</div>';
+    var sourceHtml = r.source ? '<span style="font-size:10px;color:#D88A4A;font-weight:500;">#'+r.source+'</span>' : '';
+    var durIcon = getDurationIcon(r.prepTime);
+    var nutr = r.nutrition;
+    var nutrHtml = nutr ? '<div style="display:flex;gap:8px;font-size:10px;color:var(--muted2);margin-top:4px;"><span><strong style="color:var(--text2);">'+nutr.kcal+'</strong> kcal</span><span><strong style="color:var(--text2);">'+nutr.protein+'g</strong> P</span><span><strong style="color:var(--text2);">'+nutr.carbs+'g</strong> KH</span><span><strong style="color:var(--text2);">'+nutr.fat+'g</strong> F</span></div>' : '';
+    return '<div onclick="openRecipeDetail('+realIdx+')" style="display:flex;align-items:flex-start;gap:12px;padding:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;cursor:pointer;">'
       +thumb
       +'<div style="flex:1;min-width:0;">'
-      +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:17px;font-weight:600;color:var(--text);margin-bottom:2px;">'+r.name+'</div>'
-      +'<div style="font-size:11px;color:var(--muted2);margin-bottom:4px;">🍽 '+(r.servings||2)+' P · ⏱ '+(r.prepTime||30)+' min</div>'
-      +'<div style="display:flex;gap:4px;flex-wrap:wrap;">'+tagsHtml+'</div>'
+      +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:17px;font-weight:600;color:var(--text);line-height:1.2;margin-bottom:2px;">'+r.name+'</div>'
+      +sourceHtml
+      +'<div style="font-size:11px;color:var(--muted3);margin-top:2px;">'+durIcon+' '+(r.prepTime||0)+' min · 🍽 '+(r.servings||2)+' P</div>'
+      +nutrHtml
       +'</div></div>';
   }).join('');
   document.getElementById('foodRecipeList').innerHTML = html;
 }
 
+// Toggle filter sections
+var _foodFilterOpen = {src:true, dur:true, tag:true};
+function toggleFoodFilter(section){
+  _foodFilterOpen[section] = !_foodFilterOpen[section];
+  var elem = document.getElementById(section+'Filter');
+  var toggle = document.getElementById(section+'Toggle');
+  if(elem){
+    elem.style.display = _foodFilterOpen[section] ? 'flex' : 'none';
+    if(toggle) toggle.textContent = _foodFilterOpen[section] ? '▼' : '▶';
+  }
+}
+
+function setFoodSource(s){ _foodActiveSource=s; renderRecipeList(); }
+function setFoodDuration(d){ _foodActiveDuration=d; renderRecipeList(); }
 function setFoodTag(tag){ _foodActiveTag=tag; renderRecipeList(); }
 
 function openRecipeDetail(idx){
@@ -7083,23 +7395,35 @@ function openRecipeDetail(idx){
   var photoHtml = photoNum
     ? '<img src="Bilder/Rezepte/'+photoNum+'.jpg" onerror="this.style.display=\'none\'" style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-bottom:.75rem;" />'
     : '';
+  var sourceHtml = r.source ? '<div style="font-size:12px;color:#D88A4A;font-weight:500;margin-bottom:.3rem;">#'+r.source+'</div>' : '';
+  var descHtml = r.description ? '<div style="font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:.75rem;font-style:italic;">'+r.description+'</div>' : '';
   var tagsHtml = (r.tags||[]).map(function(t){
     return '<span style="font-size:11px;color:var(--muted2);background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:3px 9px;margin-right:4px;">'+t+'</span>';
   }).join('');
+  var nutr = r.nutrition;
+  var nutrHtml = nutr ? '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:.85rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.6rem;">'
+    +'<div style="text-align:center;"><div style="font-family:\'Cormorant Garamond\',serif;font-size:18px;font-weight:600;color:var(--accent);">'+nutr.kcal+'</div><div style="font-size:9px;color:var(--muted3);letter-spacing:.1em;text-transform:uppercase;">kcal</div></div>'
+    +'<div style="text-align:center;"><div style="font-family:\'Cormorant Garamond\',serif;font-size:18px;font-weight:600;color:var(--text2);">'+nutr.protein+'g</div><div style="font-size:9px;color:var(--muted3);letter-spacing:.1em;text-transform:uppercase;">Protein</div></div>'
+    +'<div style="text-align:center;"><div style="font-family:\'Cormorant Garamond\',serif;font-size:18px;font-weight:600;color:var(--text2);">'+nutr.carbs+'g</div><div style="font-size:9px;color:var(--muted3);letter-spacing:.1em;text-transform:uppercase;">KH</div></div>'
+    +'<div style="text-align:center;"><div style="font-family:\'Cormorant Garamond\',serif;font-size:18px;font-weight:600;color:var(--text2);">'+nutr.fat+'g</div><div style="font-size:9px;color:var(--muted3);letter-spacing:.1em;text-transform:uppercase;">Fett</div></div>'
+    +'</div>' : '';
   var ingHtml = (r.ingredients||[]).map(function(ing){
     var amtStr = (ing.amount ? ing.amount : '') + (ing.unit ? ' '+ing.unit : '');
     return '<div style="display:flex;justify-content:space-between;padding:.4rem .5rem;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--text2);">'+ing.name+'</span><span style="color:var(--muted);font-family:\'Barlow Condensed\',sans-serif;">'+amtStr+'</span></div>';
   }).join('');
-  var stepsHtml = (r.steps||[]).map(function(s,i){
-    return '<div style="display:flex;gap:10px;margin-bottom:.6rem;"><span style="flex-shrink:0;width:24px;height:24px;background:var(--accent2);border:1px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:\'Barlow Condensed\',sans-serif;font-size:12px;font-weight:700;color:var(--accent);">'+(i+1)+'</span><span style="font-size:13px;color:var(--text2);line-height:1.5;">'+s+'</span></div>';
-  }).join('');
+  var durIcon = getDurationIcon(r.prepTime);
+
   document.getElementById('recipeDetailBody').innerHTML = photoHtml
-    +'<div style="display:flex;gap:12px;margin-bottom:.75rem;font-size:12px;color:var(--muted);"><span>🍽 '+(r.servings||2)+' Portionen</span><span>⏱ '+(r.prepTime||30)+' min</span></div>'
+    +sourceHtml
+    +descHtml
+    +'<div style="display:flex;gap:12px;margin-bottom:.75rem;font-size:12px;color:var(--muted);">'
+    +'<span>🍽 '+(r.servings||2)+' Portionen</span>'
+    +'<span>'+durIcon+' '+(r.prepTime||0)+' min</span>'
+    +'</div>'
+    +nutrHtml
     +(tagsHtml ? '<div style="margin-bottom:.85rem;">'+tagsHtml+'</div>' : '')
-    +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:16px;font-weight:600;color:var(--text);margin-bottom:.5rem;margin-top:.5rem;">Zutaten</div>'
-    +'<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;margin-bottom:1rem;">'+ingHtml+'</div>'
-    +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:16px;font-weight:600;color:var(--text);margin-bottom:.6rem;">Zubereitung</div>'
-    +stepsHtml;
+    +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:16px;font-weight:600;color:var(--text);margin-bottom:.5rem;">Zutaten</div>'
+    +'<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;margin-bottom:1rem;">'+ingHtml+'</div>';
   document.getElementById('recipeDetailOverlay').classList.remove('hidden');
 }
 
@@ -7215,7 +7539,10 @@ function clearShopChecks(){ shopChecks = {}; saveFoodState(); renderShopList(); 
 
 function openRecipeUpload(){
   if(!getGhToken()){ showToast('Bitte erst GitHub Token in Einstellungen speichern'); return; }
-  ['rupName','rupIngredients','rupSteps','rupTags'].forEach(function(id){ document.getElementById(id).value = ''; });
+  ['rupName','rupIngredients','rupTags','rupDesc','rupKcal','rupProtein','rupCarbs','rupFat'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.value = '';
+  });
+  document.getElementById('rupSource').value = '';
   document.getElementById('rupServings').value = 2;
   document.getElementById('rupTime').value = 30;
   document.getElementById('rupPhotoName').textContent = 'Kein Foto gewählt';
@@ -7266,18 +7593,33 @@ async function getRecipesJson(){
 
 async function doRecipeUpload(){
   var name = document.getElementById('rupName').value.trim();
+  var source = document.getElementById('rupSource').value;
   var servings = parseInt(document.getElementById('rupServings').value) || 2;
   var prepTime = parseInt(document.getElementById('rupTime').value) || 30;
+  var desc = document.getElementById('rupDesc').value.trim();
   var tagsStr = document.getElementById('rupTags').value.trim();
   var ingStr = document.getElementById('rupIngredients').value.trim();
-  var stepsStr = document.getElementById('rupSteps').value.trim();
+  var kcal = parseInt(document.getElementById('rupKcal').value);
+  var protein = parseInt(document.getElementById('rupProtein').value);
+  var carbs = parseInt(document.getElementById('rupCarbs').value);
+  var fat = parseInt(document.getElementById('rupFat').value);
 
   if(!name){ showToast('Bitte Name eingeben'); return; }
   if(!ingStr){ showToast('Bitte mindestens eine Zutat angeben'); return; }
 
   var tags = tagsStr ? tagsStr.split(',').map(function(t){ return t.trim(); }).filter(function(t){ return t; }) : [];
   var ingredients = ingStr.split('\n').map(parseIngredientLine).filter(function(i){ return i; });
-  var steps = stepsStr ? stepsStr.split('\n').map(function(s){ return s.trim(); }).filter(function(s){ return s; }) : [];
+
+  // Nutrition only if at least kcal is set
+  var nutrition = null;
+  if(!isNaN(kcal)){
+    nutrition = {
+      kcal: kcal,
+      protein: isNaN(protein) ? 0 : protein,
+      carbs: isNaN(carbs) ? 0 : carbs,
+      fat: isNaN(fat) ? 0 : fat
+    };
+  }
 
   var btn = document.getElementById('rupBtn');
   btn.disabled = true;
@@ -7296,7 +7638,17 @@ async function doRecipeUpload(){
     }
     document.getElementById('rupStatus').textContent = '📋 recipes.json wird aktualisiert...';
     var jsonFile = await getRecipesJson();
-    var newRecipe = { name: name, servings: servings, prepTime: prepTime, tags: tags, imageNumber: imgNum, ingredients: ingredients, steps: steps };
+    var newRecipe = {
+      name: name,
+      source: source || null,
+      description: desc || '',
+      servings: servings,
+      prepTime: prepTime,
+      tags: tags,
+      nutrition: nutrition,
+      imageNumber: imgNum,
+      ingredients: ingredients
+    };
     jsonFile.data.recipes.push(newRecipe);
 
     var jsonStr = JSON.stringify(jsonFile.data, null, 2);
@@ -7587,10 +7939,101 @@ async function loadExercisesFromGitHub(){
 }
 
 renderNav();renderDays();
+// ── SESSION RESUME ──
+function checkResumeSession(){
+  try {
+    var ts = localStorage.getItem('bioforce_train_session');
+    if(ts){
+      var sess = JSON.parse(ts);
+      if(sess.steps && sess.steps.length && SPLITS[sess.sk] && SPLITS[sess.sk].days[sess.di]){
+        // Don't resume if more than 4 hours old
+        var elapsed = sess.time ? Math.round((Date.now() - sess.time) / 60000) : 0;
+        if(elapsed > 240){ localStorage.removeItem('bioforce_train_session'); }
+        else { setTimeout(function(){ showResumePrompt('training', sess); }, 600); return; }
+      } else { localStorage.removeItem('bioforce_train_session'); }
+    }
+  } catch(e){ localStorage.removeItem('bioforce_train_session'); }
+  try {
+    var ss = localStorage.getItem('bioforce_stretch_session');
+    if(ss){
+      var sess = JSON.parse(ss);
+      if(sess.steps && sess.steps.length){
+        setTimeout(function(){ showResumePrompt('stretch', sess); }, 600);
+        return;
+      } else { localStorage.removeItem('bioforce_stretch_session'); }
+    }
+  } catch(e){ localStorage.removeItem('bioforce_stretch_session'); }
+}
+
+function showResumePrompt(type, sess){
+  var title = type==='training' ? 'Training fortsetzen?' : 'Dehnen fortsetzen?';
+  var desc = '';
+  if(type==='training'){
+    desc = SPLITS[sess.sk].name + ' — Tag ' + (sess.di+1);
+    var elapsed = sess.time ? Math.round((Date.now() - sess.time) / 60000) : 0;
+    if(elapsed > 0) desc += ' · vor '+elapsed+' min';
+  } else {
+    var step = sess.steps[sess.idx];
+    desc = step && step.ex ? step.ex.name : 'Dehn-Routine';
+    var totalHolds = sess.steps.filter(function(s){ return s.type==='hold'; }).length;
+    var doneHolds = sess.steps.slice(0, sess.idx).filter(function(s){ return s.type==='hold'; }).length;
+    desc += ' · '+doneHolds+'/'+totalHolds;
+  }
+  var ov = document.createElement('div');
+  ov.className = 'shuf-overlay';
+  ov.style.zIndex = 6000;
+  ov.id = 'resumeOverlay';
+  ov.innerHTML = '<div class="shuf-box" style="padding:1.5rem;text-align:center;">'
+    +'<div style="font-size:28px;margin-bottom:.5rem;">'+(type==='training'?'🏋️':'🧘')+'</div>'
+    +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:20px;font-weight:600;color:var(--text);margin-bottom:.3rem;">'+title+'</div>'
+    +'<div style="font-size:13px;color:var(--muted2);margin-bottom:1.2rem;">'+desc+'</div>'
+    +'<div style="display:flex;gap:8px;">'
+    +'<button onclick="dismissResume(\''+type+'\')" class="shuf-cancel" style="flex:1;">Verwerfen</button>'
+    +'<button onclick="doResume(\''+type+'\')" class="shuf-go" style="flex:1;">Fortsetzen →</button>'
+    +'</div></div>';
+  document.body.appendChild(ov);
+}
+
+function dismissResume(type){
+  if(type==='training') localStorage.removeItem('bioforce_train_session');
+  else localStorage.removeItem('bioforce_stretch_session');
+  var ov = document.getElementById('resumeOverlay');
+  if(ov) ov.remove();
+}
+
+function doResume(type){
+  var ov = document.getElementById('resumeOverlay');
+  if(ov) ov.remove();
+  if(type==='training'){
+    try {
+      var sess = JSON.parse(localStorage.getItem('bioforce_train_session'));
+      currentSk = sess.sk;
+      currentDi = sess.di;
+      trainStartTime = sess.time || Date.now();
+      trainSteps = sess.steps;
+      trainIdx = Math.min(sess.idx || 0, trainSteps.length - 1);
+      document.getElementById('trainOverlay').classList.remove('hidden');
+      renderStep();
+      localStorage.removeItem('bioforce_train_session');
+    } catch(e){ showToast('Fehler beim Fortsetzen'); }
+  } else {
+    try {
+      var sess = JSON.parse(localStorage.getItem('bioforce_stretch_session'));
+      seshSteps = sess.steps;
+      seshIdx = Math.min(sess.idx || 0, seshSteps.length - 1);
+      seshHoldSec = sess.holdSec || 60;
+      document.getElementById('seshOverlay').classList.remove('hidden');
+      renderSeshStep();
+      localStorage.removeItem('bioforce_stretch_session');
+    } catch(e){ showToast('Fehler beim Fortsetzen'); }
+  }
+}
+
 checkPlanChangeReminder();
 loadExercisesFromGitHub();
 loadFoodState();
 loadRecipesFromGitHub();
+checkResumeSession();
 // Start on home page
 document.getElementById('planPage').style.display = 'none';
 document.getElementById('appHeader').style.display = 'none';
