@@ -7042,6 +7042,20 @@ function migrateSplitMuscles(){
         });
         ex.muscle = parts.join(', ');
       });
+      // Exercise-specific overrides: fix wrong primary muscles
+      (day.main||[]).forEach(function(ex){
+        if(!ex.muscle) return;
+        var NAME_OVERRIDES = {
+          'Kreuzheben (BF)':             'Rücken unten, Gesäßmuskel, Hamstrings',
+          'Kreuzheben gestreckte Beine': 'Rücken unten, Hamstrings, Gesäßmuskel',
+          'Rückenstrecker sitzend':      'Rücken unten, Rücken',
+          'Adduktoren innen':            'Abduktoren',
+          'Abduktoren außen':            'Abduktoren, Gesäßmuskel',
+          'Abduktorenübung liegend':     'Abduktoren, Gesäßmuskel',
+          'Abduktorenübung liegend einbeinig': 'Abduktoren, Gesäßmuskel',
+        };
+        if(NAME_OVERRIDES[ex.name]) ex.muscle = NAME_OVERRIDES[ex.name];
+      });
     });
   });
 }
