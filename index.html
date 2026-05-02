@@ -1777,7 +1777,7 @@ var SPLITS_DEFAULT={gk:{name:"Ganzkörper",desc:"3× pro Woche · ca. 90 min pro
   ]},
   {name:"Beine",tags:["legs","glutes"],meta:"ca. 60 min",main:[
     {icon:"🦵",name:"Kniebeugen (BF)",muscle:"Quadrizeps, Gesäßmuskel",sets:3,reps:"12",bi:true},
-    {icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäßmuskel, Quadrizeps, Bauch",sets:3,reps:"12",bi:true},
+    {icon:"🦵",name:"Ausfallschritt rückwärts",muscle:"Gesäßmuskel, Quadrizeps, Waden",sets:3,reps:"12",bi:true},
     {icon:"🦵",name:"Beinstrecker sitzend",muscle:"Quadrizeps",sets:3,reps:"12",bi:true},
     {icon:"🦵",name:"Bein-Curls stehend (BF)",muscle:"Hamstrings",sets:3,reps:"12",bi:true},
     {icon:"🦵",name:"Adduktoren innen",muscle:"Abduktoren",sets:3,reps:"12",bi:true},
@@ -7010,12 +7010,48 @@ function saveState(){
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
   }catch(e){ console.warn('Save failed',e); }
 }
+
+function migrateSplitMuscles(){
+  // Normalize all muscle names in saved splits to match M3D_PLAN_MAP
+  var MUSCLE_NORMALIZE = {
+    'Rhomboiden':'Rücken oben','Trapezmuskel':'Rücken oben','mittlerer Rücken':'Rücken oben',
+    'Rückenstrecker':'Rücken unten','Wirbelsäule':'Rücken unten',
+    'Bizeps brachii':'Bizeps','Brachialis':'Bizeps',
+    'Trizeps brachii':'Trizeps','Langer Trizepskopf':'Trizeps',
+    'Schulter':'Schultern','hinterer Deltoideus':'Schultern','vorderer Deltoideus':'Schultern',
+    'seitlicher Deltoideus':'Schultern','hintere Schultern':'Schultern',
+    'innere Brust':'Brust','untere Brust':'Brust','obere Brust':'Brust',
+    'Quadrizeps isoliert':'Quadrizeps','Oberschenkel':'Quadrizeps','Beinstrecker':'Quadrizeps',
+    'Beinbeuger':'Hamstrings','hintere Oberschenkel':'Hamstrings',
+    'Gesäß':'Gesäßmuskel','Gluteus maximus':'Gesäßmuskel',
+    'Wadenmuskulatur':'Waden','Wadenbeinmuskel':'Waden',
+    'laterale Wadenmuskulatur':'Waden','mediale Wadenmuskulatur':'Waden',
+    'schräge Bauchmuskeln':'Bauch','seitliche Rumpfmuskeln':'Bauch',
+    'Serratus':'Latissimus','Serratus anterior':'Latissimus','Teres major':'Latissimus',
+    'Adduktoren':'Abduktoren','Unterarm':'Unterarme',
+  };
+  Object.keys(SPLITS).forEach(function(sk){
+    var split = SPLITS[sk];
+    if(!split || !split.days) return;
+    split.days.forEach(function(day){
+      (day.main||[]).forEach(function(ex){
+        if(!ex.muscle) return;
+        var parts = ex.muscle.split(',').map(function(p){
+          var t = p.trim();
+          return MUSCLE_NORMALIZE[t] || t;
+        });
+        ex.muscle = parts.join(', ');
+      });
+    });
+  });
+}
+
 function loadState(){
   try{
     var raw=localStorage.getItem(SAVE_KEY);
     if(!raw) return false;
     var data=JSON.parse(raw);
-    if(data.SPLITS) SPLITS=data.SPLITS;
+    if(data.SPLITS) { SPLITS=data.SPLITS; migrateSplitMuscles(); }
     if(data.library) {
       library = data.library;
       // Rename old exercise names
