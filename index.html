@@ -1875,7 +1875,7 @@ var SPLITS=deepClone(SPLITS_DEFAULT);
 var library=deepClone(LIBRARY_DEFAULT);
 var TAGCLS={pull:'tag-pull',push:'tag-push',legs:'tag-legs',full:'tag-full',rest:'tag-rest',back:'tag-back',chest:'tag-chest',shoulder:'tag-shoulder',arms:'tag-arms',glutes:'tag-glutes'};
 var TAGLBL={pull:'Pull',push:'Push',legs:'Beine',full:'Ganzkörper',rest:'Ruhetag',back:'Rücken',chest:'Brust',shoulder:'Schulter',arms:'Arme',glutes:'Gesäß'};
-var activeSplit='gk',heatmapActiveSplit='gk',activeDay=0;
+var activeSplit='gk',heatmapActiveSplit=null,activeDay=0;
 var weights={};
 var trainSteps=[],trainIdx=0,pauseTimer=null,pauseSec=0;
 var trainStartTime = null;
@@ -1972,6 +1972,7 @@ function closeEditor(){
 }
 function saveAndClose(){
   SPLITS=deepClone(editDraft);
+  heatmapActiveSplit=activeSplit;
   closeEditor();renderNav();renderDays();saveState();showToast('Plan gespeichert ✓');
 }
 function showToast(msg, duration){var t=document.createElement('div');t.className='saved-toast';t.textContent=msg;document.body.appendChild(t);setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);},duration||2000);}
@@ -3132,7 +3133,7 @@ function renderStatPage(){
   renderPRGrid();
   renderMuscleGrid();
   if(selectedMuscleId) renderStatDetail(selectedMuscleId);
-  setTimeout(function(){ muscle3dInit(); }, 60);
+  setTimeout(function(){ muscle3dInit(); }, 150);
 }
 
 function renderStatSummary(){
@@ -8439,11 +8440,18 @@ function loadMaskPixels(b64,cb){
 function heatmapPopulatePlanSelect(){
   var sel = document.getElementById('heatmapPlanSelect');
   if(!sel) return;
+  // Default to activeSplit if not set yet
+  if(!heatmapActiveSplit || !SPLITS[heatmapActiveSplit]) {
+    heatmapActiveSplit = activeSplit;
+  }
+  // If still not valid, use first available
+  if(!SPLITS[heatmapActiveSplit]) {
+    heatmapActiveSplit = Object.keys(SPLITS)[0];
+  }
   sel.innerHTML = '';
-  // Show gk, s3, s5 and any user-created splits
-  var wantedOrder = ['gk','s3','s5'];
   var keys = Object.keys(SPLITS);
-  // Put wanted first, then rest
+  // Preferred order
+  var wantedOrder = ['gk','s3','s5'];
   var ordered = wantedOrder.filter(function(k){ return keys.indexOf(k) !== -1; });
   keys.forEach(function(k){ if(ordered.indexOf(k) === -1) ordered.push(k); });
   ordered.forEach(function(k){
@@ -8463,32 +8471,68 @@ function heatmapSelectPlan(key){
   muscle3dInit();
 }
 
-function muscle3dInit(){
-  heatmapPopulatePlanSelect();
-  var vol=m3dGetPlanVolume();
-  var vals=Object.keys(vol).map(function(k){return vol[k];});
-  var mx=Math.max.apply(null,vals)||1;
-  var wrap=document.getElementById('muscleSvgWrap');
-  if(!wrap)return;
-  wrap.innerHTML='<canvas id="muscleCanvas" width="900" height="900" style="width:100%;height:auto;display:block;border-radius:8px;"></canvas>';
-  var canvas=document.getElementById('muscleCanvas');
-  if(!canvas)return;
-  var baseImg=new Image();
-  baseImg.onload=function(){
-    var bc=document.createElement('canvas');bc.width=900;bc.height=900;
-    var bx=bc.getContext('2d');bx.drawImage(baseImg,0,0,900,900);
-    var baseData=bx.getImageData(0,0,900,900);
-    var muscles=Object.keys(MUSCLE_MASKS_B64);
-    var loaded=0,maskMap={};
+// Cache for preloaded image data - load only once
+var _m3dBaseData = null;
+var _m3dMaskMap = null;
+var _m3dImagesLoading = false;
+var _m3dPendingRender = false;
+
+function m3dPreloadImages(callback){
+  if(_m3dBaseData && _m3dMaskMap){
+    callback(_m3dBaseData, _m3dMaskMap);
+    return;
+  }
+  if(_m3dImagesLoading){
+    _m3dPendingRender = true;
+    return;
+  }
+  _m3dImagesLoading = true;
+  var baseImg = new Image();
+  baseImg.onload = function(){
+    var bc = document.createElement('canvas');
+    bc.width=900; bc.height=900;
+    var bx = bc.getContext('2d');
+    bx.drawImage(baseImg, 0, 0, 900, 900);
+    _m3dBaseData = bx.getImageData(0, 0, 900, 900);
+    var muscles = Object.keys(MUSCLE_MASKS_B64);
+    var loaded = 0;
+    _m3dMaskMap = {};
     muscles.forEach(function(mk){
-      loadMaskPixels(MUSCLE_MASKS_B64[mk],function(id){
-        maskMap[mk]=id;loaded++;
-        if(loaded===muscles.length)renderHeatmap(canvas,baseData,maskMap,vol,mx);
+      loadMaskPixels(MUSCLE_MASKS_B64[mk], function(id){
+        _m3dMaskMap[mk] = id;
+        loaded++;
+        if(loaded === muscles.length){
+          _m3dImagesLoading = false;
+          callback(_m3dBaseData, _m3dMaskMap);
+        }
       });
     });
   };
-  baseImg.src='data:image/png;base64,'+MUSCLE_IMG_B64;
-  m3dRenderList(vol,mx);
+  baseImg.onerror = function(){ _m3dImagesLoading = false; };
+  baseImg.src = 'data:image/png;base64,' + MUSCLE_IMG_B64;
+}
+
+function muscle3dInit(){
+  heatmapPopulatePlanSelect();
+  var vol = m3dGetPlanVolume();
+  var vals = Object.keys(vol).map(function(k){ return vol[k]; });
+  var mx = Math.max.apply(null, vals) || 1;
+  var wrap = document.getElementById('muscleSvgWrap');
+  if(!wrap) return;
+  // Show loading state
+  if(!_m3dBaseData){
+    wrap.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);font-size:12px;">Lade Heatmap...</div>';
+  }
+  m3dRenderList(vol, mx);
+  m3dPreloadImages(function(baseData, maskMap){
+    // Re-get wrap in case DOM changed
+    var wrap2 = document.getElementById('muscleSvgWrap');
+    if(!wrap2) return;
+    wrap2.innerHTML = '<canvas id="muscleCanvas" width="900" height="900" style="width:100%;height:auto;display:block;border-radius:8px;"></canvas>';
+    var canvas = document.getElementById('muscleCanvas');
+    if(!canvas) return;
+    renderHeatmap(canvas, baseData, maskMap, vol, mx);
+  });
 }
 function renderHeatmap(canvas,baseData,maskDataMap,vol,mx){
   var ctx=canvas.getContext('2d');
