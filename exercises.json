@@ -4,7 +4,7 @@
     {
       "name": "Kurzhantel Rudern",
       "cat": "pull",
-      "muscle": "Latissimus, Schulter",
+      "muscle": "Latissimus, Schultern",
       "equipment": "kurzhantel",
       "bi": true,
       "imageNumber": 118,
@@ -15,59 +15,59 @@
       ]
     },
     {
-      "name": "BankdrÃÂÃÂ¼cken Kurzhanteln",
+      "name": "Bankdrücken Kurzhanteln",
       "cat": "push",
-      "muscle": "Brust",
+      "muscle": "Brust, Schultern, Trizeps",
       "equipment": "kurzhantel",
       "bi": true,
       "imageNumber": 119,
-      "description": "ÃÂÃÂbung Kontrolliert und immer nacharbeiten. Anfangs wenig Gewicht bis der Bewegungsablauf verankert ist.",
+      "description": "Übung kontrolliert ausführen und immer nacharbeiten. Anfangs wenig Gewicht bis der Bewegungsablauf verankert ist.",
       "steps": [
-        "Arme im Rechten Winkel. Ellbogen leicht nach innen.",
-        "Arme nach oben drÃÂÃÂ¼cken",
-        "Ellbogen kurz vor gesamten Streckung verharren."
+        "Arme im rechten Winkel, Ellbogen leicht nach innen.",
+        "Arme nach oben drücken.",
+        "Ellbogen kurz vor gesamter Streckung verharren."
       ]
     },
     {
-      "name": "ÃÂberzÃÂ¼ge Kurzhanteln",
+      "name": "Überzüge Kurzhanteln",
       "cat": "push",
-      "muscle": "Brust",
+      "muscle": "Brust, Latissimus",
       "equipment": "kurzhantel",
       "bi": true,
       "imageNumber": 120,
-      "description": "FÃÂ¼r fortgeschrittene. Wichtig nicht verweilen beim strecken.",
+      "description": "Für Fortgeschrittene. Wichtig: nicht verweilen beim Strecken.",
       "steps": [
-        "Ausgangspunkt: arme gestreckt ÃÂ¼ber den kopf",
-        "Bewegung bis die arme im 90ÃÂ° Winkel zum kÃÂ¶rper sind",
-        "Spannung wÃÂ¤hrend der gesamten ÃÂ¼bung."
+        "Ausgangspunkt: Arme gestreckt über den Kopf.",
+        "Bewegung bis die Arme im 90° Winkel zum Körper sind.",
+        "Spannung während der gesamten Übung halten."
       ]
     },
     {
-      "name": "Butterfly's mit Kurzhanteln",
+      "name": "Butterfly Kurzhanteln",
       "cat": "push",
-      "muscle": "Brust",
+      "muscle": "Brust, Schultern",
       "equipment": "kurzhantel",
       "bi": false,
       "imageNumber": 121,
       "description": "",
       "steps": [
-        "Startpunkt: arme halb gestreckt zum kÃ¶rper",
-        "Ausgangspunkt Gewichte Wagericht nach oben.",
-        "Ellbogen nie gestreckt ! Durchgehend kleine Beugung."
+        "Startpunkt: Arme halb gestreckt zum Körper.",
+        "Ausgangspunkt: Gewichte waagerecht nach oben.",
+        "Ellbogen nie gestreckt — durchgehend leichte Beugung."
       ]
     },
     {
-      "name": "Trizeps Kickback's",
+      "name": "Trizeps Kickbacks",
       "cat": "push",
-      "muscle": "Trizeps",
+      "muscle": "Trizeps, Schultern",
       "equipment": "kurzhantel",
       "bi": true,
       "imageNumber": 122,
-      "description": "Am besten im knien auf einer Bank auch möglich im stehen.",
+      "description": "Am besten im Knien auf einer Bank, auch im Stehen möglich.",
       "steps": [
-        "Startpunkt: Arm angewinkelt am Körper",
-        "Endposition: Arm gestreckt hinter den körper.",
-        "Bewegung nach hinten weg drücken."
+        "Startpunkt: Arm angewinkelt am Körper.",
+        "Endposition: Arm gestreckt hinter den Körper.",
+        "Bewegung: nach hinten wegdrücken."
       ]
     }
   ]
